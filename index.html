@@ -9,16 +9,14 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0f172a 100%);
-            color: #f8fafc;
-            text-align: center;
+            background-color: #f8fafc;
+            color: #1e293b;
             position: relative;
             min-height: 100vh;
-            padding-bottom: 60px;
         }
 
         /* Background Watermark Logo Styling */
@@ -32,316 +30,371 @@
             height: 500px;
             background: url('logo.png') no-repeat center center;
             background-size: contain;
-            opacity: 0.12;
+            opacity: 0.05;
             z-index: 0;
             pointer-events: none;
         }
 
-        .content-layer {
+        .page-content {
             position: relative;
             z-index: 1;
         }
 
-        /* Top Hero Header */
-        header {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 70px 20px 40px;
+        /* Top Sticky Navigation Bar */
+        nav {
+            background: #ffffff;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .badge {
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #009688;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .nav-logo-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #0f172a;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #475569;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #009688;
+        }
+
+        .nav-cta-btn {
+            background-color: #009688;
+            color: #ffffff !important;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-weight: 600 !important;
+            transition: background 0.2s ease !important;
+        }
+
+        .nav-cta-btn:hover {
+            background-color: #00796b !important;
+        }
+
+        /* Full Width Hero Banner */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 520px;
+            background: linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.5)), 
+                        url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=80') center center / cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Glassmorphism Centered Overlay Box */
+        .hero-overlay-box {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 45px 50px;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .hero-overlay-box h1 {
+            font-size: 2.4rem;
+            color: #0f172a;
+            font-weight: 800;
+            margin-bottom: 25px;
+            line-height: 1.3;
+        }
+
+        .hero-cta-btn {
             display: inline-block;
-            background: rgba(56, 189, 248, 0.15);
-            border: 1px solid rgba(56, 189, 248, 0.4);
-            color: #38bdf8;
+            background-color: #009688;
+            color: white;
+            text-decoration: none;
+            padding: 14px 32px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            transition: background 0.2s;
+            margin-bottom: 30px;
+        }
+
+        .hero-cta-btn:hover {
+            background-color: #00796b;
+        }
+
+        /* Sub-Brand Badges inside Overlay Box */
+        .hero-badges {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .hero-badge-pill {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 8px 18px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-size: 0.85rem;
             font-weight: 700;
-            padding: 8px 20px;
-            border-radius: 30px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+            color: #334155;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
         }
 
-        h1 {
-            font-size: 3.2rem;
-            background: linear-gradient(90deg, #ffffff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 16px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
+        /* Main Services Cards Section */
+        .services-section {
+            max-width: 1150px;
+            margin: 70px auto 40px;
+            padding: 0 20px;
         }
 
-        p.subtitle {
-            font-size: 1.25rem;
-            color: #cbd5e1;
-            max-width: 700px;
-            margin: 0 auto;
-            line-height: 1.7;
+        .section-header {
+            text-align: center;
+            margin-bottom: 45px;
         }
 
-        /* Card Section Styling */
-        .main-section {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(12px);
-            padding: 50px 20px;
-            margin-top: 20px;
+        .section-header h2 {
+            font-size: 2rem;
+            color: #0f172a;
+            font-weight: 700;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
+        .section-header p {
+            color: #64748b;
+            font-size: 1.05rem;
+            margin-top: 8px;
+        }
+
+        .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 30px;
         }
 
         .card {
             background: #ffffff;
-            color: #0f172a;
-            padding: 40px 30px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            padding: 35px 30px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            text-align: left;
-            position: relative;
-            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
-
-        .card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 6px;
-        }
-
-        /* Color accents for individual cards */
-        .card-stays::before { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
-        .card-travels::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-        .card-services::before { background: linear-gradient(90deg, #6366f1, #818cf8); }
 
         .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-        }
-
-        .card-header-flex {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
         }
 
         .card-icon {
-            font-size: 2.5rem;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 14px;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
         }
-
-        .card-stays .card-icon { background: #e0f2fe; }
-        .card-travels .card-icon { background: #fef3c7; }
-        .card-services .card-icon { background: #e0e7ff; }
-
-        .card-tag {
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 4px 12px;
-            border-radius: 12px;
-            text-transform: uppercase;
-        }
-
-        .card-stays .card-tag { background: #e0f2fe; color: #0284c7; }
-        .card-travels .card-tag { background: #fef3c7; color: #d97706; }
-        .card-services .card-tag { background: #e0e7ff; color: #4f46e5; }
 
         .card h3 {
-            font-size: 1.7rem;
-            margin-bottom: 12px;
+            font-size: 1.4rem;
             color: #0f172a;
-            font-weight: 700;
+            margin-bottom: 12px;
         }
 
         .card p {
-            color: #475569;
+            color: #64748b;
             line-height: 1.6;
-            margin-bottom: 25px;
-            font-size: 1rem;
-        }
-
-        .card-features {
-            list-style: none;
-            margin-bottom: 30px;
-        }
-
-        .card-features li {
             font-size: 0.95rem;
-            color: #334155;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            font-weight: 500;
+            margin-bottom: 25px;
         }
 
-        .card-features li::before {
-            content: "✓";
-            color: #10b981;
-            font-weight: bold;
-            margin-right: 10px;
-            background: #d1fae5;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-        }
-
-        /* Buttons */
-        .btn {
+        .btn-wa {
             display: inline-block;
             width: 100%;
-            padding: 16px 20px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1rem;
             text-align: center;
-            transition: all 0.25s ease;
-        }
-
-        .btn-whatsapp {
             background-color: #25d366;
-            color: #ffffff;
-            box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
-        }
-
-        .btn-whatsapp:hover {
-            background-color: #1ebd56;
-            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
-            transform: scale(1.02);
-        }
-
-        /* Contact Box Section */
-        .contact-section {
-            max-width: 1100px;
-            margin: 60px auto 30px;
-            background: linear-gradient(135deg, #1e293b, #334155);
-            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
-            padding: 50px 30px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .contact-section h2 {
-            font-size: 2.2rem;
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-
-        .contact-section p {
-            color: #94a3b8;
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-        }
-
-        .contact-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .contact-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 14px 28px;
-            border-radius: 12px;
             text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            padding: 12px 0;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: background 0.2s;
         }
 
-        .contact-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
+        .btn-wa:hover {
+            background-color: #1ebd56;
         }
 
         /* Floating WhatsApp Button */
         .float-wa {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 25px;
+            right: 25px;
             background-color: #25d366;
             color: white;
             border-radius: 50px;
-            padding: 14px 24px;
-            font-weight: 700;
-            font-size: 1rem;
+            padding: 12px 22px;
+            font-weight: bold;
             text-decoration: none;
-            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
-            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
             display: flex;
             align-items: center;
-            gap: 10px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .float-wa:hover {
-            transform: scale(1.06);
-            box-shadow: 0 12px 30px rgba(37, 211, 102, 0.7);
+            gap: 8px;
         }
 
         footer {
-            margin-top: 50px;
+            text-align: center;
+            padding: 40px 20px;
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 60px;
             font-size: 0.9rem;
-            color: #64748b;
+            color: #94a3b8;
         }
 
         @media (max-width: 768px) {
-            h1 { font-size: 2.3rem; }
-            header { padding-top: 40px; }
+            .nav-links { display: none; }
+            .hero-overlay-box h1 { font-size: 1.6rem; }
+            .hero-overlay-box { padding: 30px 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="content-layer">
-        <header>
-            <span class="badge">Welcome to Anandi Group</span>
-            <h1>Premium Stays, Travel & Business Solutions</h1>
-            <p class="subtitle">Experience comfortable holiday stays in Lonavala, reliable passenger fleet travel, and strategic business consulting.</p>
-        </header>
+    <div class="page-content">
 
-        <div class="main-section">
-            <div class="container">
-                <!-- Card 1: Stays -->
-                <div class="card card-stays">
-                    <div>
-                        <div class="card-header-flex">
-                            <div class="card-icon">🏡</div>
-                            <span class="card-tag">Lonavala</span>
-                        </div>
-                        <h3>Anandi Stays</h3>
-                        <p>Comfortable housing & holiday villa stay solutions for your ideal getaway in Lonavala.</p>
-                        <ul class="card-features">
-                            <li>Private Villas & Cottages</li>
-                            <li>Scenic Lonavala Locations</li>
-                            <li>Family & Group Bookings</li>
-                        </ul>
+        <!-- Top Navigation Bar (Matches Image Header) -->
+        <nav>
+            <a href="#" class="nav-logo">
+                <div class="nav-logo-icon">A</div>
+                <span class="nav-logo-text">ANANDI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#stays">Stays</a></li>
+                <li><a href="#travels">Travels</a></li>
+                <li><a href="#services">Services</a></li>
+                <!-- Replace phone number with yours -->
+                <li><a href="https://wa.me/919876543210" class="nav-cta-btn" target="_blank">Contact Us</a></li>
+            </ul>
+        </nav>
+
+        <!-- Hero Section with Centered Translucent Overlay Box -->
+        <section class="hero">
+            <div class="hero-overlay-box">
+                <h1>We help clients experience luxury stays, seamless travel, & business growth</h1>
+                <a href="#services" class="hero-cta-btn">Learn More</a>
+                
+                <div class="hero-badges">
+                    <div class="hero-badge-pill">
+                        <span>🏡</span> Anandi Stays
                     </div>
-                    <!-- Replace 919876543210 with your actual WhatsApp phone number -->
-                    <a href="
+                    <div class="hero-badge-pill">
+                        <span>🚗</span> Anandi Travels
+                    </div>
+                    <div class="hero-badge-pill">
+                        <span>💼</span> Anandi Services
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards Section -->
+        <section class="services-section" id="services">
+            <div class="section-header">
+                <h2>Our Business Solutions</h2>
+                <p>Select a service vertical to get instant quotes and details.</p>
+            </div>
+
+            <div class="cards-grid">
+                <!-- Stays -->
+                <div class="card" id="stays">
+                    <div>
+                        <div class="card-icon">🏡</div>
+                        <h3>Anandi Stays</h3>
+                        <p>Comfortable housing & holiday villa solutions for your perfect getaway in Lonavala.</p>
+                    </div>
+                    <!-- Replace phone number with your actual WhatsApp phone number -->
+                    <a href="https://wa.me/919876543210?text=Hi%20Anandi%20Stays,%20I%20am%20interested%20in%20booking%20a%20stay." class="btn-wa" target="_blank">Book Stay on WhatsApp</a>
+                </div>
+
+                <!-- Travels -->
+                <div class="card" id="travels">
+                    <div>
+                        <div class="card-icon">🚗</div>
+                        <h3>Anandi Travels</h3>
+                        <p>Reliable passenger travel, fleet rentals, and custom trips across outstation & local routes.</p>
+                    </div>
+                    <!-- Replace phone number with your actual WhatsApp phone number -->
+                    <a href="https://wa.me/919876543210?text=Hi%20Anandi%20Travels,%20I%20want%20to%20inquire%20about%20vehicle%20rentals." class="btn-wa" target="_blank">Book Travel on WhatsApp</a>
+                </div>
+
+                <!-- Services -->
+                <div class="card">
+                    <div>
+                        <div class="card-icon">💼</div>
+                        <h3>Anandi Services</h3>
+                        <p>Professional business, financial, and management consultancy tailored to your targets.</p>
+                    </div>
+                    <!-- Replace phone number with your actual WhatsApp phone number -->
+                    <a href="https://wa.me/919876543210?text=Hi%20Anandi%20Services,%20I%20would%20like%20to%20consult%20regarding%20business%20services." class="btn-wa" target="_blank">Consult Services on WhatsApp</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Floating WhatsApp Button -->
+        <a href="https://wa.me/919876543210?text=Hi%20Anandi%20Team,%20I%20have%20an%20inquiry." class="float-wa" target="_blank">
+            💬 Chat on WhatsApp
+        </a>
+
+        <footer>
+            <p>&copy; 2026 Anandi. All rights
