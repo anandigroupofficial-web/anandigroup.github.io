@@ -61,17 +61,10 @@
             text-decoration: none;
         }
 
-        .nav-logo-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #009688;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
+        .nav-logo img {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
         }
 
         .nav-logo-text {
@@ -312,10 +305,10 @@
 
     <div class="page-content">
 
-        <!-- Top Navigation Bar (Matches Image Header) -->
+        <!-- Navigation Bar with Uploaded Logo Image -->
         <nav>
             <a href="#" class="nav-logo">
-                <div class="nav-logo-icon">A</div>
+                <img src="logo.png" alt="Anandi Group Logo">
                 <span class="nav-logo-text">ANANDI</span>
             </a>
             <ul class="nav-links">
@@ -323,12 +316,11 @@
                 <li><a href="#stays">Stays</a></li>
                 <li><a href="#travels">Travels</a></li>
                 <li><a href="#services">Services</a></li>
-                <!-- Replace phone number with yours -->
                 <li><a href="https://wa.me/919876543210" class="nav-cta-btn" target="_blank">Contact Us</a></li>
             </ul>
         </nav>
 
-        <!-- Hero Section with Centered Translucent Overlay Box -->
+        <!-- Hero Section -->
         <section class="hero">
             <div class="hero-overlay-box">
                 <h1>We help clients experience luxury stays, seamless travel, & business growth</h1>
@@ -348,7 +340,7 @@
             </div>
         </section>
 
-        <!-- Cards Section -->
+        <!-- Services Section -->
         <section class="services-section" id="services">
             <div class="section-header">
                 <h2>Our Business Solutions</h2>
@@ -363,7 +355,6 @@
                         <h3>Anandi Stays</h3>
                         <p>Comfortable housing & holiday villa solutions for your perfect getaway in Lonavala.</p>
                     </div>
-                    <!-- Replace phone number with your actual WhatsApp phone number -->
                     <a href="https://wa.me/919876543210?text=Hi%20Anandi%20Stays,%20I%20am%20interested%20in%20booking%20a%20stay." class="btn-wa" target="_blank">Book Stay on WhatsApp</a>
                 </div>
 
@@ -374,7 +365,6 @@
                         <h3>Anandi Travels</h3>
                         <p>Reliable passenger travel, fleet rentals, and custom trips across outstation & local routes.</p>
                     </div>
-                    <!-- Replace phone number with your actual WhatsApp phone number -->
                     <a href="https://wa.me/919876543210?text=Hi%20Anandi%20Travels,%20I%20want%20to%20inquire%20about%20vehicle%20rentals." class="btn-wa" target="_blank">Book Travel on WhatsApp</a>
                 </div>
 
@@ -385,7 +375,6 @@
                         <h3>Anandi Services</h3>
                         <p>Professional business, financial, and management consultancy tailored to your targets.</p>
                     </div>
-                    <!-- Replace phone number with your actual WhatsApp phone number -->
                     <a href="https://wa.me/919876543210?text=Hi%20Anandi%20Services,%20I%20would%20like%20to%20consult%20regarding%20business%20services." class="btn-wa" target="_blank">Consult Services on WhatsApp</a>
                 </div>
             </div>
@@ -397,4 +386,10 @@
         </a>
 
         <footer>
-            <p>&copy; 2026 Anandi. All rights
+            <p>&copy; 2026 Anandi. All rights reserved.</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
