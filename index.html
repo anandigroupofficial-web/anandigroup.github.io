@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anandi | Stays, Travels & Services</title>
+    <title>Anandi | Stays, Travels & Financial Services</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         body {
             background-color: #f4f6f9;
-            color: #333;
+            color: #2c3e50;
             text-align: center;
-            padding: 40px 20px;
+            padding: 20px 15px 60px;
             position: relative;
             min-height: 100vh;
         }
+
         /* Background Watermark Logo Styling */
         body::before {
             content: "";
@@ -30,41 +32,199 @@
             height: 450px;
             background: url('logo.png') no-repeat center center;
             background-size: contain;
-            opacity: 0.08; /* Adjust this value between 0.05 (lighter) and 0.2 (darker) */
+            opacity: 0.07;
             z-index: -1;
             pointer-events: none;
         }
+
+        /* Top Navigation Header */
         header {
-            margin-bottom: 40px;
+            max-width: 1100px;
+            margin: 0 auto 30px;
+            padding: 20px 10px;
         }
+
+        .badge {
+            display: inline-block;
+            background: #e1f0ff;
+            color: #0066cc;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             color: #1a252f;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            font-weight: 800;
         }
+
         p.subtitle {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #555;
-        }
-        .container {
-            max-width: 900px;
+            max-width: 650px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            line-height: 1.6;
         }
+
+        /* Card Container */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
         .card {
             background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 35px 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: left;
         }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
         .card h3 {
-            margin-bottom: 10px;
-            color: #007bff;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: #1a252f;
         }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 0.98rem;
+        }
+
+        .card-features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .card-features li {
+            font-size: 0.9rem;
+            color: #444;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-features li::before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-align: center;
+            transition: background 0.2s ease;
+        }
+
+        .btn-whatsapp {
+            background-color: #25d366;
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #1ebd56;
+        }
+
+        /* Contact Box Section */
+        .contact-section {
+            max-width: 1100px;
+            margin: 50px auto 30px;
+            background: #1a252f;
+            color: white;
+            padding: 40px 25px;
+            border-radius: 16px;
+        }
+
+        .contact-section h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .contact-section p {
+            color: #bdc3c7;
+            margin-bottom: 25px;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .contact-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Floating WhatsApp Button */
+        .float-wa {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: #25d366;
+            color: white;
+            border-radius: 50px;
+            padding: 12px 22px;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+
+        .float-wa:hover {
+            transform: scale(1.05);
+        }
+
         footer {
-            margin-top: 50px;
+            margin-top: 40px;
             font-size: 0.9rem;
             color: #777;
         }
@@ -73,28 +233,49 @@
 <body>
 
     <header>
-        <h1>Welcome to Anandi</h1>
-        <p class="subtitle">Your trusted brand for Stays, Travel, and Financial Solutions</p>
+        <span class="badge">Welcome to Anandi Group</span>
+        <h1>Premium Stays, Travel & Business Solutions</h1>
+        <p class="subtitle">Experience luxurious weekend getaways in Lonavala, reliable fleet travel, and expert financial & business advisory services.</p>
     </header>
 
     <div class="container">
+        <!-- Card 1: Stays -->
         <div class="card">
-            <h3>Anandi Stays</h3>
-            <p>Comfortable housing & stay solutions for your holiday in Lonavala.</p>
+            <div>
+                <div class="card-icon">🏡</div>
+                <h3>Anandi Stays</h3>
+                <p>Comfortable housing & stay solutions for your ideal weekend holiday in Lonavala.</p>
+                <ul class="card-features">
+                    <li>Private Villas & Cottages</li>
+                    <li>Scenic Lonavala Locations</li>
+                    <li>Family & Group Friendly</li>
+                </ul>
+            </div>
+            <!-- Update phone number below with your actual phone number -->
+            <a href="https://wa.me/919876543210?text=Hi%20Anandi%20Stays,%20I%20am%20interested%20in%20booking%20a%20stay%20in%20Lonavala." class="btn btn-whatsapp" target="_blank">Book Stay on WhatsApp</a>
         </div>
-        <div class="card">
-            <h3>Anandi Travels</h3>
-            <p>Reliable passenger travel, fleet rentals, and custom trips.</p>
-        </div>
-        <div class="card">
-            <h3>Anandi Services</h3>
-            <p>Professional business, financial, and consultancy services.</p>
-        </div>
-    </div>
 
-    <footer>
-        <p>&copy; 2026 Anandi. All rights reserved.</p>
-    </footer>
+        <!-- Card 2: Travels -->
+        <div class="card">
+            <div>
+                <div class="card-icon">🚗</div>
+                <h3>Anandi Travels</h3>
+                <p>Reliable passenger travel, fleet rentals, and customized tour packages for all destinations.</p>
+                <ul class="card-features">
+                    <li>Outstation & Local Rentals</li>
+                    <li>Clean & Sanitized Fleet</li>
+                    <li>Professional Drivers</li>
+                </ul>
+            </div>
+            <!-- Update phone number below with your actual phone number -->
+            <a href="https://wa.me/919876543210?text=Hi%20Anandi%20Travels,%20I%20want%20to%20inquire%20about%20vehicle%20rentals." class="btn btn-whatsapp" target="_blank">Book Travel on WhatsApp</a>
+        </div>
 
-</body>
-</html>
+        <!-- Card 3: Services -->
+        <div class="card">
+            <div>
+                <div class="card-icon">💼</div>
+                <h3>Anandi Services</h3>
+                <p>Professional business, financial, and management consultancy services tailored to your goals.</p>
+                <ul class="card-features">
+                    <li>Financial
