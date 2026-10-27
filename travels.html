@@ -256,6 +256,35 @@
             color: #64748b;
         }
 
+        .fare-badge {
+            font-weight: 800;
+            color: #2b5b84;
+            font-size: 0.95rem;
+        }
+
+        .fare-display-box {
+            background-color: #f0fdfa;
+            border: 1px solid #99f6e4;
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .fare-display-box span {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #0f766e;
+        }
+
+        .fare-price {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #2b5b84;
+        }
+
         .book-now-btn {
             display: block;
             width: 100%;
@@ -426,10 +455,13 @@
 
                 <div class="form-group">
                     <label>Pickup Location</label>
-                    <select id="pickup" class="form-control">
+                    <select id="pickup" class="form-control" onchange="calculateFare()">
                         <option value="Lonavala">Lonavala</option>
+                        <option value="Khandala">Khandala</option>
+                        <option value="Karla">Karla</option>
+                        <option value="Pawna Lake">Pawna Lake</option>
                         <option value="Dadar">Dadar</option>
-                        <option value="CSTM">CSMT</option>
+                        <option value="CSMT">CSMT</option>
                         <option value="Mumbai Airport">Mumbai Airport</option>
                         <option value="Navi Mumbai Airport">Navi Mumbai Airport</option>
                         <option value="Andheri">Andheri</option>
@@ -443,17 +475,14 @@
                         <option value="Katraj">Katraj</option>
                         <option value="Hinjewadi">Hinjewadi</option>
                         <option value="Hadapsar">Hadapsar</option>
-                        <option value="Hadapsar">Khandala</option>
-                        <option value="Hadapsar">Karla</option>
-                        <option value="Hadapsar">Pawna Lake</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>Drop Location</label>
-                    <select id="drop" class="form-control">
+                    <select id="drop" class="form-control" onchange="calculateFare()">
                         <option value="Dadar">Dadar</option>
-                        <option value="CSTM">CSTM (CSMT)</option>
+                        <option value="CSMT">CSMT</option>
                         <option value="Mumbai Airport">Mumbai Airport</option>
                         <option value="Navi Mumbai Airport">Navi Mumbai Airport</option>
                         <option value="Andheri">Andheri</option>
@@ -462,15 +491,15 @@
                         <option value="Thane">Thane</option>
                         <option value="Navi Mumbai">Navi Mumbai</option>
                         <option value="Lonavala">Lonavala</option>
+                        <option value="Khandala">Khandala</option>
+                        <option value="Karla">Karla</option>
+                        <option value="Pawna Lake">Pawna Lake</option>
                         <option value="Pune Airport">Pune Airport</option>
                         <option value="Pune Railway Station">Pune Railway Station</option>
                         <option value="PCMC">PCMC</option>
                         <option value="Katraj">Katraj</option>
                         <option value="Hinjewadi">Hinjewadi</option>
                         <option value="Hadapsar">Hadapsar</option>
-                        <option value="Hadapsar">Khandala</option>
-                        <option value="Hadapsar">Karla</option>
-                        <option value="Hadapsar">Pawna Lake</option>
                     </select>
                 </div>
 
@@ -491,7 +520,7 @@
                 <div class="form-group">
                     <label>Select Vehicle</label>
                     <div class="vehicle-selector">
-                        <div class="vehicle-item selected" onclick="selectVehicle('Maruti Swift', '4 Seater Hatchback', this)">
+                        <div class="vehicle-item selected" id="car-swift" onclick="selectVehicle('Maruti Swift', this)">
                             <div class="vehicle-info">
                                 <span class="vehicle-icon">🚗</span>
                                 <div>
@@ -499,9 +528,10 @@
                                     <div class="vehicle-desc">4 Passengers • AC</div>
                                 </div>
                             </div>
+                            <span class="fare-badge" id="badge-swift">₹3,000</span>
                         </div>
 
-                        <div class="vehicle-item" onclick="selectVehicle('Maruti Ciaz', 'Executive Sedan', this)">
+                        <div class="vehicle-item" id="car-ciaz" onclick="selectVehicle('Maruti Ciaz', this)">
                             <div class="vehicle-info">
                                 <span class="vehicle-icon">🚘</span>
                                 <div>
@@ -509,9 +539,10 @@
                                     <div class="vehicle-desc">4 Passengers • Executive Sedan</div>
                                 </div>
                             </div>
+                            <span class="fare-badge" id="badge-ciaz">₹3,000</span>
                         </div>
 
-                        <div class="vehicle-item" onclick="selectVehicle('Maruti Ertiga', '6 Seater MUV', this)">
+                        <div class="vehicle-item" id="car-ertiga" onclick="selectVehicle('Maruti Ertiga', this)">
                             <div class="vehicle-info">
                                 <span class="vehicle-icon">🚙</span>
                                 <div>
@@ -519,9 +550,10 @@
                                     <div class="vehicle-desc">6 Passengers • Family MUV</div>
                                 </div>
                             </div>
+                            <span class="fare-badge" id="badge-ertiga">₹3,500</span>
                         </div>
 
-                        <div class="vehicle-item" onclick="selectVehicle('Toyota Innova Crysta', '7 Seater Premium MUV', this)">
+                        <div class="vehicle-item" id="car-innova" onclick="selectVehicle('Toyota Innova Crysta', this)">
                             <div class="vehicle-info">
                                 <span class="vehicle-icon">🚐</span>
                                 <div>
@@ -529,8 +561,14 @@
                                     <div class="vehicle-desc">6-7 Passengers • Premium Luxury</div>
                                 </div>
                             </div>
+                            <span class="fare-badge" id="badge-innova">₹4,500</span>
                         </div>
                     </div>
+                </div>
+
+                <div class="fare-display-box">
+                    <span>Estimated Fare:</span>
+                    <span class="fare-price" id="total-fare">₹3,000</span>
                 </div>
 
                 <button class="book-now-btn" onclick="sendBooking()">Request Ride on WhatsApp 💬</button>
@@ -599,6 +637,10 @@
         var selectedTrip = "Outstation";
         var selectedCar = "Maruti Swift";
 
+        const fixedPricedLocations = [
+            "Dadar", "CSMT", "Mumbai Airport", "Andheri", "Thane", "Katraj", "Hinjewadi"
+        ];
+
         function toggleMenu() {
             document.getElementById("navLinks").classList.toggle("active");
         }
@@ -610,26 +652,61 @@
             element.classList.add('active');
         }
 
-        function selectVehicle(carName, carType, element) {
+        function selectVehicle(carName, element) {
             selectedCar = carName;
             var items = document.querySelectorAll('.vehicle-item');
             items.forEach(item => item.classList.remove('selected'));
             element.classList.add('selected');
+            calculateFare();
+        }
+
+        function calculateFare() {
+            var pickup = document.getElementById("pickup").value;
+            var drop = document.getElementById("drop").value;
+
+            var isFixedRoute = (pickup === "Lonavala" && fixedPricedLocations.includes(drop)) ||
+                               (drop === "Lonavala" && fixedPricedLocations.includes(pickup));
+
+            if (isFixedRoute) {
+                document.getElementById("badge-swift").innerText = "₹3,000";
+                document.getElementById("badge-ciaz").innerText = "₹3,000";
+                document.getElementById("badge-ertiga").innerText = "₹3,500";
+                document.getElementById("badge-innova").innerText = "₹4,500";
+
+                if (selectedCar === "Maruti Swift" || selectedCar === "Maruti Ciaz") {
+                    document.getElementById("total-fare").innerText = "₹3,000";
+                } else if (selectedCar === "Maruti Ertiga") {
+                    document.getElementById("total-fare").innerText = "₹3,500";
+                } else if (selectedCar === "Toyota Innova Crysta") {
+                    document.getElementById("total-fare").innerText = "₹4,500";
+                }
+            } else {
+                document.getElementById("badge-swift").innerText = "Custom Rate";
+                document.getElementById("badge-ciaz").innerText = "Custom Rate";
+                document.getElementById("badge-ertiga").innerText = "Custom Rate";
+                document.getElementById("badge-innova").innerText = "Custom Rate";
+                document.getElementById("total-fare").innerText = "Contact for Quote";
+            }
         }
 
         function sendBooking() {
             var pickup = document.getElementById("pickup").value;
             var drop = document.getElementById("drop").value;
+            var fareText = document.getElementById("total-fare").innerText;
             
             var textMessage = "Hi Anandi Travels, I would like to book a ride:%0A%0A" +
                 "📍 *Pickup:* " + encodeURIComponent(pickup) + "%0A" +
                 "🏁 *Drop:* " + encodeURIComponent(drop) + "%0A" +
                 "🚘 *Vehicle:* " + encodeURIComponent(selectedCar) + "%0A" +
-                "🛣 *Trip Type:* " + encodeURIComponent(selectedTrip) + "%0A%0A" +
-                "Please share estimated fare and availability.";
+                "🛣 *Trip Type:* " + encodeURIComponent(selectedTrip) + "%0A" +
+                "💰 *Estimated Fare:* " + encodeURIComponent(fareText) + "%0A%0A" +
+                "Please confirm availability.";
 
             window.open("https://wa.me/919561805990?text=" + textMessage, "_blank");
         }
+
+        // Initialize fare calculation on load
+        calculateFare();
     </script>
 
 </body>
