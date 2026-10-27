@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="logo.png">
+
     <title>Anandi Group | Luxury Stays in Lonavala, Travels & Financial Services</title>
     
     <!-- Primary SEO Meta Tags -->
@@ -11,7 +14,7 @@
     <meta name="keywords" content="Anandi Group, Anandi Stays, Anandi Travels, Anandi Services, Lonavala villa booking, Pune car rental, Outstation cabs, Financial consultancy Maharashtra">
     <meta name="author" content="Anandi Group">
     
-    <!-- Open Graph / WhatsApp / Facebook Preview Tags -->
+    <!-- Open Graph / WhatsApp Preview Tags -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://anandigroup.in/">
     <meta property="og:title" content="Anandi Group | Stays, Travels & Financial Services">
@@ -55,6 +58,7 @@
             flex-direction: column;
         }
 
+        /* Top Sticky Navigation Bar */
         nav {
             background-color: #f8f4e9;
             height: 80px;
@@ -115,12 +119,22 @@
             font-weight: 600 !important;
         }
 
+        /* Mobile Hamburger Icon */
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.8rem;
+            background: none;
+            border: none;
+            color: #2b5b84;
+            cursor: pointer;
+        }
+
+        /* Hero Banner - Optimized Gradient Background for Fast Loading */
         .hero {
             position: relative;
             width: 100%;
-            min-height: 480px;
-            background: linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.55)), 
-                        url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=80') center center / cover no-repeat;
+            min-height: 450px;
+            background: linear-gradient(135deg, #2b5b84 0%, #1b9aaa 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -128,7 +142,7 @@
         }
 
         .hero-box {
-            background: rgba(248, 244, 233, 0.95);
+            background: rgba(248, 244, 233, 0.96);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(248, 244, 233, 0.8);
             padding: 45px 40px;
@@ -260,6 +274,7 @@
             font-size: 1.4rem;
             color: #2b5b84;
             margin-bottom: 12px;
+            font-weight: 700;
         }
 
         .card p {
@@ -320,8 +335,36 @@
             color: #94a3b8;
         }
 
+        /* Mobile Styles */
         @media (max-width: 768px) {
-            .nav-links { display: none; }
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: #f8f4e9;
+                padding: 20px;
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+                border-top: 1px solid #e2dcd0;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hero-box h1 {
+                font-size: 1.7rem;
+            }
+
+            .hero-box {
+                padding: 30px 20px;
+            }
         }
     </style>
 </head>
@@ -336,8 +379,11 @@
                 <img src="logo.png" alt="Anandi Group Logo">
                 <span class="nav-logo-text">ANANDI</span>
             </a>
-            <ul class="nav-links">
-                <li><a href="#about">About</a></li>
+
+            <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#about" onclick="toggleMenu()">About</a></li>
                 <li><a href="stays.html">Stays</a></li>
                 <li><a href="travels.html">Travels</a></li>
                 <li><a href="services.html">Services</a></li>
@@ -417,6 +463,13 @@
         </footer>
 
     </div>
+
+    <script>
+        function toggleMenu() {
+            var navLinks = document.getElementById("navLinks");
+            navLinks.classList.toggle("active");
+        }
+    </script>
 
 </body>
 </html>
