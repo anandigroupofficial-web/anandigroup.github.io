@@ -554,23 +554,13 @@
 
     </div>
 
-    <!-- Official Google Maps Autocomplete API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrVP5W_2Dz8VaOnnQBxmlJ4bQqHZ2iKcM&libraries=places&callback=initAutocomplete" async defer></script>
-
+    <!-- JavaScript & Autocomplete Script with Fallback -->
     <script>
         var selectedTrip = "Outstation";
         var selectedCar = "Maruti Swift";
 
         function toggleMenu() {
             document.getElementById("navLinks").classList.toggle("active");
-        }
-
-        function initAutocomplete() {
-            var options = {
-                componentRestrictions: { country: "in" }
-            };
-            new google.maps.places.Autocomplete(document.getElementById('pickup'), options);
-            new google.maps.places.Autocomplete(document.getElementById('drop'), options);
         }
 
         function selectTripType(type, element) {
@@ -587,6 +577,18 @@
             element.classList.add('selected');
         }
 
+        function initAutocomplete() {
+            try {
+                if (typeof google !== 'undefined' && google.maps && google.maps.places) {
+                    var options = { componentRestrictions: { country: "in" } };
+                    new google.maps.places.Autocomplete(document.getElementById('pickup'), options);
+                    new google.maps.places.Autocomplete(document.getElementById('drop'), options);
+                }
+            } catch (e) {
+                console.log("Autocomplete fallback active:", e);
+            }
+        }
+
         function sendBooking() {
             var pickup = document.getElementById("pickup").value || "Not specified";
             var drop = document.getElementById("drop").value || "Not specified";
@@ -601,6 +603,7 @@
             window.open("https://wa.me/919561805990?text=" + textMessage, "_blank");
         }
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrVP5W_2Dz8VaOnnQBxmlJ4bQqHZ2iKcM&libraries=places&callback=initAutocomplete" async defer></script>
 
 </body>
 </html>
