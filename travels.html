@@ -148,10 +148,27 @@
             padding: 0 20px;
         }
 
-        .grid-3 {
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #2b5b84;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+
+        /* Fleet Cards Grid */
+        .fleet-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
+            margin-bottom: 70px;
         }
 
         .card {
@@ -169,6 +186,18 @@
         .card:hover {
             transform: translateY(-6px);
             box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0284c7;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            align-self: flex-start;
         }
 
         .card h3 {
@@ -216,6 +245,71 @@
 
         .btn-wa:hover {
             background-color: #1ebd56;
+        }
+
+        /* Pricing & Routes Table */
+        .table-wrapper {
+            background: #f8f4e9;
+            border: 1px solid #e2dcd0;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            margin-bottom: 70px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e2dcd0;
+        }
+
+        th {
+            background-color: #2b5b84;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Features List Box */
+        .why-us-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .why-box {
+            background: #f8f4e9;
+            border: 1px solid #e2dcd0;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .why-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .why-box h4 {
+            color: #2b5b84;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .why-box p {
+            color: #64748b;
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
 
         .float-wa {
@@ -293,56 +387,136 @@
 
         <section class="page-header">
             <h1>Anandi Travels</h1>
-            <p>Reliable passenger transportation, outstation cab rentals, and fleet solutions with experienced drivers for stress-free journeys.</p>
+            <p>Reliable passenger fleet rentals, outstation cabs, and airport transfers with professional drivers for comfortable, hassle-free journeys.</p>
         </section>
 
-        <section class="content-container">
-            <div class="grid-3">
+        <div class="content-container">
+
+            <!-- Fleet Section -->
+            <h2 class="section-title">Our Vehicle Fleet</h2>
+            <p class="section-subtitle">Choose from our sanitized, well-maintained fleet tailored for personal, family, and group trips.</p>
+
+            <div class="fleet-grid">
+                <!-- Sedan -->
                 <div class="card">
                     <div>
-                        <h3>Outstation Cabs & Trips</h3>
-                        <p>Comfortable sedan & SUV rentals for outstation travel from Pune, Mumbai, and surrounding regions.</p>
+                        <span class="card-badge">4 Passengers</span>
+                        <h3>Executive Sedans</h3>
+                        <p>Swift Dzire, Toyota Etios, or equivalent. Ideal for business trips, small family travel, and airport drops.</p>
                         <ul class="feature-list">
-                            <li>🚗 Sedans (Dzire/Etios) & SUVs (Ertiga/Innova)</li>
-                            <li>🛣 Clean, Sanitized Vehicles</li>
-                            <li>👨‍✈️ Experienced, Uniformed Chauffeurs</li>
-                            <li>⏱ Transparent Per-Km Pricing</li>
+                            <li>🧳 2 Medium Suitcases</li>
+                            <li>❄ Dual AC & Music System</li>
+                            <li>👨‍✈️ Experienced Local/Outstation Driver</li>
+                            <li>🛣 Clean & Fully Sanitized Vehicles</li>
                         </ul>
                     </div>
-                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20want%20to%20book%20an%20Outstation%20Cab." class="btn-wa" target="_blank">Book Outstation Cab</a>
+                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20want%20to%20book%20an%20Executive%20Sedan." class="btn-wa" target="_blank">Book Sedan on WhatsApp</a>
                 </div>
 
+                <!-- SUV -->
                 <div class="card">
                     <div>
-                        <h3>Tempo Traveller & Fleet Rentals</h3>
-                        <p>Spacious 13 to 26 seater Tempo Travellers for group tours, wedding guests, and corporate travel.</p>
+                        <span class="card-badge">6–7 Passengers</span>
+                        <h3>Premium SUVs</h3>
+                        <p>Ertiga, Innova Crysta, or equivalent. Perfect for family vacations, hill stations, and long outstation road trips.</p>
                         <ul class="feature-list">
-                            <li>🚌 13, 17 & 26 Seater Luxury Travellers</li>
-                            <li>❄ Pushback Seats & Air Conditioning</li>
-                            <li>🧳 Large Luggage Space</li>
-                            <li>📍 Customized Itinerary Support</li>
+                            <li>🧳 4 Large Suitcases</li>
+                            <li>🛋 Spacious Captain Seats</li>
+                            <li>❄ Rear AC Vents</li>
+                            <li>🏞 Perfect for Lonavala & Mahabaleshwar</li>
                         </ul>
                     </div>
-                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20need%20a%20Tempo%20Traveller%20quote." class="btn-wa" target="_blank">Book Group Fleet</a>
+                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20want%20to%20book%20a%20Premium%20SUV." class="btn-wa" target="_blank">Book SUV on WhatsApp</a>
                 </div>
 
+                <!-- Tempo Traveller -->
                 <div class="card">
                     <div>
-                        <h3>Airport Transfers & Local Rides</h3>
-                        <p>On-time airport pickups and drops to Pune and Mumbai Airports with guaranteed punctuality.</p>
+                        <span class="card-badge">13–26 Passengers</span>
+                        <h3>Luxury Tempo Travellers</h3>
+                        <p>13, 17, and 26-seater Force Travellers for wedding groups, corporate outings, and large family tours.</p>
                         <ul class="feature-list">
-                            <li>✈ 24x7 Airport Pickup & Drop</li>
-                            <li>🕒 Guaranteed On-Time Arrival</li>
-                            <li>💳 Fixed Transparent Rates</li>
-                            <li>📱 Flight Delay Tracking Support</li>
+                            <li>🪑 Pushback Reclining Seats</li>
+                            <li>📺 High-Roof AC Cabin</li>
+                            <li>🔊 Bluetooth Audio & Video</li>
+                            <li>🧳 Heavy Luggage Roof Carrier</li>
                         </ul>
                     </div>
-                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20need%20an%20Airport%20Transfer." class="btn-wa" target="_blank">Book Airport Ride</a>
+                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20need%20a%20quote%20for%20a%20Tempo%20Traveller." class="btn-wa" target="_blank">Book Fleet on WhatsApp</a>
                 </div>
             </div>
-        </section>
 
-        <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20have%20a%20travel%20inquiry." class="float-wa" target="_blank">
+            <!-- Popular Routes Table -->
+            <h2 class="section-title">Popular Routes & Packages</h2>
+            <p class="section-subtitle">Competitive, transparent pricing with no hidden charges.</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Route / Service</th>
+                            <th>Sedan (4 Seater)</th>
+                            <th>SUV (6–7 Seater)</th>
+                            <th>Tempo Traveller</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Pune ↔ Lonavala</strong> (Roundtrip)</td>
+                            <td>Custom Quote</td>
+                            <td>Custom Quote</td>
+                            <td>Custom Quote</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pune ↔ Mumbai Airport</strong> (Drop/Pickup)</td>
+                            <td>Custom Quote</td>
+                            <td>Custom Quote</td>
+                            <td>Custom Quote</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Outstation Per-KM Rate</strong></td>
+                            <td>Standard Per KM</td>
+                            <td>Standard Per KM</td>
+                            <td>Standard Per KM</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Driver Allowance & Tolls</strong></td>
+                            <td colspan="3" style="text-align: center; color: #64748b;"><em>Clear breakdown provided upfront before every booking confirmation.</em></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Why Choose Us Grid -->
+            <h2 class="section-title">Why Travel With Anandi?</h2>
+            <p class="section-subtitle">Your safety, comfort, and punctuality are our top priorities.</p>
+
+            <div class="why-us-grid">
+                <div class="why-box">
+                    <div class="why-icon">👨‍✈️</div>
+                    <h4>Verified Chauffeurs</h4>
+                    <p>Polite, background-verified drivers trained for long-distance highway safety.</p>
+                </div>
+                <div class="why-box">
+                    <div class="why-icon">⏱</div>
+                    <h4>On-Time Guarantee</h4>
+                    <p>Strict schedule adherence for airport pickups and planned trip departures.</p>
+                </div>
+                <div class="why-box">
+                    <div class="why-icon">💳</div>
+                    <h4>No Hidden Fees</h4>
+                    <p>Transparent upfront pricing including fuel, driver allowance, and route fees.</p>
+                </div>
+                <div class="why-box">
+                    <div class="why-icon">💬</div>
+                    <h4>24/7 Support</h4>
+                    <p>Instant assistance on WhatsApp and phone throughout your entire journey.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20have%20a%20custom%20travel%20inquiry." class="float-wa" target="_blank">
             💬 Chat on WhatsApp
         </a>
 
