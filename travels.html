@@ -6,11 +6,11 @@
     
     <link rel="icon" type="image/png" href="logo.png">
 
-    <title>Anandi Travels | Swift, Ciaz, Ertiga & Innova Crysta Fleet Rentals</title>
-    <meta name="description" content="Book Swift, Ciaz, Ertiga, and Innova Crysta cabs for outstation trips, local rides, and airport transfers with Anandi Travels.">
-    <meta name="keywords" content="Swift rental Pune, Ciaz cab booking, Ertiga outstation, Innova Crysta rental Lonavala, Anandi Travels">
-    <meta property="og:title" content="Anandi Travels | Swift, Ciaz, Ertiga & Innova Crysta">
-    <meta property="og:description" content="Clean, sanitized fleet including Swift, Ciaz, Ertiga, and Innova Crysta with professional chauffeurs.">
+    <title>Anandi Travels | Book Swift, Ciaz, Ertiga & Innova Crysta</title>
+    <meta name="description" content="Book instant cab rentals, airport transfers, and outstation rides with Anandi Travels. Choose from Swift, Ciaz, Ertiga, and Innova Crysta.">
+    <meta name="keywords" content="Cab booking Pune, Lonavala cab, Swift rental, Ciaz cab, Ertiga rental, Innova Crysta outstation, Anandi Travels">
+    <meta property="og:title" content="Anandi Travels | Instant Cab Booking">
+    <meta property="og:description" content="Book Swift, Ciaz, Ertiga, and Innova Crysta rides instantly on WhatsApp with transparent pricing.">
     <meta property="og:url" content="https://anandigroup.in/travels.html">
     <meta property="og:image" content="https://anandigroup.in/logo.png">
 
@@ -120,31 +120,167 @@
             cursor: pointer;
         }
 
-        .page-header {
-            text-align: center;
-            padding: 60px 20px 40px;
+        /* App Style Hero Booking Section */
+        .booking-hero {
             background: linear-gradient(135deg, #2b5b84 0%, #1b9aaa 100%);
+            padding: 40px 20px 60px;
             color: #ffffff;
+            display: flex;
+            justify-content: center;
         }
 
-        .page-header h1 {
-            font-size: 2.3rem;
+        .booking-card {
+            background: #ffffff;
+            color: #1e293b;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 520px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .booking-card h2 {
+            font-size: 1.5rem;
+            color: #2b5b84;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background-color: #f8fafc;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: #1b9aaa;
+            background-color: #ffffff;
+        }
+
+        /* Ride Type Selection Tabs */
+        .ride-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ride-option-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            background: #f8fafc;
+        }
+
+        .ride-option-card:hover, .ride-option-card.active {
+            border-color: #2b5b84;
+            background: #f0f9ff;
+        }
+
+        .ride-option-card h4 {
+            font-size: 0.95rem;
+            color: #2b5b84;
+        }
+
+        .ride-option-card p {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        /* Vehicle Selector List */
+        .vehicle-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .vehicle-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: #ffffff;
+        }
+
+        .vehicle-item:hover, .vehicle-item.selected {
+            border-color: #1b9aaa;
+            background-color: #f0fdfa;
+        }
+
+        .vehicle-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .vehicle-icon {
+            font-size: 1.5rem;
+        }
+
+        .vehicle-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #1e293b;
+        }
+
+        .vehicle-desc {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .book-now-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background-color: #25d366;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 8px;
             font-weight: 800;
-            margin-bottom: 15px;
-            line-height: 1.3;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .page-header p {
-            font-size: 1.05rem;
-            color: #f8f4e9;
-            line-height: 1.7;
-            max-width: 800px;
-            margin: 0 auto;
+        .book-now-btn:hover {
+            background-color: #1ebd56;
         }
 
+        /* Detailed Fleet Grid Below Widget */
         .content-container {
             max-width: 1150px;
-            margin: 50px auto 60px;
+            margin: 60px auto;
             padding: 0 20px;
         }
 
@@ -163,12 +299,10 @@
             font-size: 1rem;
         }
 
-        /* Fleet Cards Grid */
         .fleet-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 25px;
-            margin-bottom: 70px;
         }
 
         .card {
@@ -180,12 +314,13 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+        .card h3 {
+            font-size: 1.35rem;
+            color: #2b5b84;
+            margin-bottom: 8px;
+            font-weight: 700;
         }
 
         .card-badge {
@@ -200,115 +335,25 @@
             align-self: flex-start;
         }
 
-        .card h3 {
-            font-size: 1.35rem;
-            color: #2b5b84;
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-
         .card p {
             color: #64748b;
-            line-height: 1.6;
-            font-size: 0.92rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
             margin-bottom: 20px;
         }
 
         .feature-list {
             list-style: none;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .feature-list li {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #334155;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-weight: 500;
-        }
-
-        .btn-wa {
-            display: inline-block;
-            width: 100%;
-            text-align: center;
-            background-color: #25d366;
-            color: #ffffff;
-            text-decoration: none;
-            padding: 12px 0;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            transition: background 0.2s;
-        }
-
-        .btn-wa:hover {
-            background-color: #1ebd56;
-        }
-
-        /* Pricing Table */
-        .table-wrapper {
-            background: #f8f4e9;
-            border: 1px solid #e2dcd0;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-            margin-bottom: 70px;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #e2dcd0;
-        }
-
-        th {
-            background-color: #2b5b84;
-            color: #ffffff;
-            font-weight: 700;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .why-us-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-        }
-
-        .why-box {
-            background: #f8f4e9;
-            border: 1px solid #e2dcd0;
-            padding: 25px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .why-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .why-box h4 {
-            color: #2b5b84;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .why-box p {
-            color: #64748b;
-            font-size: 0.9rem;
-            line-height: 1.5;
+            gap: 8px;
         }
 
         .float-wa {
@@ -336,10 +381,7 @@
         }
 
         @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: block;
-            }
-
+            .mobile-menu-btn { display: block; }
             .nav-links {
                 display: none;
                 flex-direction: column;
@@ -352,12 +394,7 @@
                 box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
                 border-top: 1px solid #e2dcd0;
             }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .page-header h1 { font-size: 1.8rem; }
+            .nav-links.active { display: flex; }
         }
     </style>
 </head>
@@ -384,160 +421,133 @@
             </ul>
         </nav>
 
-        <section class="page-header">
-            <h1>Anandi Travels</h1>
-            <p>Reliable passenger fleet rentals featuring Maruti Swift, Maruti Ciaz, Maruti Ertiga, and Toyota Innova Crysta with professional chauffeurs.</p>
+        <!-- App-style Interactive Booking Box -->
+        <section class="booking-hero">
+            <div class="booking-card">
+                <h2>🚘 Book a Ride</h2>
+
+                <div class="form-group">
+                    <label>Pickup Location</label>
+                    <input type="text" id="pickup" class="form-control" placeholder="e.g. Pune Airport / Swargate">
+                </div>
+
+                <div class="form-group">
+                    <label>Drop Location</label>
+                    <input type="text" id="drop" class="form-control" placeholder="e.g. Lonavala / Mumbai / Mahabaleshwar">
+                </div>
+
+                <div class="form-group">
+                    <label>Trip Type</label>
+                    <div class="ride-options">
+                        <div class="ride-option-card active" onclick="selectTripType('Outstation', this)">
+                            <h4>Outstation</h4>
+                            <p>One-way or Roundtrip</p>
+                        </div>
+                        <div class="ride-option-card" onclick="selectTripType('Airport Transfer', this)">
+                            <h4>Airport Transfer</h4>
+                            <p>Pune / Mumbai Airport</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Select Vehicle</label>
+                    <div class="vehicle-selector">
+                        <div class="vehicle-item selected" onclick="selectVehicle('Maruti Swift', '4 Seater Hatchback', this)">
+                            <div class="vehicle-info">
+                                <span class="vehicle-icon">🚗</span>
+                                <div>
+                                    <div class="vehicle-name">Maruti Swift</div>
+                                    <div class="vehicle-desc">4 Passengers • AC</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="vehicle-item" onclick="selectVehicle('Maruti Ciaz', 'Executive Sedan', this)">
+                            <div class="vehicle-info">
+                                <span class="vehicle-icon">🚘</span>
+                                <div>
+                                    <div class="vehicle-name">Maruti Ciaz</div>
+                                    <div class="vehicle-desc">4 Passengers • Executive Sedan</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="vehicle-item" onclick="selectVehicle('Maruti Ertiga', '6 Seater MUV', this)">
+                            <div class="vehicle-info">
+                                <span class="vehicle-icon">🚙</span>
+                                <div>
+                                    <div class="vehicle-name">Maruti Ertiga</div>
+                                    <div class="vehicle-desc">6 Passengers • Family MUV</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="vehicle-item" onclick="selectVehicle('Toyota Innova Crysta', '7 Seater Premium MUV', this)">
+                            <div class="vehicle-info">
+                                <span class="vehicle-icon">🚐</span>
+                                <div>
+                                    <div class="vehicle-name">Innova Crysta</div>
+                                    <div class="vehicle-desc">6-7 Passengers • Premium Luxury</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="book-now-btn" onclick="sendBooking()">Request Ride on WhatsApp 💬</button>
+            </div>
         </section>
 
+        <!-- Detailed Fleet List Below Widget -->
         <div class="content-container">
-
-            <!-- Fleet Section -->
-            <h2 class="section-title">Our Vehicle Fleet</h2>
-            <p class="section-subtitle">Clean, sanitized, and well-maintained vehicles for local, outstation, and airport travel.</p>
+            <h2 class="section-title">Our Fleet Details</h2>
+            <p class="section-subtitle">Clean, sanitized, and well-maintained vehicles for all travel needs.</p>
 
             <div class="fleet-grid">
-                <!-- Swift -->
                 <div class="card">
-                    <div>
-                        <span class="card-badge">4 Passengers</span>
-                        <h3>Maruti Swift</h3>
-                        <p>Compact and economic hatchback. Excellent for quick city travel, budget airport drops, and small family trips.</p>
-                        <ul class="feature-list">
-                            <li>🧳 2 Small / Medium Bags</li>
-                            <li>❄ Chilled Air Conditioning</li>
-                            <li>👨‍✈️ Experienced Local Driver</li>
-                        </ul>
-                    </div>
-                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20want%20to%20book%20a%20Maruti%20Swift." class="btn-wa" target="_blank">Book Swift on WhatsApp</a>
+                    <span class="card-badge">4 Passengers</span>
+                    <h3>Maruti Swift</h3>
+                    <p>Compact hatchback ideal for city rides and budget airport drops.</p>
+                    <ul class="feature-list">
+                        <li>🧳 2 Small Bags</li>
+                        <li>❄ AC Cabin</li>
+                    </ul>
                 </div>
 
-                <!-- Ciaz -->
                 <div class="card">
-                    <div>
-                        <span class="card-badge">4 Passengers</span>
-                        <h3>Maruti Ciaz</h3>
-                        <p>Premium sedan with extra rear legroom and large boot space. Ideal for executive business rides and smooth outstation travel.</p>
-                        <ul class="feature-list">
-                            <li>🧳 3 Large Suitcases</li>
-                            <li>🛋 Premium Plush Seating & Legroom</li>
-                            <li>❄ Rear AC Vents</li>
-                            <li>🛣 Smooth Highway Comfort</li>
-                        </ul>
-                    </div>
-                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20want%20to%20book%20a%20Maruti%20Ciaz." class="btn-wa" target="_blank">Book Ciaz on WhatsApp</a>
+                    <span class="card-badge">4 Passengers</span>
+                    <h3>Maruti Ciaz</h3>
+                    <p>Executive sedan with maximum legroom and large boot capacity.</p>
+                    <ul class="feature-list">
+                        <li>🧳 3 Large Suitcases</li>
+                        <li>🛋 Executive Seating</li>
+                    </ul>
                 </div>
 
-                <!-- Ertiga -->
                 <div class="card">
-                    <div>
-                        <span class="card-badge">6 Passengers</span>
-                        <h3>Maruti Ertiga</h3>
-                        <p>Spacious and budget-friendly 6-seater MUV. Great for family road trips to Lonavala, Mahabaleshwar, and outstation tours.</p>
-                        <ul class="feature-list">
-                            <li>🧳 Flexible Luggage Space</li>
-                            <li>🛋 Comfortable 3-Row Seating</li>
-                            <li>❄ Roof-Mounted Rear AC</li>
-                            <li>👨‍👩‍👧 Family-Friendly Choice</li>
-                        </ul>
-                    </div>
-                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20want%20to%20book%20a%20Maruti%20Ertiga." class="btn-wa" target="_blank">Book Ertiga on WhatsApp</a>
+                    <span class="card-badge">6 Passengers</span>
+                    <h3>Maruti Ertiga</h3>
+                    <p>Spacious family MUV for group road trips to Lonavala.</p>
+                    <ul class="feature-list">
+                        <li>🧳 Flexible Luggage Space</li>
+                        <li>🛋 3-Row Seating</li>
+                    </ul>
                 </div>
 
-                <!-- Innova Crysta -->
                 <div class="card">
-                    <div>
-                        <span class="card-badge">6–7 Passengers</span>
-                        <h3>Toyota Innova Crysta</h3>
-                        <p>The ultimate luxury MUV for long-distance highway travel, business delegates, family vacations, and wedding travel.</p>
-                        <ul class="feature-list">
-                            <li>🧳 2 Large Suitcases</li>
-                            <li>🪑 Premium Seats</li>
-                            <li>❄ Climate Control Air Conditioning</li>
-                            <li>🛡 Top Highway Safety Rating</li>
-                        </ul>
-                    </div>
-                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20want%20to%20book%20an%20Innova%20Crysta." class="btn-wa" target="_blank">Book Crysta on WhatsApp</a>
+                    <span class="card-badge">6–7 Passengers</span>
+                    <h3>Innova Crysta</h3>
+                    <p>Top-of-the-line highway luxury for long-distance family travel.</p>
+                    <ul class="feature-list">
+                        <li>🧳 4+ Large Suitcases</li>
+                        <li>🪑 Captain Seats</li>
+                    </ul>
                 </div>
             </div>
-
-            <!-- Fleet Comparison Table -->
-            <h2 class="section-title">Fleet Specification Matrix</h2>
-            <p class="section-subtitle">Compare vehicle seating and luggage capacity to choose the perfect ride for your journey.</p>
-
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Vehicle Model</th>
-                            <th>Class</th>
-                            <th>Capacity</th>
-                            <th>Luggage Limit</th>
-                            <th>Ideal For</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Maruti Swift</strong></td>
-                            <td>Hatchback</td>
-                            <td>4 Guests</td>
-                            <td>2 Medium Bags</td>
-                            <td>City Travel & Airport Transfers</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Maruti Ciaz</strong></td>
-                            <td>Executive Sedan</td>
-                            <td>4 Guests</td>
-                            <td>2 Large Suitcases</td>
-                            <td>Corporate & Executive Outstation Trips</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Maruti Ertiga</strong></td>
-                            <td>Compact MUV</td>
-                            <td>6 Guests</td>
-                            <td>3 Bags</td>
-                            <td>Family Outings & Weekend Getaways</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Toyota Innova Crysta</strong></td>
-                            <td>Luxury MUV</td>
-                            <td>6–7 Guests</td>
-                            <td>2 Large Suitcases</td>
-                            <td>Long Distance Travel & Premium Comfort</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Why Choose Us Grid -->
-            <h2 class="section-title">Why Travel With Anandi?</h2>
-            <p class="section-subtitle">Your safety, comfort, and punctuality are our top priorities.</p>
-
-            <div class="why-us-grid">
-                <div class="why-box">
-                    <div class="why-icon">👨‍✈️</div>
-                    <h4>Verified Chauffeurs</h4>
-                    <p>Polite, background-verified drivers trained for highway safety.</p>
-                </div>
-                <div class="why-box">
-                    <div class="why-icon">⏱</div>
-                    <h4>On-Time Guarantee</h4>
-                    <p>Punctual pickups for airport rides and planned tour departures.</p>
-                </div>
-                <div class="why-box">
-                    <div class="why-icon">💳</div>
-                    <h4>Transparent Rates</h4>
-                    <p>Upfront pricing breakdown on fuel, toll, and driver allowance.</p>
-                </div>
-                <div class="why-box">
-                    <div class="why-icon">💬</div>
-                    <h4>Instant WhatsApp Booking</h4>
-                    <p>Direct support and booking confirmation on 9561805990.</p>
-                </div>
-            </div>
-
         </div>
 
-        <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20have%20a%20custom%20travel%20inquiry." class="float-wa" target="_blank">
+        <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20have%20a%20ride%20inquiry." class="float-wa" target="_blank">
             💬 Chat on WhatsApp
         </a>
 
@@ -548,9 +558,39 @@
     </div>
 
     <script>
+        var selectedTrip = "Outstation";
+        var selectedCar = "Maruti Swift";
+
         function toggleMenu() {
-            var navLinks = document.getElementById("navLinks");
-            navLinks.classList.toggle("active");
+            document.getElementById("navLinks").classList.toggle("active");
+        }
+
+        function selectTripType(type, element) {
+            selectedTrip = type;
+            var options = document.querySelectorAll('.ride-option-card');
+            options.forEach(opt => opt.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function selectVehicle(carName, carType, element) {
+            selectedCar = carName;
+            var items = document.querySelectorAll('.vehicle-item');
+            items.forEach(item => item.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function sendBooking() {
+            var pickup = document.getElementById("pickup").value || "Not specified";
+            var drop = document.getElementById("drop").value || "Not specified";
+            
+            var textMessage = "Hi Anandi Travels, I would like to book a ride:%0A%0A" +
+                "📍 *Pickup:* " + encodeURIComponent(pickup) + "%0A" +
+                "🏁 *Drop:* " + encodeURIComponent(drop) + "%0A" +
+                "🚘 *Vehicle:* " + encodeURIComponent(selectedCar) + "%0A" +
+                "🛣 *Trip Type:* " + encodeURIComponent(selectedTrip) + "%0A%0A" +
+                "Please share estimated fare and availability.";
+
+            window.open("https://wa.me/919561805990?text=" + textMessage, "_blank");
         }
     </script>
 
