@@ -169,6 +169,7 @@
             font-size: 0.95rem;
             background-color: #f8fafc;
             outline: none;
+            cursor: pointer;
         }
 
         .form-control:focus {
@@ -418,19 +419,53 @@
             </ul>
         </nav>
 
-        <!-- App-style Interactive Booking Box -->
+        <!-- App-style Interactive Dropdown Booking Box -->
         <section class="booking-hero">
             <div class="booking-card">
                 <h2>🚘 Book a Ride</h2>
 
                 <div class="form-group">
                     <label>Pickup Location</label>
-                    <input type="text" id="pickup" class="form-control" placeholder="Enter pickup location (e.g. Pune Airport)">
+                    <select id="pickup" class="form-control">
+                        <option value="Lonavala">Lonavala</option>
+                        <option value="Dadar">Dadar</option>
+                        <option value="CSTM">CSTM (CSMT)</option>
+                        <option value="Mumbai Airport">Mumbai Airport</option>
+                        <option value="Navi Mumbai Airport">Navi Mumbai Airport</option>
+                        <option value="Andheri">Andheri</option>
+                        <option value="Borivali">Borivali</option>
+                        <option value="Mira Bhayender">Mira Bhayender</option>
+                        <option value="Thane">Thane</option>
+                        <option value="Navi Mumbai">Navi Mumbai</option>
+                        <option value="Pune Airport">Pune Airport</option>
+                        <option value="Pune Railway Station">Pune Railway Station</option>
+                        <option value="PCMC">PCMC</option>
+                        <option value="Katraj">Katraj</option>
+                        <option value="Hinjewadi">Hinjewadi</option>
+                        <option value="Hadapsar">Hadapsar</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
                     <label>Drop Location</label>
-                    <input type="text" id="drop" class="form-control" placeholder="Enter drop location (e.g. Lonavala)">
+                    <select id="drop" class="form-control">
+                        <option value="Dadar">Dadar</option>
+                        <option value="CSTM">CSTM (CSMT)</option>
+                        <option value="Mumbai Airport">Mumbai Airport</option>
+                        <option value="Navi Mumbai Airport">Navi Mumbai Airport</option>
+                        <option value="Andheri">Andheri</option>
+                        <option value="Borivali">Borivali</option>
+                        <option value="Mira Bhayender">Mira Bhayender</option>
+                        <option value="Thane">Thane</option>
+                        <option value="Navi Mumbai">Navi Mumbai</option>
+                        <option value="Lonavala">Lonavala</option>
+                        <option value="Pune Airport">Pune Airport</option>
+                        <option value="Pune Railway Station">Pune Railway Station</option>
+                        <option value="PCMC">PCMC</option>
+                        <option value="Katraj">Katraj</option>
+                        <option value="Hinjewadi">Hinjewadi</option>
+                        <option value="Hadapsar">Hadapsar</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -438,7 +473,7 @@
                     <div class="ride-options">
                         <div class="ride-option-card active" onclick="selectTripType('Outstation', this)">
                             <h4>Outstation</h4>
-                            <p>One-way or Roundtrip</p>
+                            <p>One-way / Roundtrip</p>
                         </div>
                         <div class="ride-option-card" onclick="selectTripType('Airport Transfer', this)">
                             <h4>Airport Transfer</h4>
@@ -554,7 +589,6 @@
 
     </div>
 
-    <!-- JavaScript & Autocomplete Script with Fallback -->
     <script>
         var selectedTrip = "Outstation";
         var selectedCar = "Maruti Swift";
@@ -577,21 +611,9 @@
             element.classList.add('selected');
         }
 
-        function initAutocomplete() {
-            try {
-                if (typeof google !== 'undefined' && google.maps && google.maps.places) {
-                    var options = { componentRestrictions: { country: "in" } };
-                    new google.maps.places.Autocomplete(document.getElementById('pickup'), options);
-                    new google.maps.places.Autocomplete(document.getElementById('drop'), options);
-                }
-            } catch (e) {
-                console.log("Autocomplete fallback active:", e);
-            }
-        }
-
         function sendBooking() {
-            var pickup = document.getElementById("pickup").value || "Not specified";
-            var drop = document.getElementById("drop").value || "Not specified";
+            var pickup = document.getElementById("pickup").value;
+            var drop = document.getElementById("drop").value;
             
             var textMessage = "Hi Anandi Travels, I would like to book a ride:%0A%0A" +
                 "📍 *Pickup:* " + encodeURIComponent(pickup) + "%0A" +
@@ -603,7 +625,6 @@
             window.open("https://wa.me/919561805990?text=" + textMessage, "_blank");
         }
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrVP5W_2Dz8VaOnnQBxmlJ4bQqHZ2iKcM&libraries=places&callback=initAutocomplete" async defer></script>
 
 </body>
 </html>
