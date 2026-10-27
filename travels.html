@@ -150,7 +150,6 @@
 
         .form-group {
             margin-bottom: 16px;
-            position: relative;
         }
 
         .form-group label {
@@ -175,35 +174,6 @@
         .form-control:focus {
             border-color: #1b9aaa;
             background-color: #ffffff;
-        }
-
-        /* Location Dropdown Suggestions */
-        .autocomplete-results {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            display: none;
-        }
-
-        .autocomplete-item {
-            padding: 10px 14px;
-            font-size: 0.88rem;
-            color: #334155;
-            cursor: pointer;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .autocomplete-item:hover {
-            background-color: #f0fdfa;
-            color: #2b5b84;
         }
 
         .ride-options {
@@ -455,14 +425,12 @@
 
                 <div class="form-group">
                     <label>Pickup Location</label>
-                    <input type="text" id="pickup" class="form-control" placeholder="Start typing pickup location..." oninput="fetchLocations(this.value, 'pickup-results', 'pickup')" autocomplete="off">
-                    <div id="pickup-results" class="autocomplete-results"></div>
+                    <input type="text" id="pickup" class="form-control" placeholder="Enter pickup location (e.g. Pune Airport)">
                 </div>
 
                 <div class="form-group">
                     <label>Drop Location</label>
-                    <input type="text" id="drop" class="form-control" placeholder="Start typing drop location..." oninput="fetchLocations(this.value, 'drop-results', 'drop')" autocomplete="off">
-                    <div id="drop-results" class="autocomplete-results"></div>
+                    <input type="text" id="drop" class="form-control" placeholder="Enter drop location (e.g. Lonavala)">
                 </div>
 
                 <div class="form-group">
@@ -586,13 +554,23 @@
 
     </div>
 
+    <!-- Official Google Maps Autocomplete API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrVP5W_2Dz8VaOnnQBxmlJ4bQqHZ2iKcM&libraries=places&callback=initAutocomplete" async defer></script>
+
     <script>
         var selectedTrip = "Outstation";
         var selectedCar = "Maruti Swift";
-        var searchTimeout = null;
 
         function toggleMenu() {
             document.getElementById("navLinks").classList.toggle("active");
+        }
+
+        function initAutocomplete() {
+            var options = {
+                componentRestrictions: { country: "in" }
+            };
+            new google.maps.places.Autocomplete(document.getElementById('pickup'), options);
+            new google.maps.places.Autocomplete(document.getElementById('drop'), options);
         }
 
         function selectTripType(type, element) {
@@ -608,50 +586,6 @@
             items.forEach(item => item.classList.remove('selected'));
             element.classList.add('selected');
         }
-
-        // Free OpenStreetMap Autocomplete
-        function fetchLocations(query, containerId, inputId) {
-            clearTimeout(searchTimeout);
-            var resultsContainer = document.getElementById(containerId);
-
-            if (!query || query.length < 3) {
-                resultsContainer.style.display = 'none';
-                return;
-            }
-
-            searchTimeout = setTimeout(function() {
-                fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query) + '&countrycodes=in&limit=5')
-                    .then(response => response.json())
-                    .then(data => {
-                        resultsContainer.innerHTML = '';
-                        if (data && data.length > 0) {
-                            data.forEach(item => {
-                                var div = document.createElement('div');
-                                div.className = 'autocomplete-item';
-                                div.innerText = item.display_name;
-                                div.onclick = function() {
-                                    document.getElementById(inputId).value = item.display_name;
-                                    resultsContainer.style.display = 'none';
-                                };
-                                resultsContainer.appendChild(div);
-                            });
-                            resultsContainer.style.display = 'block';
-                        } else {
-                            resultsContainer.style.display = 'none';
-                        }
-                    })
-                    .catch(() => {
-                        resultsContainer.style.display = 'none';
-                    });
-            }, 300);
-        }
-
-        // Hide dropdown on outside click
-        document.addEventListener('click', function(e) {
-            if (!e.target.classList.contains('form-control')) {
-                document.querySelectorAll('.autocomplete-results').forEach(el => el.style.display = 'none');
-            }
-        });
 
         function sendBooking() {
             var pickup = document.getElementById("pickup").value || "Not specified";
