@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anandi Travels | Passenger Travel & Fleet Rentals</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        html, body {
+            width: 100%;
+            background-color: #f8f4e9;
+            color: #1e293b;
+        }
+
+        .watermark-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 450px;
+            height: 450px;
+            background: url('logo.png') no-repeat center center;
+            background-size: contain;
+            opacity: 0.07;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .main-wrapper {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background-color: #f8f4e9;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo img {
+            height: 48px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .nav-logo-text {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #2b5b84;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #475569;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #1b9aaa;
+        }
+
+        .nav-cta-btn {
+            background-color: #1b9aaa;
+            color: #ffffff !important;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-weight: 600 !important;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 60px 20px 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: #2b5b84;
+            margin-bottom: 15px;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .content-container {
+            max-width: 1150px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: #f8f4e9;
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid #e2dcd0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            color: #2b5b84;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .feature-list li {
+            font-size: 0.95rem;
+            color: #334155;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-wa {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            background-color: #25d366;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 0;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .float-wa {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: #25d366;
+            color: #ffffff;
+            border-radius: 50px;
+            padding: 12px 22px;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            background: #f8f4e9;
+            border-top: 1px solid #e2dcd0;
+            margin-top: auto;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-bg"></div>
+
+    <div class="main-wrapper">
+
+        <nav>
+            <a href="index.html" class="nav-logo">
+                <img src="logo.png" alt="Anandi Group Logo">
+                <span class="nav-logo-text">ANANDI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="stays.html">Stays</a></li>
+                <li><a href="travels.html" class="active">Travels</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="https://wa.me/919561805990" class="nav-cta-btn" target="_blank">Contact Us</a></li>
+            </ul>
+        </nav>
+
+        <section class="page-header">
+            <h1>Anandi Travels</h1>
+            <p>Reliable passenger transportation, outstation cab rentals, and fleet solutions with experienced drivers for stress-free journeys.</p>
+        </section>
+
+        <section class="content-container">
+            <div class="grid-3">
+                <div class="card">
+                    <div>
+                        <h3>Outstation Cabs & Trips</h3>
+                        <p>Comfortable sedan & SUV rentals for outstation travel from Pune, Mumbai, and surrounding regions.</p>
+                        <ul class="feature-list">
+                            <li>🚗 Sedans (Dzire/Etios) & SUVs (Ertiga/Innova)</li>
+                            <li>🛣 Clean, Sanitized Vehicles</li>
+                            <li>👨‍✈️ Experienced, Uniformed Chauffeurs</li>
+                            <li>⏱ Transparent Per-Km Pricing</li>
+                        </ul>
+                    </div>
+                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20want%20to%20book%20an%20Outstation%20Cab." class="btn-wa" target="_blank">Book Outstation Cab</a>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <h3>Tempo Traveller & Fleet Rentals</h3>
+                        <p>Spacious 13 to 26 seater Tempo Travellers for group tours, wedding guests, and corporate travel.</p>
+                        <ul class="feature-list">
+                            <li>🚌 13, 17 & 26 Seater Luxury Travellers</li>
+                            <li>❄ Pushback Seats & Air Conditioning</li>
+                            <li>🧳 Large Luggage Space</li>
+                            <li>📍 Customized Itinerary Support</li>
+                        </ul>
+                    </div>
+                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20need%20a%20Tempo%20Traveller%20quote." class="btn-wa" target="_blank">Book Group Fleet</a>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <h3>Airport Transfers & Local Rides</h3>
+                        <p>On-time airport pickups and drops to Pune and Mumbai Airports with guaranteed punctuality.</p>
+                        <ul class="feature-list">
+                            <li>✈ 24x7 Airport Pickup & Drop</li>
+                            <li>🕒 Guaranteed On-Time Arrival</li>
+                            <li>💳 Fixed Transparent Rates</li>
+                            <li>📱 Flight Delay Tracking Support</li>
+                        </ul>
+                    </div>
+                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20need%20an%20Airport%20Transfer." class="btn-wa" target="_blank">Book Airport Ride</a>
+                </div>
+            </div>
+        </section>
+
+        <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Travels,%20I%20have%20a%20travel%20inquiry." class="float-wa" target="_blank">
+            💬 Chat on WhatsApp
+        </a>
+
+        <footer>
+            <p>&copy; 2026 Anandi. All rights reserved.</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
