@@ -1023,21 +1023,25 @@
         }
 
         function showVoucherModal(name, phone, pickup, drop, fare, datetime, paymentId) {
-            var routeDisplay = selectedTrip === 'Local Sightseeing' ? drop : (pickup + " ➔ " + drop);
+    var routeDisplay = selectedTrip === 'Local Sightseeing' ? drop : (pickup + " ➔ " + drop);
 
-            document.getElementById("v-name").innerText = name;
-            document.getElementById("v-phone").innerText = phone;
-            document.getElementById("v-payid").innerText = paymentId;
-            document.getElementById("v-amount").innerText = fare;
-            document.getElementById("v-datetime").innerText = datetime.replace("T", " ");
-            document.getElementById("v-vehicle").innerText = selectedCar;
-            document.getElementById("v-route").innerText = routeDisplay;
+    document.getElementById("v-name").innerText = name;
+    document.getElementById("v-phone").innerText = phone;
+    document.getElementById("v-payid").innerText = paymentId;
+    document.getElementById("v-amount").innerText = fare;
+    document.getElementById("v-datetime").innerText = datetime.replace("T", " ");
+    document.getElementById("v-vehicle").innerText = selectedCar;
+    document.getElementById("v-route").innerText = routeDisplay;
 
-            var waLink = prepareWhatsAppUrl(name, phone, pickup, drop, fare, datetime, paymentId);
-            document.getElementById("v-wa-btn").href = waLink;
+    var waLink = prepareWhatsAppUrl(name, phone, pickup, drop, fare, datetime, paymentId);
+    document.getElementById("v-wa-btn").href = waLink;
 
-            document.getElementById("voucher-modal").style.display = "flex";
-        }
+    // Display the on-screen PDF receipt modal to the guest
+    document.getElementById("voucher-modal").style.display = "flex";
+
+    // Instantly open WhatsApp tab to send full booking details to host (9561805990)
+    window.open(waLink, "_blank");
+}
 
         function prepareWhatsAppUrl(name, phone, pickup, drop, fare, datetime, paymentId) {
             var coveredPointsText = "";
