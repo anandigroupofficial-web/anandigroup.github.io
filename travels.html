@@ -120,7 +120,6 @@
             cursor: pointer;
         }
 
-        /* App Style Hero Booking Section */
         .booking-hero {
             background: linear-gradient(135deg, #2b5b84 0%, #1b9aaa 100%);
             padding: 40px 20px 60px;
@@ -209,6 +208,23 @@
             font-size: 0.75rem;
             color: #64748b;
             margin-top: 2px;
+        }
+
+        .points-box {
+            background-color: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #334155;
+            line-height: 1.5;
+        }
+
+        .points-box strong {
+            color: #2b5b84;
+            display: block;
+            margin-bottom: 4px;
         }
 
         .vehicle-selector {
@@ -473,7 +489,7 @@
                     <div class="ride-options">
                         <div class="ride-option-card active" onclick="selectTripType('Outstation', this)">
                             <h4>Outstation</h4>
-                            <p>One-way / Roundtrip</p>
+                            <p>One-way</p>
                         </div>
                         <div class="ride-option-card" onclick="selectTripType('Local Sightseeing', this)">
                             <h4>Local Sightseeing</h4>
@@ -523,6 +539,10 @@
                             <option value="Lonavala Khandala (5 Hrs)">Lonavala Khandala (5 Hrs)</option>
                             <option value="Outside Lonavala (5 Hrs)">Outside Lonavala (5 Hrs)</option>
                         </select>
+                        <div class="points-box" id="covered-points">
+                            <strong>📍 Covered Sightseeing Points:</strong>
+                            <span id="points-list">Tiger / Lion Point, Bhushi Dam, Lonavala Lake, Khandala Sunset Point, Rajmachi Garden, Narayani Dham Temple & Wax Museum.</span>
+                        </div>
                     </div>
                 </div>
 
@@ -683,10 +703,16 @@
             "Mira Bhayender": { swift: 3500, ciaz: 3500, ertiga: 4000, innova: 5000 }
         };
 
-        // Local Sightseeing Packages Pricing Matrix
-        const sightseeingPricing = {
-            "Lonavala Khandala (5 Hrs)": { swift: 2000, ciaz: 2000, ertiga: 2500, innova: 3000 },
-            "Outside Lonavala (5 Hrs)": { swift: 2500, ciaz: 2500, ertiga: 3000, innova: 3500 }
+        // Local Sightseeing Packages Pricing & Updated Points Matrix
+        const sightseeingDetails = {
+            "Lonavala Khandala (5 Hrs)": {
+                pricing: { swift: 2000, ciaz: 2000, ertiga: 2500, innova: 3000 },
+                points: "Tiger / Lion Point, Bhushi Dam, Lonavala Lake, Khandala Sunset Point, Rajmachi Garden, Narayani Dham Temple & Wax Museum."
+            },
+            "Outside Lonavala (5 Hrs)": {
+                pricing: { swift: 2500, ciaz: 2500, ertiga: 3000, innova: 3500 },
+                points: "Pawna Lake, Bhaje Caves, Lohagad Fort & Karla Caves."
+            }
         };
 
         function toggleMenu() {
@@ -753,7 +779,10 @@
 
             if (selectedTrip === 'Local Sightseeing') {
                 var selectedPackage = document.getElementById("sightseeing-package").value;
-                rates = sightseeingPricing[selectedPackage];
+                rates = sightseeingDetails[selectedPackage].pricing;
+                
+                // Update points description box
+                document.getElementById("points-list").innerText = sightseeingDetails[selectedPackage].points;
             } else {
                 var pickup = document.getElementById("pickup").value;
                 var drop = document.getElementById("drop").value;
@@ -825,8 +854,14 @@
         }
 
         function sendWhatsAppBackup(name, phone, pickup, drop, fare, datetime, paymentId) {
+            var coveredPointsText = "";
+            if (selectedTrip === 'Local Sightseeing') {
+                var selectedPkg = document.getElementById("sightseeing-package").value;
+                coveredPointsText = "%0A📍 *Covered Points:* " + encodeURIComponent(sightseeingDetails[selectedPkg].points);
+            }
+
             var routeText = selectedTrip === 'Local Sightseeing' ? 
-                ("🗺 *Package:* " + encodeURIComponent(drop) + "%0A") : 
+                ("🗺 *Package:* " + encodeURIComponent(drop) + coveredPointsText + "%0A") : 
                 ("📍 *Pickup:* " + encodeURIComponent(pickup) + "%0A" + "🏁 *Drop:* " + encodeURIComponent(drop) + "%0A");
 
             var textMessage = "Hi Anandi Travels, I have completed my online booking request:%0A%0A" +
