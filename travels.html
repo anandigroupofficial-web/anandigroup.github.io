@@ -470,7 +470,7 @@
 
                 <div class="form-group">
                     <label>Pickup Location</label>
-                    <select id="pickup" class="form-control" onchange="calculateFare()">
+                    <select id="pickup" class="form-control" onchange="updateDropOptions()">
                         <option value="Lonavala">Lonavala</option>
                         <option value="Khandala">Khandala</option>
                         <option value="Karla">Karla</option>
@@ -495,27 +495,7 @@
 
                 <div class="form-group">
                     <label>Drop Location</label>
-                    <select id="drop" class="form-control" onchange="calculateFare()">
-                        <option value="Dadar">Dadar</option>
-                        <option value="CSMT">CSMT</option>
-                        <option value="Mumbai Airport">Mumbai Airport</option>
-                        <option value="Navi Mumbai Airport">Navi Mumbai Airport</option>
-                        <option value="Andheri">Andheri</option>
-                        <option value="Borivali">Borivali</option>
-                        <option value="Mira Bhayender">Mira Bhayender</option>
-                        <option value="Thane">Thane</option>
-                        <option value="Navi Mumbai">Navi Mumbai</option>
-                        <option value="Lonavala">Lonavala</option>
-                        <option value="Khandala">Khandala</option>
-                        <option value="Karla">Karla</option>
-                        <option value="Pawna Lake">Pawna Lake</option>
-                        <option value="Pune Airport">Pune Airport</option>
-                        <option value="Pune Railway Station">Pune Railway Station</option>
-                        <option value="PCMC">PCMC</option>
-                        <option value="Katraj">Katraj</option>
-                        <option value="Hinjewadi">Hinjewadi</option>
-                        <option value="Hadapsar">Hadapsar</option>
-                    </select>
+                    <select id="drop" class="form-control" onchange="calculateFare()"></select>
                 </div>
 
                 <div class="form-group">
@@ -658,9 +638,36 @@
         var selectedTrip = "Outstation";
         var selectedCar = "Maruti Swift";
 
-        const fixedPricedLocations = [
-            "Dadar", "CSMT", "Mumbai Airport", "Andheri", "Thane", "Katraj", "Hinjewadi"
+        const localLonavalaArea = ["Lonavala", "Khandala", "Karla", "Pawna Lake"];
+
+        const allLocations = [
+            "Lonavala", "Khandala", "Karla", "Pawna Lake", "Dadar", "CSMT",
+            "Mumbai Airport", "Navi Mumbai Airport", "Andheri", "Borivali",
+            "Mira Bhayender", "Thane", "Navi Mumbai", "Pune Airport",
+            "Pune Railway Station", "PCMC", "Katraj", "Hinjewadi", "Hadapsar"
         ];
+
+        // Fixed Route Pricing Matrix
+        const routePricing = {
+            "Dadar": { swift: 3000, ciaz: 3000, ertiga: 3500, innova: 4500 },
+            "CSMT": { swift: 3000, ciaz: 3000, ertiga: 3500, innova: 4500 },
+            "Mumbai Airport": { swift: 3000, ciaz: 3000, ertiga: 3500, innova: 4500 },
+            "Andheri": { swift: 3000, ciaz: 3000, ertiga: 3500, innova: 4500 },
+            "Thane": { swift: 3000, ciaz: 3000, ertiga: 3500, innova: 4500 },
+            "Katraj": { swift: 3000, ciaz: 3000, ertiga: 3500, innova: 4500 },
+            "Hinjewadi": { swift: 3000, ciaz: 3000, ertiga: 3500, innova: 4500 },
+
+            "Navi Mumbai": { swift: 2500, ciaz: 2500, ertiga: 3000, innova: 4000 },
+            "Navi Mumbai Airport": { swift: 2500, ciaz: 2500, ertiga: 3000, innova: 4000 },
+            "PCMC": { swift: 2500, ciaz: 2500, ertiga: 3000, innova: 4000 },
+            "Pune Railway Station": { swift: 2500, ciaz: 2500, ertiga: 3000, innova: 4000 },
+
+            "Pune Airport": { swift: 2800, ciaz: 2800, ertiga: 3200, innova: 4200 },
+            "Hadapsar": { swift: 2800, ciaz: 2800, ertiga: 3200, innova: 4200 },
+
+            "Borivali": { swift: 3500, ciaz: 3500, ertiga: 4000, innova: 5000 },
+            "Mira Bhayender": { swift: 3500, ciaz: 3500, ertiga: 4000, innova: 5000 }
+        };
 
         function toggleMenu() {
             document.getElementById("navLinks").classList.toggle("active");
@@ -681,32 +688,57 @@
             calculateFare();
         }
 
+        function updateDropOptions() {
+            var pickup = document.getElementById("pickup").value;
+            var dropSelect = document.getElementById("drop");
+            var currentDrop = dropSelect.value;
+
+            dropSelect.innerHTML = "";
+
+            var isPickupLocal = localLonavalaArea.includes(pickup);
+
+            allLocations.forEach(loc => {
+                if (loc === pickup) return; // Cannot select same pickup and drop location
+
+                // If pickup is local area, hide all other local areas from drop list
+                if (isPickupLocal && localLonavalaArea.includes(loc)) return;
+
+                // If pickup is outstation, only allow local area drops
+                if (!isPickupLocal && !localLonavalaArea.includes(loc)) return;
+
+                var option = document.createElement("option");
+                option.value = loc;
+                option.text = loc;
+                dropSelect.appendChild(option);
+            });
+
+            if (dropSelect.options.length > 0) {
+                dropSelect.selectedIndex = 0;
+            }
+
+            calculateFare();
+        }
+
         function calculateFare() {
             var pickup = document.getElementById("pickup").value;
             var drop = document.getElementById("drop").value;
 
-            var isFixedRoute = (pickup === "Lonavala" && fixedPricedLocations.includes(drop)) ||
-                               (drop === "Lonavala" && fixedPricedLocations.includes(pickup));
+            var destination = localLonavalaArea.includes(pickup) ? drop : pickup;
+            var rates = routePricing[destination];
 
-            if (isFixedRoute) {
-                document.getElementById("badge-swift").innerText = "₹3,000";
-                document.getElementById("badge-ciaz").innerText = "₹3,000";
-                document.getElementById("badge-ertiga").innerText = "₹3,500";
-                document.getElementById("badge-innova").innerText = "₹4,500";
+            if (rates) {
+                document.getElementById("badge-swift").innerText = "₹" + rates.swift.toLocaleString('en-IN');
+                document.getElementById("badge-ciaz").innerText = "₹" + rates.ciaz.toLocaleString('en-IN');
+                document.getElementById("badge-ertiga").innerText = "₹" + rates.ertiga.toLocaleString('en-IN');
+                document.getElementById("badge-innova").innerText = "₹" + rates.innova.toLocaleString('en-IN');
 
-                if (selectedCar === "Maruti Swift" || selectedCar === "Maruti Ciaz") {
-                    document.getElementById("total-fare").innerText = "₹3,000";
-                } else if (selectedCar === "Maruti Ertiga") {
-                    document.getElementById("total-fare").innerText = "₹3,500";
-                } else if (selectedCar === "Toyota Innova Crysta") {
-                    document.getElementById("total-fare").innerText = "₹4,500";
-                }
-            } else {
-                document.getElementById("badge-swift").innerText = "Custom Rate";
-                document.getElementById("badge-ciaz").innerText = "Custom Rate";
-                document.getElementById("badge-ertiga").innerText = "Custom Rate";
-                document.getElementById("badge-innova").innerText = "Custom Rate";
-                document.getElementById("total-fare").innerText = "Contact for Quote";
+                var total = 0;
+                if (selectedCar === "Maruti Swift") total = rates.swift;
+                else if (selectedCar === "Maruti Ciaz") total = rates.ciaz;
+                else if (selectedCar === "Maruti Ertiga") total = rates.ertiga;
+                else if (selectedCar === "Toyota Innova Crysta") total = rates.innova;
+
+                document.getElementById("total-fare").innerText = "₹" + total.toLocaleString('en-IN');
             }
         }
 
@@ -722,12 +754,6 @@
 
             if (!name || !phone || !datetime) {
                 alert("Please fill in your Full Name, Mobile Number, and Travel Date/Time before proceeding to payment.");
-                return;
-            }
-
-            if (isNaN(numericAmount) || numericAmount <= 0) {
-                alert("Custom route selected. Opening WhatsApp inquiry to discuss rates.");
-                sendWhatsAppBackup(name, phone, pickup, drop, fareText, datetime);
                 return;
             }
 
@@ -770,8 +796,8 @@
             window.open("https://wa.me/919561805990?text=" + textMessage, "_blank");
         }
 
-        // Initialize fare calculation on page load
-        calculateFare();
+        // Initialize drop options and fare calculation on page load
+        updateDropOptions();
     </script>
 
 </body>
