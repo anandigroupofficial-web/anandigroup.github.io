@@ -451,7 +451,22 @@
         <!-- App-style Interactive Dropdown Booking Box -->
         <section class="booking-hero">
             <div class="booking-card">
-                <h2>🚘 Book a Ride</h2>
+                <h2>🚘 Book & Pay Online</h2>
+
+                <div class="form-group">
+                    <label>Passenger Full Name</label>
+                    <input type="text" id="passenger-name" class="form-control" placeholder="Enter guest name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Mobile Number</label>
+                    <input type="tel" id="passenger-phone" class="form-control" placeholder="Enter 10-digit mobile number" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Travel Date & Pickup Time</label>
+                    <input type="datetime-local" id="travel-datetime" class="form-control" required>
+                </div>
 
                 <div class="form-group">
                     <label>Pickup Location</label>
@@ -567,11 +582,11 @@
                 </div>
 
                 <div class="fare-display-box">
-                    <span>Estimated Fare:</span>
+                    <span>Total Amount Payable:</span>
                     <span class="fare-price" id="total-fare">₹3,000</span>
                 </div>
 
-                <button class="book-now-btn" onclick="sendBooking()">Request Ride on WhatsApp 💬</button>
+                <button class="book-now-btn" onclick="initiateRazorpayPayment()">Pay & Confirm Booking 💳</button>
             </div>
         </section>
 
@@ -633,7 +648,13 @@
 
     </div>
 
+    <!-- Razorpay Checkout SDK Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     <script>
+        // Configured Live Razorpay Key ID
+        const RAZORPAY_KEY_ID = "rzp_live_Tta9pRWXfWQBqU";
+
         var selectedTrip = "Outstation";
         var selectedCar = "Maruti Swift";
 
@@ -689,23 +710,67 @@
             }
         }
 
-        function sendBooking() {
+        function initiateRazorpayPayment() {
+            var name = document.getElementById("passenger-name").value.trim();
+            var phone = document.getElementById("passenger-phone").value.trim();
+            var datetime = document.getElementById("travel-datetime").value;
             var pickup = document.getElementById("pickup").value;
             var drop = document.getElementById("drop").value;
+
             var fareText = document.getElementById("total-fare").innerText;
-            
-            var textMessage = "Hi Anandi Travels, I would like to book a ride:%0A%0A" +
+            var numericAmount = parseInt(fareText.replace(/[^0-9]/g, ''), 10);
+
+            if (!name || !phone || !datetime) {
+                alert("Please fill in your Full Name, Mobile Number, and Travel Date/Time before proceeding to payment.");
+                return;
+            }
+
+            if (isNaN(numericAmount) || numericAmount <= 0) {
+                alert("Custom route selected. Opening WhatsApp inquiry to discuss rates.");
+                sendWhatsAppBackup(name, phone, pickup, drop, fareText, datetime);
+                return;
+            }
+
+            var options = {
+                "key": RAZORPAY_KEY_ID,
+                "amount": numericAmount * 100, // Amount in paise
+                "currency": "INR",
+                "name": "Anandi Travels",
+                "description": "Booking: " + pickup + " to " + drop + " (" + selectedCar + ")",
+                "image": "logo.png",
+                "handler": function (response) {
+                    alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+                    sendWhatsAppBackup(name, phone, pickup, drop, fareText, datetime, response.razorpay_payment_id);
+                },
+                "prefill": {
+                    "name": name,
+                    "contact": phone
+                },
+                "theme": {
+                    "color": "#2b5b84"
+                }
+            };
+
+            var rzp = new Razorpay(options);
+            rzp.open();
+        }
+
+        function sendWhatsAppBackup(name, phone, pickup, drop, fare, datetime, paymentId) {
+            var textMessage = "Hi Anandi Travels, I have completed my online booking request:%0A%0A" +
+                (paymentId ? ("💳 *Payment ID:* " + encodeURIComponent(paymentId) + "%0A") : "") +
+                "👤 *Passenger:* " + encodeURIComponent(name) + " (" + encodeURIComponent(phone) + ")%0A" +
                 "📍 *Pickup:* " + encodeURIComponent(pickup) + "%0A" +
                 "🏁 *Drop:* " + encodeURIComponent(drop) + "%0A" +
+                "📅 *Date/Time:* " + encodeURIComponent(datetime) + "%0A" +
                 "🚘 *Vehicle:* " + encodeURIComponent(selectedCar) + "%0A" +
                 "🛣 *Trip Type:* " + encodeURIComponent(selectedTrip) + "%0A" +
-                "💰 *Estimated Fare:* " + encodeURIComponent(fareText) + "%0A%0A" +
-                "Please confirm availability.";
+                "💰 *Amount:* " + encodeURIComponent(fare) + "%0A%0A" +
+                "Please send driver details.";
 
             window.open("https://wa.me/919561805990?text=" + textMessage, "_blank");
         }
 
-        // Initialize fare calculation on load
+        // Initialize fare calculation on page load
         calculateFare();
     </script>
 
