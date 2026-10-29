@@ -321,6 +321,125 @@
             background-color: #1ebd56;
         }
 
+        /* Voucher Pop-up Modal Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .voucher-card {
+            background: #ffffff;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: popIn 0.3s ease-out;
+            position: relative;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .voucher-header {
+            text-align: center;
+            border-bottom: 2px dashed #e2e8f0;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .voucher-status-icon {
+            font-size: 2.5rem;
+            color: #10b981;
+            margin-bottom: 8px;
+        }
+
+        .voucher-header h3 {
+            color: #2b5b84;
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+
+        .voucher-header p {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .voucher-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 10px;
+        }
+
+        .voucher-item label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 700;
+            display: block;
+        }
+
+        .voucher-item span {
+            font-size: 0.9rem;
+            color: #1e293b;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .voucher-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-pdf {
+            background-color: #2b5b84;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-wa {
+            background-color: #25d366;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Printable PDF settings */
+        @media print {
+            body * { visibility: hidden; }
+            #voucher-modal, #voucher-modal * { visibility: visible; }
+            #voucher-modal { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: none; }
+            .voucher-actions { display: none; }
+        }
+
         .content-container {
             max-width: 1150px;
             margin: 60px auto;
@@ -489,7 +608,7 @@
                     <div class="ride-options">
                         <div class="ride-option-card active" onclick="selectTripType('Outstation', this)">
                             <h4>Outstation</h4>
-                            <p>One-way</p>
+                            <p>One-way / Roundtrip</p>
                         </div>
                         <div class="ride-option-card" onclick="selectTripType('Local Sightseeing', this)">
                             <h4>Local Sightseeing</h4>
@@ -662,6 +781,53 @@
 
     </div>
 
+    <!-- Official Interactive Voucher Pop-up Modal -->
+    <div class="modal-overlay" id="voucher-modal">
+        <div class="voucher-card">
+            <div class="voucher-header">
+                <div class="voucher-status-icon">✓</div>
+                <h3>ANANDI TRAVELS</h3>
+                <p>Official Booking Voucher & Receipt</p>
+            </div>
+
+            <div class="voucher-details-grid">
+                <div class="voucher-item">
+                    <label>Passenger</label>
+                    <span id="v-name">-</span>
+                </div>
+                <div class="voucher-item">
+                    <label>Contact</label>
+                    <span id="v-phone">-</span>
+                </div>
+                <div class="voucher-item">
+                    <label>Payment ID</label>
+                    <span id="v-payid">-</span>
+                </div>
+                <div class="voucher-item">
+                    <label>Amount Paid</label>
+                    <span id="v-amount">-</span>
+                </div>
+                <div class="voucher-item">
+                    <label>Travel Date/Time</label>
+                    <span id="v-datetime">-</span>
+                </div>
+                <div class="voucher-item">
+                    <label>Vehicle</label>
+                    <span id="v-vehicle">-</span>
+                </div>
+                <div class="voucher-item" style="grid-column: span 2;">
+                    <label>Route / Package</label>
+                    <span id="v-route">-</span>
+                </div>
+            </div>
+
+            <div class="voucher-actions">
+                <button class="btn-pdf" onclick="window.print()">📄 Save as PDF Voucher</button>
+                <a id="v-wa-btn" class="btn-wa" target="_blank">💬 Send Voucher via WhatsApp</a>
+            </div>
+        </div>
+    </div>
+
     <!-- Razorpay Checkout SDK Script -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -706,7 +872,7 @@
         // Local Sightseeing Packages Pricing & Updated Points Matrix
         const sightseeingDetails = {
             "Lonavala Khandala (5 Hrs)": {
-                pricing: { swift: 1, ciaz: 2000, ertiga: 2500, innova: 3000 },
+                pricing: { swift: 2000, ciaz: 2000, ertiga: 2500, innova: 3000 },
                 points: "Tiger / Lion Point, Bhushi Dam, Lonavala Lake, Khandala Sunset Point, Rajmachi Garden, Narayani Dham Temple & Wax Museum."
             },
             "Outside Lonavala (5 Hrs)": {
@@ -837,8 +1003,7 @@
                 "description": "Booking: " + (selectedTrip === 'Local Sightseeing' ? drop : (pickup + " to " + drop)) + " (" + selectedCar + ")",
                 "image": "logo.png",
                 "handler": function (response) {
-                    alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
-                    sendWhatsAppBackup(name, phone, pickup, drop, fareText, datetime, response.razorpay_payment_id);
+                    showVoucherModal(name, phone, pickup, drop, fareText, datetime, response.razorpay_payment_id);
                 },
                 "prefill": {
                     "name": name,
@@ -853,7 +1018,24 @@
             rzp.open();
         }
 
-        function sendWhatsAppBackup(name, phone, pickup, drop, fare, datetime, paymentId) {
+        function showVoucherModal(name, phone, pickup, drop, fare, datetime, paymentId) {
+            var routeDisplay = selectedTrip === 'Local Sightseeing' ? drop : (pickup + " ➔ " + drop);
+
+            document.getElementById("v-name").innerText = name;
+            document.getElementById("v-phone").innerText = phone;
+            document.getElementById("v-payid").innerText = paymentId;
+            document.getElementById("v-amount").innerText = fare;
+            document.getElementById("v-datetime").innerText = datetime.replace("T", " ");
+            document.getElementById("v-vehicle").innerText = selectedCar;
+            document.getElementById("v-route").innerText = routeDisplay;
+
+            var waLink = prepareWhatsAppUrl(name, phone, pickup, drop, fare, datetime, paymentId);
+            document.getElementById("v-wa-btn").href = waLink;
+
+            document.getElementById("voucher-modal").style.display = "flex";
+        }
+
+        function prepareWhatsAppUrl(name, phone, pickup, drop, fare, datetime, paymentId) {
             var coveredPointsText = "";
             if (selectedTrip === 'Local Sightseeing') {
                 var selectedPkg = document.getElementById("sightseeing-package").value;
@@ -864,8 +1046,9 @@
                 ("🗺 *Package:* " + encodeURIComponent(drop) + coveredPointsText + "%0A") : 
                 ("📍 *Pickup:* " + encodeURIComponent(pickup) + "%0A" + "🏁 *Drop:* " + encodeURIComponent(drop) + "%0A");
 
-            var textMessage = "Hi Anandi Travels, I have completed my online booking request:%0A%0A" +
-                (paymentId ? ("💳 *Payment ID:* " + encodeURIComponent(paymentId) + "%0A") : "") +
+            return "https://wa.me/919561805990?text=" +
+                "Hi Anandi Travels, I have completed my online booking request:%0A%0A" +
+                "💳 *Payment ID:* " + encodeURIComponent(paymentId) + "%0A" +
                 "👤 *Passenger:* " + encodeURIComponent(name) + " (" + encodeURIComponent(phone) + ")%0A" +
                 routeText +
                 "📅 *Date/Time:* " + encodeURIComponent(datetime) + "%0A" +
@@ -873,8 +1056,6 @@
                 "🛣 *Trip Type:* " + encodeURIComponent(selectedTrip) + "%0A" +
                 "💰 *Amount:* " + encodeURIComponent(fare) + "%0A%0A" +
                 "Please send driver details.";
-
-            window.open("https://wa.me/919561805990?text=" + textMessage, "_blank");
         }
 
         // Initialize drop options and fare calculation on page load
