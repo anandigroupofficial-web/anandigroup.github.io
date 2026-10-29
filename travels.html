@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="logo.png">
 
     <title>Anandi Travels | Book Swift, Ciaz, Ertiga & Innova Crysta</title>
-    <meta name="description" content="Book instant cab rentals, airport transfers, and outstation rides with Anandi Travels. Choose from Swift, Ciaz, Ertiga, and Innova Crysta.">
+    <meta name="description" content="Book instant cab rentals, local sightseeing, and outstation rides with Anandi Travels. Choose from Swift, Ciaz, Ertiga, and Innova Crysta.">
     <meta name="keywords" content="Cab booking Pune, Lonavala cab, Swift rental, Ciaz cab, Ertiga rental, Innova Crysta outstation, Anandi Travels">
     <meta property="og:title" content="Anandi Travels | Instant Cab Booking">
     <meta property="og:description" content="Book Swift, Ciaz, Ertiga, and Innova Crysta rides instantly on WhatsApp with transparent pricing.">
@@ -469,46 +469,60 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Pickup Location</label>
-                    <select id="pickup" class="form-control" onchange="updateDropOptions()">
-                        <option value="Lonavala">Lonavala</option>
-                        <option value="Khandala">Khandala</option>
-                        <option value="Karla">Karla</option>
-                        <option value="Pawna Lake">Pawna Lake</option>
-                        <option value="Dadar">Dadar</option>
-                        <option value="CSMT">CSMT</option>
-                        <option value="Mumbai Airport">Mumbai Airport</option>
-                        <option value="Navi Mumbai Airport">Navi Mumbai Airport</option>
-                        <option value="Andheri">Andheri</option>
-                        <option value="Borivali">Borivali</option>
-                        <option value="Mira Bhayender">Mira Bhayender</option>
-                        <option value="Thane">Thane</option>
-                        <option value="Navi Mumbai">Navi Mumbai</option>
-                        <option value="Pune Airport">Pune Airport</option>
-                        <option value="Pune Railway Station">Pune Railway Station</option>
-                        <option value="PCMC">PCMC</option>
-                        <option value="Katraj">Katraj</option>
-                        <option value="Hinjewadi">Hinjewadi</option>
-                        <option value="Hadapsar">Hadapsar</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Drop Location</label>
-                    <select id="drop" class="form-control" onchange="calculateFare()"></select>
-                </div>
-
-                <div class="form-group">
                     <label>Trip Type</label>
                     <div class="ride-options">
                         <div class="ride-option-card active" onclick="selectTripType('Outstation', this)">
                             <h4>Outstation</h4>
                             <p>One-way / Roundtrip</p>
                         </div>
-                        <div class="ride-option-card" onclick="selectTripType('Airport Transfer', this)">
-                            <h4>Airport Transfer</h4>
-                            <p>Pune / Mumbai Airport</p>
+                        <div class="ride-option-card" onclick="selectTripType('Local Sightseeing', this)">
+                            <h4>Local Sightseeing</h4>
+                            <p>Lonavala & Nearby Points</p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Outstation Route Section -->
+                <div id="outstation-section">
+                    <div class="form-group">
+                        <label>Pickup Location</label>
+                        <select id="pickup" class="form-control" onchange="updateDropOptions()">
+                            <option value="Lonavala">Lonavala</option>
+                            <option value="Khandala">Khandala</option>
+                            <option value="Karla">Karla</option>
+                            <option value="Pawna Lake">Pawna Lake</option>
+                            <option value="Dadar">Dadar</option>
+                            <option value="CSMT">CSMT</option>
+                            <option value="Mumbai Airport">Mumbai Airport</option>
+                            <option value="Navi Mumbai Airport">Navi Mumbai Airport</option>
+                            <option value="Andheri">Andheri</option>
+                            <option value="Borivali">Borivali</option>
+                            <option value="Mira Bhayender">Mira Bhayender</option>
+                            <option value="Thane">Thane</option>
+                            <option value="Navi Mumbai">Navi Mumbai</option>
+                            <option value="Pune Airport">Pune Airport</option>
+                            <option value="Pune Railway Station">Pune Railway Station</option>
+                            <option value="PCMC">PCMC</option>
+                            <option value="Katraj">Katraj</option>
+                            <option value="Hinjewadi">Hinjewadi</option>
+                            <option value="Hadapsar">Hadapsar</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Drop Location</label>
+                        <select id="drop" class="form-control" onchange="calculateFare()"></select>
+                    </div>
+                </div>
+
+                <!-- Local Sightseeing Section -->
+                <div id="sightseeing-section" style="display: none;">
+                    <div class="form-group">
+                        <label>Select Sightseeing Package</label>
+                        <select id="sightseeing-package" class="form-control" onchange="calculateFare()">
+                            <option value="Lonavala Khandala (5 Hrs)">Lonavala Khandala (5 Hrs)</option>
+                            <option value="Outside Lonavala (5 Hrs)">Outside Lonavala (5 Hrs)</option>
+                        </select>
                     </div>
                 </div>
 
@@ -579,7 +593,7 @@
                 <div class="card">
                     <span class="card-badge">4 Passengers</span>
                     <h3>Maruti Swift</h3>
-                    <p>Compact hatchback ideal for city rides and budget airport drops.</p>
+                    <p>Compact hatchback ideal for city rides and budget drops.</p>
                     <ul class="feature-list">
                         <li>🧳 2 Small Bags</li>
                         <li>❄ AC Cabin</li>
@@ -647,7 +661,7 @@
             "Pune Railway Station", "PCMC", "Katraj", "Hinjewadi", "Hadapsar"
         ];
 
-        // Fixed Route Pricing Matrix
+        // Fixed Outstation Route Pricing Matrix
         const routePricing = {
             "Dadar": { swift: 3000, ciaz: 3000, ertiga: 3500, innova: 4500 },
             "CSMT": { swift: 3000, ciaz: 3000, ertiga: 3500, innova: 4500 },
@@ -669,6 +683,12 @@
             "Mira Bhayender": { swift: 3500, ciaz: 3500, ertiga: 4000, innova: 5000 }
         };
 
+        // Local Sightseeing Packages Pricing Matrix
+        const sightseeingPricing = {
+            "Lonavala Khandala (5 Hrs)": { swift: 2000, ciaz: 2000, ertiga: 2500, innova: 3000 },
+            "Outside Lonavala (5 Hrs)": { swift: 2500, ciaz: 2500, ertiga: 3000, innova: 3500 }
+        };
+
         function toggleMenu() {
             document.getElementById("navLinks").classList.toggle("active");
         }
@@ -678,6 +698,16 @@
             var options = document.querySelectorAll('.ride-option-card');
             options.forEach(opt => opt.classList.remove('active'));
             element.classList.add('active');
+
+            if (type === 'Local Sightseeing') {
+                document.getElementById('outstation-section').style.display = 'none';
+                document.getElementById('sightseeing-section').style.display = 'block';
+            } else {
+                document.getElementById('outstation-section').style.display = 'block';
+                document.getElementById('sightseeing-section').style.display = 'none';
+            }
+
+            calculateFare();
         }
 
         function selectVehicle(carName, element) {
@@ -691,7 +721,6 @@
         function updateDropOptions() {
             var pickup = document.getElementById("pickup").value;
             var dropSelect = document.getElementById("drop");
-            var currentDrop = dropSelect.value;
 
             dropSelect.innerHTML = "";
 
@@ -720,11 +749,17 @@
         }
 
         function calculateFare() {
-            var pickup = document.getElementById("pickup").value;
-            var drop = document.getElementById("drop").value;
+            var rates = null;
 
-            var destination = localLonavalaArea.includes(pickup) ? drop : pickup;
-            var rates = routePricing[destination];
+            if (selectedTrip === 'Local Sightseeing') {
+                var selectedPackage = document.getElementById("sightseeing-package").value;
+                rates = sightseeingPricing[selectedPackage];
+            } else {
+                var pickup = document.getElementById("pickup").value;
+                var drop = document.getElementById("drop").value;
+                var destination = localLonavalaArea.includes(pickup) ? drop : pickup;
+                rates = routePricing[destination];
+            }
 
             if (rates) {
                 document.getElementById("badge-swift").innerText = "₹" + rates.swift.toLocaleString('en-IN');
@@ -746,8 +781,16 @@
             var name = document.getElementById("passenger-name").value.trim();
             var phone = document.getElementById("passenger-phone").value.trim();
             var datetime = document.getElementById("travel-datetime").value;
-            var pickup = document.getElementById("pickup").value;
-            var drop = document.getElementById("drop").value;
+
+            var pickup = "", drop = "";
+
+            if (selectedTrip === 'Local Sightseeing') {
+                pickup = "Lonavala Local";
+                drop = document.getElementById("sightseeing-package").value;
+            } else {
+                pickup = document.getElementById("pickup").value;
+                drop = document.getElementById("drop").value;
+            }
 
             var fareText = document.getElementById("total-fare").innerText;
             var numericAmount = parseInt(fareText.replace(/[^0-9]/g, ''), 10);
@@ -762,7 +805,7 @@
                 "amount": numericAmount * 100, // Amount in paise
                 "currency": "INR",
                 "name": "Anandi Travels",
-                "description": "Booking: " + pickup + " to " + drop + " (" + selectedCar + ")",
+                "description": "Booking: " + (selectedTrip === 'Local Sightseeing' ? drop : (pickup + " to " + drop)) + " (" + selectedCar + ")",
                 "image": "logo.png",
                 "handler": function (response) {
                     alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
@@ -782,11 +825,14 @@
         }
 
         function sendWhatsAppBackup(name, phone, pickup, drop, fare, datetime, paymentId) {
+            var routeText = selectedTrip === 'Local Sightseeing' ? 
+                ("🗺 *Package:* " + encodeURIComponent(drop) + "%0A") : 
+                ("📍 *Pickup:* " + encodeURIComponent(pickup) + "%0A" + "🏁 *Drop:* " + encodeURIComponent(drop) + "%0A");
+
             var textMessage = "Hi Anandi Travels, I have completed my online booking request:%0A%0A" +
                 (paymentId ? ("💳 *Payment ID:* " + encodeURIComponent(paymentId) + "%0A") : "") +
                 "👤 *Passenger:* " + encodeURIComponent(name) + " (" + encodeURIComponent(phone) + ")%0A" +
-                "📍 *Pickup:* " + encodeURIComponent(pickup) + "%0A" +
-                "🏁 *Drop:* " + encodeURIComponent(drop) + "%0A" +
+                routeText +
                 "📅 *Date/Time:* " + encodeURIComponent(datetime) + "%0A" +
                 "🚘 *Vehicle:* " + encodeURIComponent(selectedCar) + "%0A" +
                 "🛣 *Trip Type:* " + encodeURIComponent(selectedTrip) + "%0A" +
