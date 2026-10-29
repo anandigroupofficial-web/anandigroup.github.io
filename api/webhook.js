@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         const amount = payment.amount / 100;
         
         // Extract guest info passed via prefill or notes
-        const name = payment.notes?.passenger_name || payment.email || 'Guest';
+        const name = payment.notes?.passenger_name || payment.entity?.prefill?.name || 'Guest';
         const phone = payment.notes?.passenger_phone || payment.contact || 'N/A';
         const description = payment.description || 'Cab Booking';
 
