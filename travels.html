@@ -996,23 +996,27 @@
             }
 
             var options = {
-                "key": RAZORPAY_KEY_ID,
-                "amount": numericAmount * 100, // Amount in paise
-                "currency": "INR",
-                "name": "Anandi Travels",
-                "description": "Booking: " + (selectedTrip === 'Local Sightseeing' ? drop : (pickup + " to " + drop)) + " (" + selectedCar + ")",
-                "image": "logo.png",
-                "handler": function (response) {
-                    showVoucherModal(name, phone, pickup, drop, fareText, datetime, response.razorpay_payment_id);
-                },
-                "prefill": {
-                    "name": name,
-                    "contact": phone
-                },
-                "theme": {
-                    "color": "#2b5b84"
-                }
-            };
+    "key": RAZORPAY_KEY_ID,
+    "amount": numericAmount * 100, // Or 100 for ₹1 test
+    "currency": "INR",
+    "name": "Anandi Travels",
+    "description": (selectedTrip === 'Local Sightseeing' ? drop : (pickup + " to " + drop)) + " (" + selectedCar + ")",
+    "image": "logo.png",
+    "notes": {
+        "passenger_name": name,
+        "passenger_phone": phone
+    },
+    "handler": function (response) {
+        showVoucherModal(name, phone, pickup, drop, fareText, datetime, response.razorpay_payment_id);
+    },
+    "prefill": {
+        "name": name,
+        "contact": phone
+    },
+    "theme": {
+        "color": "#2b5b84"
+    }
+};
 
             var rzp = new Razorpay(options);
             rzp.open();
