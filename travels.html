@@ -872,7 +872,7 @@
         // Local Sightseeing Packages Pricing & Updated Points Matrix
         const sightseeingDetails = {
             "Lonavala Khandala (5 Hrs)": {
-                pricing: { swift: 1, ciaz: 2000, ertiga: 2500, innova: 3000 },
+                pricing: { swift: 2000, ciaz: 2000, ertiga: 2500, innova: 3000 },
                 points: "Tiger / Lion Point, Bhushi Dam, Lonavala Lake, Khandala Sunset Point, Rajmachi Garden, Narayani Dham Temple & Wax Museum."
             },
             "Outside Lonavala (5 Hrs)": {
@@ -996,52 +996,95 @@
             }
 
             var options = {
-    "key": RAZORPAY_KEY_ID,
-    "amount": numericAmount * 100, // Or 100 for ₹1 test
-    "currency": "INR",
-    "name": "Anandi Travels",
-    "description": (selectedTrip === 'Local Sightseeing' ? drop : (pickup + " to " + drop)) + " (" + selectedCar + ")",
-    "image": "logo.png",
-    "notes": {
-        "passenger_name": name,
-        "passenger_phone": phone
-    },
-    "handler": function (response) {
-        showVoucherModal(name, phone, pickup, drop, fareText, datetime, response.razorpay_payment_id);
-    },
-    "prefill": {
-        "name": name,
-        "contact": phone
-    },
-    "theme": {
-        "color": "#2b5b84"
-    }
-};
+                "key": RAZORPAY_KEY_ID,
+                "amount": numericAmount * 100,
+                "currency": "INR",
+                "name": "Anandi Travels",
+                "description": (selectedTrip === 'Local Sightseeing' ? drop : (pickup + " to " + drop)) + " (" + selectedCar + ")",
+                "image": "logo.png",
+                "notes": {
+                    "passenger_name": name,
+                    "passenger_phone": phone
+                },
+                "handler": function (response) {
+                    // 1. Dispatch background WhatsApp notification to host via UltraMsg
+                    sendDirectWhatsAppNotification(name, phone, pickup, drop, fareText, datetime, selectedCar, selectedTrip, response.razorpay_payment_id);
+                    
+                    // 2. Render Voucher Modal for Guest
+                    showVoucherModal(name, phone, pickup, drop, fareText, datetime, response.razorpay_payment_id);
+                },
+                "prefill": {
+                    "name": name,
+                    "contact": phone
+                },
+                "theme": {
+                    "color": "#2b5b84"
+                }
+            };
 
             var rzp = new Razorpay(options);
             rzp.open();
         }
 
+        function sendDirectWhatsAppNotification(name, phone, pickup, drop, fare, datetime, car, tripType, paymentId) {
+            var instanceId = 'instance195653';
+            var token = '7xb48pfchp4isgls';
+            var hostPhone = '919561805990';
+
+            var coveredPointsText = "";
+            if (tripType === 'Local Sightseeing') {
+                var selectedPkg = document.getElementById("sightseeing-package").value;
+                coveredPointsText = "\n📍 Covered Points: " + sightseeingDetails[selectedPkg].points;
+            }
+
+            var routeText = tripType === 'Local Sightseeing' ? 
+                ("🗺 Package: " + drop + coveredPointsText + "\n") : 
+                ("📍 Pickup: " + pickup + "\n🏁 Drop: " + drop + "\n");
+
+            var messageText = "🚨 *NEW CONFIRMED BOOKING!*\n\n" +
+                "💳 *Payment ID:* " + paymentId + "\n" +
+                "👤 *Guest:* " + name + " (" + phone + ")\n" +
+                routeText +
+                "📅 *Date/Time:* " + datetime + "\n" +
+                "🚘 *Vehicle:* " + car + "\n" +
+                "🛣 *Trip Type:* " + tripType + "\n" +
+                "💰 *Paid:* " + fare + "\n\n" +
+                "Please assign driver and vehicle immediately!";
+
+            fetch("https://api.ultramsg.com/" + instanceId + "/messages/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({
+                    "token": token,
+                    "to": hostPhone,
+                    "body": messageText
+                })
+            }).then(function(res) {
+                return res.json();
+            }).then(function(data) {
+                console.log("UltraMsg Direct Alert Sent:", data);
+            }).catch(function(err) {
+                console.error("UltraMsg Direct Alert Failed:", err);
+            });
+        }
+
         function showVoucherModal(name, phone, pickup, drop, fare, datetime, paymentId) {
-    var routeDisplay = selectedTrip === 'Local Sightseeing' ? drop : (pickup + " ➔ " + drop);
+            var routeDisplay = selectedTrip === 'Local Sightseeing' ? drop : (pickup + " ➔ " + drop);
 
-    document.getElementById("v-name").innerText = name;
-    document.getElementById("v-phone").innerText = phone;
-    document.getElementById("v-payid").innerText = paymentId;
-    document.getElementById("v-amount").innerText = fare;
-    document.getElementById("v-datetime").innerText = datetime.replace("T", " ");
-    document.getElementById("v-vehicle").innerText = selectedCar;
-    document.getElementById("v-route").innerText = routeDisplay;
+            document.getElementById("v-name").innerText = name;
+            document.getElementById("v-phone").innerText = phone;
+            document.getElementById("v-payid").innerText = paymentId;
+            document.getElementById("v-amount").innerText = fare;
+            document.getElementById("v-datetime").innerText = datetime.replace("T", " ");
+            document.getElementById("v-vehicle").innerText = selectedCar;
+            document.getElementById("v-route").innerText = routeDisplay;
 
-    var waLink = prepareWhatsAppUrl(name, phone, pickup, drop, fare, datetime, paymentId);
-    document.getElementById("v-wa-btn").href = waLink;
+            var waLink = prepareWhatsAppUrl(name, phone, pickup, drop, fare, datetime, paymentId);
+            document.getElementById("v-wa-btn").href = waLink;
 
-    // Display the on-screen PDF receipt modal to the guest
-    document.getElementById("voucher-modal").style.display = "flex";
-
-    // Instantly open WhatsApp tab to send full booking details to host (9561805990)
-    window.open(waLink, "_blank");
-}
+            // Display the on-screen PDF receipt modal to the guest
+            document.getElementById("voucher-modal").style.display = "flex";
+        }
 
         function prepareWhatsAppUrl(name, phone, pickup, drop, fare, datetime, paymentId) {
             var coveredPointsText = "";
