@@ -872,7 +872,7 @@
         // Local Sightseeing Packages Pricing & Updated Points Matrix
         const sightseeingDetails = {
             "Lonavala Khandala (5 Hrs)": {
-                pricing: { swift: 1, ciaz: 2000, ertiga: 2500, innova: 3000 },
+                pricing: { swift: 2000, ciaz: 2000, ertiga: 2500, innova: 3000 },
                 points: "Tiger / Lion Point, Bhushi Dam, Lonavala Lake, Khandala Sunset Point, Rajmachi Garden, Narayani Dham Temple & Wax Museum."
             },
             "Outside Lonavala (5 Hrs)": {
@@ -880,6 +880,20 @@
                 points: "Pawna Lake, Bhaje Caves, Lohagad Fort & Karla Caves."
             }
         };
+
+        // Local inventory cache of booked slots
+        var bookedSlots = JSON.parse(localStorage.getItem('anandi_booked_slots') || '[]');
+
+        function isVehicleAvailable(car, datetime) {
+            var selectedTime = new Date(datetime).getTime();
+            return !bookedSlots.some(function(slot) {
+                var bookedTime = new Date(slot.datetime).getTime();
+                var timeDifferenceInHours = Math.abs(selectedTime - bookedTime) / (1000 * 60 * 60);
+                
+                // Block vehicle if already booked within a 12-hour window
+                return slot.car === car && timeDifferenceInHours < 12;
+            });
+        }
 
         function toggleMenu() {
             document.getElementById("navLinks").classList.toggle("active");
@@ -977,6 +991,17 @@
             var phone = document.getElementById("passenger-phone").value.trim();
             var datetime = document.getElementById("travel-datetime").value;
 
+            if (!name || !phone || !datetime) {
+                alert("Please fill in your Full Name, Mobile Number, and Travel Date/Time before proceeding.");
+                return;
+            }
+
+            // Vehicle Single-Inventory Lock Check
+            if (!isVehicleAvailable(selectedCar, datetime)) {
+                alert("⚠️ The " + selectedCar + " is already booked for this date/time slot. Please select another vehicle or a different time slot.");
+                return;
+            }
+
             var pickup = "", drop = "";
 
             if (selectedTrip === 'Local Sightseeing') {
@@ -990,11 +1015,6 @@
             var fareText = document.getElementById("total-fare").innerText;
             var numericAmount = parseInt(fareText.replace(/[^0-9]/g, ''), 10);
 
-            if (!name || !phone || !datetime) {
-                alert("Please fill in your Full Name, Mobile Number, and Travel Date/Time before proceeding to payment.");
-                return;
-            }
-
             var options = {
                 "key": RAZORPAY_KEY_ID,
                 "amount": numericAmount * 100,
@@ -1007,6 +1027,10 @@
                     "passenger_phone": phone
                 },
                 "handler": function (response) {
+                    // Lock booked slot in inventory
+                    bookedSlots.push({ car: selectedCar, datetime: datetime });
+                    localStorage.setItem('anandi_booked_slots', JSON.stringify(bookedSlots));
+
                     // 1. Dispatch background WhatsApp notification to host via UltraMsg
                     sendDirectWhatsAppNotification(name, phone, pickup, drop, fareText, datetime, selectedCar, selectedTrip, response.razorpay_payment_id);
                     
