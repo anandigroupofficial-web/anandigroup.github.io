@@ -186,6 +186,14 @@
             gap: 15px;
         }
 
+        .qr-merchant-img {
+            max-width: 220px;
+            height: auto;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
         .upi-copy-btn {
             background: #2b5b84;
             color: #ffffff;
@@ -292,7 +300,7 @@
                 <form id="shg-auth-form" onsubmit="handleSHGLogin(event)">
                     <div class="form-group">
                         <label id="lbl-identifier">Mobile Number / Member ID</label>
-                        <input type="text" id="shg-identifier" class="form-control" placeholder="Enter mobile number or ID" required>
+                        <input type="text" id="shg-identifier" class="form-control" placeholder="Enter mobile number or ID (e.g. M001)" required>
                     </div>
 
                     <div class="form-group">
@@ -331,15 +339,15 @@
                 <div class="upi-card">
                     <div>
                         <h4 style="color: #2b5b84; font-size: 1.1rem; margin-bottom: 4px;">💳 Pay Deposit via PhonePe / GPay / Paytm</h4>
-                        <p style="font-size: 0.85rem; color: #64748b;">Scan QR Code or copy UPI ID below to pay directly from your payment app.</p>
+                        <p style="font-size: 0.85rem; color: #64748b;">Scan QR Code or copy Business UPI ID below to pay directly from any UPI app.</p>
                     </div>
 
-                    <div id="qrcode-container" style="background: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #cbd5e1; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                        <div id="qrcode"></div>
+                    <div id="qrcode-container" style="background: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #cbd5e1; display: inline-block;">
+                        <img src="paytm-qr.jpg" alt="Paytm Business Merchant QR Code" class="qr-merchant-img">
                     </div>
 
                     <div style="background: #f1f5f9; padding: 12px 20px; border-radius: 8px; border: 1px solid #cbd5e1; display: flex; align-items: center; gap: 12px;">
-                        <span id="upi-id-display" style="font-weight: 800; color: #2b5b84; font-size: 1rem; font-family: monospace;">shubhambhabal123-2@okicici</span>
+                        <span id="upi-id-display" style="font-weight: 800; color: #2b5b84; font-size: 1rem; font-family: monospace;">paytm.s4mijkf@pty</span>
                         <button class="upi-copy-btn" onclick="copyUpiId()">Copy UPI ID 📋</button>
                     </div>
 
@@ -501,7 +509,8 @@
         const SUPABASE_URL = "https://cmfqgudmhifddoutdgif.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtZnFndWRtaGlmZGRvdXRkZ2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1OTk5MDMsImV4cCI6MjEwOTE3NTkwM30.sq9rQYRox0Nz-PrRZC9C-8J2ldPXf8JsyJ2R05e95j0";
         
-        const SHG_UPI_ID = "shubhambhabal123-2@okicici"; 
+        // Official Paytm Business Merchant UPI Handle
+        const SHG_UPI_ID = "paytm.s4mijkf@pty"; 
         const SHG_NAME = "Anandi Self Help Group";
         const ADMIN_PHONE_WA = "919561805990"; // WhatsApp notification destination
 
@@ -591,29 +600,11 @@
 
             loadMemberStats(user.member_id);
             renderPassbookTable(user.member_id, currentMemberLedgerType, "tbl-passbook-body");
-            
-            generateStaticUpiQr();
         }
 
         function copyUpiId() {
             navigator.clipboard.writeText(SHG_UPI_ID);
             alert("✓ UPI ID copied: " + SHG_UPI_ID + "\nOpen Google Pay, PhonePe, or Paytm and paste to pay!");
-        }
-
-        function generateStaticUpiQr() {
-            var upiUri = "upi://pay?pa=" + encodeURIComponent(SHG_UPI_ID) + "&pn=" + encodeURIComponent(SHG_NAME) + "&cu=INR";
-            var qrContainer = document.getElementById("qrcode");
-            
-            qrContainer.innerHTML = "";
-
-            new QRCode(qrContainer, {
-                text: upiUri,
-                width: 160,
-                height: 160,
-                colorDark: "#1e293b",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.M
-            });
         }
 
         function notifyAdminPayment(event) {
