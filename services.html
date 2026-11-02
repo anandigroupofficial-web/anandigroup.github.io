@@ -314,8 +314,7 @@
         }
 
         .passbook-table th:nth-child(1),
-        .passbook-table th:nth-child(2),
-        .passbook-table th:nth-child(3) {
+        .passbook-table th:nth-child(2) {
             text-align: left;
         }
 
@@ -328,8 +327,7 @@
         }
 
         .passbook-table td:nth-child(1),
-        .passbook-table td:nth-child(2),
-        .passbook-table td:nth-child(3) {
+        .passbook-table td:nth-child(2) {
             text-align: left;
         }
 
@@ -341,27 +339,12 @@
             background-color: #f1ebd9;
         }
 
-        .txt-deposit {
-            color: #059669;
-            font-weight: 700;
-        }
+        .txt-deposit { color: #059669; font-weight: 700; }
+        .txt-withdrawal { color: #dc2626; font-weight: 700; }
+        .txt-interest { color: #2563eb; font-weight: 700; }
+        .txt-balance { font-weight: 800; color: #1e293b; }
 
-        .txt-withdrawal {
-            color: #dc2626;
-            font-weight: 700;
-        }
-
-        .txt-interest {
-            color: #2563eb;
-            font-weight: 700;
-        }
-
-        .txt-balance {
-            font-weight: 800;
-            color: #1e293b;
-        }
-
-        /* Admin Layout Elements */
+        /* Admin Elements */
         .admin-tab-btns {
             display: flex;
             gap: 10px;
@@ -440,11 +423,7 @@
                 border-top: 1px solid #e2dcd0;
             }
             .nav-links.active { display: flex; }
-            .passbook-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
+            .passbook-header { flex-direction: column; align-items: flex-start; gap: 10px; }
             .dash-stats { grid-template-columns: 1fr; }
         }
     </style>
@@ -504,7 +483,7 @@
                 <div id="login-status" style="margin-top: 15px; text-align: center; font-size: 0.9rem; font-weight: 600;"></div>
             </div>
 
-            <!-- 2. LANDSCAPE MEMBER PASSBOOK CONTAINER -->
+            <!-- 2. MEMBER PASSBOOK VIEW -->
             <div id="section-passbook" class="passbook-container" style="display: none;">
                 <div class="passbook-header">
                     <div>
@@ -545,47 +524,83 @@
                 </div>
             </div>
 
-            <!-- 3. ADMIN DASHBOARD CONTAINER -->
-            <div id="section-admin" class="shg-card" style="display: none; max-width: 750px;">
+            <!-- 3. MASTER ADMIN DASHBOARD WITH LIVE PASSBOOK PREVIEW -->
+            <div id="section-admin" class="shg-card" style="display: none; max-width: 1150px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h3 style="color:#2b5b84;">Master Admin Ledger Portal</h3>
                     <button class="logout-btn" onclick="handleLogout()">Logout 🚪</button>
                 </div>
 
                 <div class="admin-tab-btns">
-                    <button id="tab-btn-entry" class="admin-tab-btn active" onclick="switchAdminTab('entry')">Record Transaction</button>
+                    <button id="tab-btn-entry" class="admin-tab-btn active" onclick="switchAdminTab('entry')">Record Transaction & View Passbook</button>
                     <button id="tab-btn-member" class="admin-tab-btn" onclick="switchAdminTab('member')">Register New Member</button>
                 </div>
 
-                <!-- Admin Tab 1: Record Transaction -->
+                <!-- Admin Tab 1: Record Transaction + Live Passbook Preview -->
                 <div id="admin-tab-entry">
-                    <form onsubmit="handleAdminRecordTransaction(event)">
-                        <div class="form-group">
-                            <label>Target Member ID</label>
-                            <input type="text" id="adm-entry-mid" class="form-control" placeholder="e.g. M001" required>
+                    <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 25px;">
+                        
+                        <!-- Left Panel: Transaction Input Form -->
+                        <div style="background: #f8f4e9; padding: 20px; border-radius: 10px; border: 1px solid #e2dcd0;">
+                            <h4 style="margin-bottom: 15px; color: #2b5b84;">Add / Edit Member Entry</h4>
+                            
+                            <form onsubmit="handleAdminRecordTransaction(event)">
+                                <div class="form-group">
+                                    <label>Select Member</label>
+                                    <select id="adm-entry-mid" class="form-control" onchange="loadAdminMemberPassbookPreview(this.value)" required>
+                                        <option value="">-- Choose Member --</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Transaction Date</label>
+                                    <input type="date" id="adm-entry-date" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Transaction Type</label>
+                                    <select id="adm-entry-type" class="form-control" required>
+                                        <option value="deposit">Deposit (Savings Entry)</option>
+                                        <option value="withdrawal">Withdrawal / Loan Issued</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Amount (₹)</label>
+                                    <input type="number" step="0.01" id="adm-entry-amount" class="form-control" placeholder="Enter amount" required>
+                                </div>
+                                <button type="submit" class="book-now-btn">Save Entry 💾</button>
+                            </form>
+                            <div id="adm-entry-status" style="margin-top: 15px; text-align: center; font-weight: 600;"></div>
                         </div>
-                        <div class="form-group">
-                            <label>Transaction Date</label>
-                            <input type="date" id="adm-entry-date" class="form-control" required>
+
+                        <!-- Right Panel: Live Landscape Passbook Preview -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <h4 style="color: #2b5b84;">Live Member Passbook</h4>
+                                <span id="adm-passbook-target" style="font-size: 0.85rem; font-weight: 700; color: #64748b;">Select a member on the left</span>
+                            </div>
+
+                            <div class="passbook-scroll" style="max-height: 400px; overflow-y: auto;">
+                                <table class="passbook-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Particulars</th>
+                                            <th>Deposit</th>
+                                            <th>Withdrawal</th>
+                                            <th>Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbl-admin-preview-body">
+                                        <tr><td colspan="5" style="text-align: center; color: #94a3b8;">Select a member to view their passbook.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Transaction Type</label>
-                            <select id="adm-entry-type" class="form-control" required>
-                                <option value="deposit">Deposit (Savings Entry)</option>
-                                <option value="withdrawal">Withdrawal / Loan Issued</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Amount (₹)</label>
-                            <input type="number" step="0.01" id="adm-entry-amount" class="form-control" placeholder="Enter amount" required>
-                        </div>
-                        <button type="submit" class="book-now-btn">Save to Master Ledger 💾</button>
-                    </form>
-                    <div id="adm-entry-status" style="margin-top: 15px; text-align: center; font-weight: 600;"></div>
+
+                    </div>
                 </div>
 
-                <!-- Admin Tab 2: Add New Member -->
-                <div id="admin-tab-member" style="display: none;">
+                <!-- Admin Tab 2: Register Member -->
+                <div id="admin-tab-member" style="display: none; max-width: 500px; margin: 0 auto;">
                     <form onsubmit="handleAdminCreateMember(event)">
                         <div class="form-group">
                             <label>Member ID (e.g., M001)</label>
@@ -724,21 +739,66 @@
             document.getElementById("passbook-member-info").innerHTML = 
                 "Account Holder: <strong>" + user.full_name + "</strong> | Member ID: <strong>" + user.member_id + "</strong> | Phone: <strong>" + user.phone + "</strong>";
 
-            // Fetch Savings Ledger in chronological order to calculate running balance correctly
+            renderPassbookTable(user.member_id, "tbl-passbook-body", "txt-total-savings");
+        }
+
+        async function showAdminSection() {
+            document.getElementById("section-login").style.display = "none";
+            document.getElementById("section-passbook").style.display = "none";
+            document.getElementById("section-admin").style.display = "block";
+
+            // Populate Member Dropdown for Admin
+            populateAdminMemberDropdown();
+        }
+
+        async function populateAdminMemberDropdown() {
+            const { data: members } = await _supabase
+                .from('members')
+                .select('member_id, full_name')
+                .eq('role', 'member')
+                .order('member_id', { ascending: true });
+
+            var select = document.getElementById("adm-entry-mid");
+            select.innerHTML = "<option value=''>-- Choose Member --</option>";
+
+            if (members && members.length > 0) {
+                members.forEach(function(m) {
+                    var opt = document.createElement("option");
+                    opt.value = m.member_id;
+                    opt.innerText = m.member_id + " - " + m.full_name;
+                    select.appendChild(opt);
+                });
+            }
+        }
+
+        function loadAdminMemberPassbookPreview(memberId) {
+            if (!memberId) {
+                document.getElementById("tbl-admin-preview-body").innerHTML = "<tr><td colspan='5' style='text-align: center; color: #94a3b8;'>Select a member to view their passbook.</td></tr>";
+                document.getElementById("adm-passbook-target").innerText = "Select a member on the left";
+                return;
+            }
+
+            var select = document.getElementById("adm-entry-mid");
+            var selectedText = select.options[select.selectedIndex].text;
+            document.getElementById("adm-passbook-target").innerText = selectedText;
+
+            renderPassbookTable(memberId, "tbl-admin-preview-body", null);
+        }
+
+        async function renderPassbookTable(memberId, tbodyId, balanceTargetId) {
             const { data: transactions } = await _supabase
                 .from('savings_ledger')
                 .select('*')
-                .eq('member_id', user.member_id)
+                .eq('member_id', memberId)
                 .order('transaction_date', { ascending: true })
                 .order('created_at', { ascending: true });
 
             var runningBalance = 0;
             var processedRows = [];
-            var tbody = document.getElementById("tbl-passbook-body");
+            var tbody = document.getElementById(tbodyId);
             tbody.innerHTML = "";
 
             if (transactions && transactions.length > 0) {
-                // Calculate chronological running balance
                 transactions.forEach(function(row) {
                     var amt = parseFloat(row.amount);
                     var depositAmt = "-";
@@ -761,7 +821,6 @@
                     });
                 });
 
-                // Display latest transactions on top (Passbook display order)
                 processedRows.reverse().forEach(function(row) {
                     var tr = document.createElement("tr");
                     var typeLabel = row.type.toUpperCase();
@@ -785,13 +844,9 @@
                 tbody.innerHTML = "<tr><td colspan='5' style='text-align: center; padding: 20px;'>No transactions recorded yet.</td></tr>";
             }
 
-            document.getElementById("txt-total-savings").innerText = "₹ " + runningBalance.toFixed(2);
-        }
-
-        function showAdminSection() {
-            document.getElementById("section-login").style.display = "none";
-            document.getElementById("section-passbook").style.display = "none";
-            document.getElementById("section-admin").style.display = "block";
+            if (balanceTargetId) {
+                document.getElementById(balanceTargetId).innerText = "₹ " + runningBalance.toFixed(2);
+            }
         }
 
         function switchAdminTab(tab) {
@@ -826,16 +881,23 @@
                 document.getElementById("adm-new-name").value = "";
                 document.getElementById("adm-new-phone").value = "";
                 document.getElementById("adm-new-pin").value = "";
+                populateAdminMemberDropdown();
             }
         }
 
         async function handleAdminRecordTransaction(event) {
             event.preventDefault();
-            var mid = document.getElementById("adm-entry-mid").value.trim().toUpperCase();
+            var mid = document.getElementById("adm-entry-mid").value;
             var date = document.getElementById("adm-entry-date").value;
             var type = document.getElementById("adm-entry-type").value;
             var amount = parseFloat(document.getElementById("adm-entry-amount").value);
             var status = document.getElementById("adm-entry-status");
+
+            if (!mid) {
+                status.style.color = "#ef4444";
+                status.innerText = "❌ Please select a member first.";
+                return;
+            }
 
             status.style.color = "#2b5b84";
             status.innerText = "Recording transaction...";
@@ -849,8 +911,11 @@
                 status.innerText = "❌ Error: " + error.message;
             } else {
                 status.style.color = "#10b981";
-                status.innerText = "✓ Transaction recorded for " + mid + " (" + type + " ₹" + amount + ") on " + date;
+                status.innerText = "✓ Transaction recorded!";
                 document.getElementById("adm-entry-amount").value = "";
+                
+                // Immediately refresh live passbook preview for this member
+                loadAdminMemberPassbookPreview(mid);
             }
         }
 
