@@ -186,19 +186,18 @@
             gap: 15px;
         }
 
-        .upi-pay-btn {
-            background: linear-gradient(135deg, #2b5b84 0%, #1b9aaa 100%);
+        .upi-copy-btn {
+            background: #2b5b84;
             color: #ffffff;
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-weight: 800;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 0.95rem;
-            box-shadow: 0 4px 12px rgba(27, 154, 170, 0.25);
-            transition: transform 0.2s;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
         }
-        .upi-pay-btn:hover { transform: translateY(-2px); }
+        .upi-copy-btn:hover { background: #1b9aaa; }
 
         .passbook-scroll { width: 100%; overflow-x: auto; border: 1px solid #d5c8b2; border-radius: 6px; background: #ffffff; }
         .passbook-table { width: 100%; min-width: 800px; border-collapse: collapse; font-family: "Courier New", Courier, monospace; }
@@ -314,36 +313,31 @@
                     </div>
                 </div>
 
-                <!-- DYNAMIC UPI QR & DIRECT APP LINK CARD -->
+                <!-- DIRECT UPI PAY VIA COPY & QR CARD -->
                 <div class="upi-card">
                     <div>
-                        <h4 style="color: #2b5b84; font-size: 1.1rem; margin-bottom: 4px;">💳 Online Deposit via UPI / QR Code</h4>
-                        <p style="font-size: 0.85rem; color: #64748b;">Scan with Google Pay, PhonePe, Paytm, or BHIM — or tap below on mobile.</p>
-                    </div>
-
-                    <div style="display: flex; gap: 10px; align-items: center; justify-content: center;">
-                        <label style="font-weight: 700; font-size: 0.9rem; color: #475569;">Amount (₹):</label>
-                        <input type="number" id="upi-deposit-amount" class="form-control" value="200" style="width: 140px; text-align: center; font-weight: 800; font-size: 1rem;" oninput="generateDynamicUpiQr()">
+                        <h4 style="color: #2b5b84; font-size: 1.1rem; margin-bottom: 4px;">💳 Deposit via UPI / QR Code</h4>
+                        <p style="font-size: 0.85rem; color: #64748b;">Scan QR Code or copy UPI ID to pay from GPay, PhonePe, or Paytm.</p>
                     </div>
 
                     <div id="qrcode-container" style="background: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #cbd5e1; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                         <div id="qrcode"></div>
                     </div>
 
-                    <div>
-                        <a id="upi-direct-link" href="#" class="upi-pay-btn" onclick="openUpiApp(event)">
-                            Open Google Pay / PhonePe / Paytm 📲
-                        </a>
+                    <div style="background: #f1f5f9; padding: 12px 20px; border-radius: 8px; border: 1px solid #cbd5e1; display: flex; align-items: center; gap: 12px;">
+                        <span id="upi-id-display" style="font-weight: 800; color: #2b5b84; font-size: 1rem; font-family: monospace;">shubhambhabal123-2@okicici</span>
+                        <button class="upi-copy-btn" onclick="copyUpiId()">Copy UPI ID 📋</button>
                     </div>
                 </div>
 
                 <!-- UTR Submission Box -->
-                <div id="upi-utr-box" style="display: none; background: #e0f2fe; border: 1px solid #0284c7; border-radius: 10px; padding: 15px; margin-bottom: 20px;">
-                    <h5 style="color: #0369a1; margin-bottom: 6px;">Confirm Payment</h5>
-                    <p style="font-size: 0.85rem; color: #0c4a6e; margin-bottom: 10px;">After completing the payment in your UPI app, paste the 12-digit UPI Transaction Ref / UTR number below to log your deposit immediately:</p>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="upi-utr-number" class="form-control" placeholder="Enter 12-digit UTR Number" maxlength="15">
-                        <button class="book-now-btn" style="width: 180px;" onclick="submitUpiDeposit()">Submit Entry 📥</button>
+                <div id="upi-utr-box" style="background: #e0f2fe; border: 1px solid #0284c7; border-radius: 10px; padding: 18px; margin-bottom: 25px;">
+                    <h5 style="color: #0369a1; margin-bottom: 6px; font-size: 1rem;">Confirm Your Online Deposit</h5>
+                    <p style="font-size: 0.85rem; color: #0c4a6e; margin-bottom: 12px;">After completing payment in GPay/PhonePe/Paytm, enter deposit amount and 12-digit UTR/Ref Number below:</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1.5fr auto; gap: 10px;">
+                        <input type="number" id="upi-deposit-amount" class="form-control" placeholder="Amount (₹)" value="200" required>
+                        <input type="text" id="upi-utr-number" class="form-control" placeholder="12-digit UPI UTR / Ref No." maxlength="15" required>
+                        <button class="book-now-btn" style="width: 140px;" onclick="submitUpiDeposit()">Submit 📥</button>
                     </div>
                     <div id="upi-status" style="margin-top: 8px; font-weight: 600; font-size: 0.85rem;"></div>
                 </div>
@@ -497,7 +491,6 @@
         const SUPABASE_URL = "https://cmfqgudmhifddoutdgif.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtZnFndWRtaGlmZGRvdXRkZ2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1OTk5MDMsImV4cCI6MjEwOTE3NTkwM30.sq9rQYRox0Nz-PrRZC9C-8J2ldPXf8JsyJ2R05e95j0";
         
-        // Exact UPI Details Linked
         const SHG_UPI_ID = "shubhambhabal123-2@okicici"; 
         const SHG_NAME = "Anandi Self Help Group";
 
@@ -588,24 +581,16 @@
             loadMemberStats(user.member_id);
             renderPassbookTable(user.member_id, currentMemberLedgerType, "tbl-passbook-body");
             
-            // Initialize Dynamic QR Code Display
-            generateDynamicUpiQr();
+            generateStaticUpiQr();
         }
 
-        /* Dynamic QR & UPI Links */
-        function getUpiString() {
-            var amt = parseFloat(document.getElementById("upi-deposit-amount").value) || 0;
-            var note = "Deposit_" + (currentUser ? currentUser.member_id : "MEMBER");
-            
-            return "upi://pay?pa=" + encodeURIComponent(SHG_UPI_ID) + 
-                   "&pn=" + encodeURIComponent(SHG_NAME) + 
-                   "&am=" + amt.toFixed(2) + 
-                   "&cu=INR" + 
-                   "&tn=" + encodeURIComponent(note);
+        function copyUpiId() {
+            navigator.clipboard.writeText(SHG_UPI_ID);
+            alert("✓ UPI ID copied: " + SHG_UPI_ID + "\nOpen Google Pay, PhonePe, or Paytm and paste to pay!");
         }
 
-        function generateDynamicUpiQr() {
-            var upiUri = getUpiString();
+        function generateStaticUpiQr() {
+            var upiUri = "upi://pay?pa=" + encodeURIComponent(SHG_UPI_ID) + "&pn=" + encodeURIComponent(SHG_NAME) + "&cu=INR";
             var qrContainer = document.getElementById("qrcode");
             
             qrContainer.innerHTML = "";
@@ -618,21 +603,18 @@
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.M
             });
-
-            document.getElementById("upi-direct-link").href = upiUri;
-        }
-
-        function openUpiApp(event) {
-            event.preventDefault();
-            var upiUri = getUpiString();
-            window.location.href = upiUri;
-            document.getElementById("upi-utr-box").style.display = "block";
         }
 
         async function submitUpiDeposit() {
             var amt = parseFloat(document.getElementById("upi-deposit-amount").value);
             var utr = document.getElementById("upi-utr-number").value.trim();
             var status = document.getElementById("upi-status");
+
+            if (!amt || amt <= 0) {
+                status.style.color = "#ef4444";
+                status.innerText = "❌ Please enter a valid deposit amount.";
+                return;
+            }
 
             if (!utr || utr.length < 8) {
                 status.style.color = "#ef4444";
@@ -665,7 +647,6 @@
                 status.style.color = "#10b981";
                 status.innerText = "✓ Payment logged successfully! Passbook updated.";
                 document.getElementById("upi-utr-number").value = "";
-                document.getElementById("upi-utr-box").style.display = "none";
 
                 loadMemberStats(currentUser.member_id);
                 renderPassbookTable(currentUser.member_id, currentMemberLedgerType, "tbl-passbook-body");
@@ -826,7 +807,6 @@
             }
         }
 
-        /* Auto-Calculate & Fill Next Valid Member ID */
         async function generateNextMemberId() {
             const { data: members } = await _supabase
                 .from('members')
@@ -845,7 +825,7 @@
             }
 
             var nextNum = highestNum + 1;
-            var formattedId = "M" + String(nextNum).padStart(3, '0'); // e.g., M001, M002, M003
+            var formattedId = "M" + String(nextNum).padStart(3, '0');
             
             document.getElementById("adm-new-mid").value = formattedId;
         }
@@ -966,7 +946,7 @@
                 document.getElementById("adm-new-pin").value = "";
                 
                 populateAdminMemberDropdown();
-                generateNextMemberId(); // Auto-generate next valid Member ID after successful creation
+                generateNextMemberId();
             }
         }
 
