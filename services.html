@@ -207,6 +207,45 @@
         }
         .upi-copy-btn:hover { background: #1b9aaa; }
 
+        /* One-Tap App Redirect Buttons */
+        .app-btn-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            justify-content: center;
+            margin-top: 5px;
+            flex-wrap: wrap;
+        }
+
+        .app-pay-btn {
+            flex: 1;
+            min-width: 130px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 0.85rem;
+            color: #ffffff;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+        .app-pay-btn:active { transform: scale(0.98); }
+
+        .btn-gpay { background-color: #4285f4; }
+        .btn-gpay:hover { background-color: #3367d6; }
+
+        .btn-phonepe { background-color: #5f259f; }
+        .btn-phonepe:hover { background-color: #4a1c7d; }
+
+        .btn-paytm { background-color: #00baf2; }
+        .btn-paytm:hover { background-color: #0099cc; }
+
         .wa-notify-btn {
             background: #25d366;
             color: #ffffff;
@@ -339,7 +378,7 @@
                 <div class="upi-card">
                     <div>
                         <h4 style="color: #2b5b84; font-size: 1.1rem; margin-bottom: 4px;">💳 Pay Deposit via PhonePe / GPay / Paytm</h4>
-                        <p style="font-size: 0.85rem; color: #64748b;">Scan QR Code or copy Business UPI ID below to pay directly from any UPI app.</p>
+                        <p style="font-size: 0.85rem; color: #64748b;">Scan QR Code, tap your payment app, or copy UPI ID below:</p>
                     </div>
 
                     <div id="qrcode-container" style="background: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #cbd5e1; display: inline-block;">
@@ -349,6 +388,13 @@
                     <div style="background: #f1f5f9; padding: 12px 20px; border-radius: 8px; border: 1px solid #cbd5e1; display: flex; align-items: center; gap: 12px;">
                         <span id="upi-id-display" style="font-weight: 800; color: #2b5b84; font-size: 1rem; font-family: monospace;">paytm.s4mijkf@pty</span>
                         <button class="upi-copy-btn" onclick="copyUpiId()">Copy UPI ID 📋</button>
+                    </div>
+
+                    <!-- DIRECT ONE-TAP APP INTENT BUTTONS -->
+                    <div class="app-btn-group">
+                        <a href="#" onclick="openUpiApp(event, 'gpay')" class="app-pay-btn btn-gpay">📱 Google Pay</a>
+                        <a href="#" onclick="openUpiApp(event, 'phonepe')" class="app-pay-btn btn-phonepe">📱 PhonePe</a>
+                        <a href="#" onclick="openUpiApp(event, 'paytm')" class="app-pay-btn btn-paytm">📱 Paytm</a>
                     </div>
 
                     <!-- 1-TAP WHATSAPP CONFIRMATION BUTTON -->
@@ -509,10 +555,10 @@
         const SUPABASE_URL = "https://cmfqgudmhifddoutdgif.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtZnFndWRtaGlmZGRvdXRkZ2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1OTk5MDMsImV4cCI6MjEwOTE3NTkwM30.sq9rQYRox0Nz-PrRZC9C-8J2ldPXf8JsyJ2R05e95j0";
         
-        // Official Paytm Business Merchant UPI Handle
+        // Official Paytm Business Merchant Details
         const SHG_UPI_ID = "paytm.s4mijkf@pty"; 
         const SHG_NAME = "Anandi Self Help Group";
-        const ADMIN_PHONE_WA = "919561805990"; // WhatsApp notification destination
+        const ADMIN_PHONE_WA = "919561805990"; 
 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -605,6 +651,24 @@
         function copyUpiId() {
             navigator.clipboard.writeText(SHG_UPI_ID);
             alert("✓ UPI ID copied: " + SHG_UPI_ID + "\nOpen Google Pay, PhonePe, or Paytm and paste to pay!");
+        }
+
+        function openUpiApp(event, app) {
+            event.preventDefault();
+            var upiUrl = "upi://pay?pa=" + encodeURIComponent(SHG_UPI_ID) + "&pn=" + encodeURIComponent(SHG_NAME) + "&cu=INR";
+            
+            if (app === 'gpay') {
+                window.location.href = "gpay://upi/pay?pa=" + encodeURIComponent(SHG_UPI_ID) + "&pn=" + encodeURIComponent(SHG_NAME) + "&cu=INR";
+            } else if (app === 'phonepe') {
+                window.location.href = "phonepe://pay?pa=" + encodeURIComponent(SHG_UPI_ID) + "&pn=" + encodeURIComponent(SHG_NAME) + "&cu=INR";
+            } else {
+                window.location.href = upiUrl;
+            }
+
+            // Fallback to standard UPI link if app scheme fails
+            setTimeout(function() {
+                window.location.href = upiUrl;
+            }, 1200);
         }
 
         function notifyAdminPayment(event) {
