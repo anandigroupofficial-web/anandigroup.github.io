@@ -151,12 +151,12 @@
             padding: 0 20px;
         }
 
-        /* SHG Login Section Styling */
-        .shg-login-card {
+        /* SHG Card Styling */
+        .shg-card {
             background: #f8f4e9;
             border-radius: 16px;
             padding: 35px 30px;
-            max-width: 480px;
+            max-width: 750px;
             margin: 0 auto;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
             border: 1px solid #e2dcd0;
@@ -188,11 +188,11 @@
             line-height: 1.4;
         }
 
-        .shg-login-card .form-group {
+        .form-group {
             margin-bottom: 16px;
         }
 
-        .shg-login-card .form-group label {
+        .form-group label {
             display: block;
             font-size: 0.85rem;
             font-weight: 700;
@@ -201,7 +201,7 @@
             text-transform: uppercase;
         }
 
-        .shg-login-card .form-control {
+        .form-control {
             width: 100%;
             padding: 12px 14px;
             border: 1px solid #cbd5e1;
@@ -211,11 +211,11 @@
             outline: none;
         }
 
-        .shg-login-card .form-control:focus {
+        .form-control:focus {
             border-color: #1b9aaa;
         }
 
-        .shg-login-card .book-now-btn {
+        .book-now-btn {
             display: block;
             width: 100%;
             text-align: center;
@@ -230,8 +230,105 @@
             transition: background 0.2s;
         }
 
-        .shg-login-card .book-now-btn:hover {
+        .book-now-btn:hover {
             background-color: #1ebd56;
+        }
+
+        /* Dashboard UI Elements */
+        .dash-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: #ffffff;
+            padding: 18px;
+            border-radius: 10px;
+            border: 1px solid #e2dcd0;
+            text-align: center;
+        }
+
+        .stat-box h4 {
+            font-size: 0.8rem;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-box p {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #2b5b84;
+        }
+
+        .ledger-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .ledger-table th, .ledger-table td {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 0.88rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .ledger-table th {
+            background: #2b5b84;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .badge-deposit {
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        .badge-withdrawal {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .admin-tab-btns {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .admin-tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            color: #475569;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .admin-tab-btn.active {
+            background: #2b5b84;
+            color: #ffffff;
+            border-color: #2b5b84;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            float: right;
+            font-size: 0.8rem;
         }
 
         .float-wa {
@@ -301,16 +398,15 @@
         </nav>
 
         <section class="page-header">
-            <h1>SHG Banking Portal</h1>
-            <p>Access your digital passbook, track monthly savings, and view your active loan ledger.</p>
+            <h1 id="header-title">SHG Banking Portal</h1>
+            <p id="header-subtitle">Access your digital passbook, track monthly savings, and view your active loan ledger.</p>
         </section>
 
         <section class="content-container">
 
-            <!-- SHG Member Portal Section -->
-            <div class="shg-login-card">
+            <!-- 1. LOGIN CONTAINER -->
+            <div id="section-login" class="shg-card" style="max-width: 480px;">
                 <div class="shg-header">
-                    <!-- Secret trigger: Double-click 🏛️ to enable Admin mode -->
                     <span class="shg-icon" title="SHG Portal" ondblclick="enableAdminMode()">🏛️</span>
                     <h2 id="shg-title">SHG Member Passbook</h2>
                     <p id="shg-subtitle">Enter your Mobile Number and Security PIN to view your savings and loan ledger.</p>
@@ -331,6 +427,102 @@
                 </form>
 
                 <div id="login-status" style="margin-top: 15px; text-align: center; font-size: 0.9rem; font-weight: 600;"></div>
+            </div>
+
+            <!-- 2. MEMBER PASSBOOK CONTAINER -->
+            <div id="section-passbook" class="shg-card" style="display: none;">
+                <button class="logout-btn" onclick="handleLogout()">Logout 🚪</button>
+                <h3 id="welcome-member-name" style="color:#2b5b84; margin-bottom: 20px;">Digital Passbook</h3>
+                
+                <div class="dash-stats">
+                    <div class="stat-box">
+                        <h4>Total Savings Balance</h4>
+                        <p id="txt-total-savings">₹ 0.00</p>
+                    </div>
+                    <div class="stat-box">
+                        <h4>Active Loan Balance</h4>
+                        <p id="txt-loan-balance">₹ 0.00</p>
+                    </div>
+                </div>
+
+                <h4 style="color: #2b5b84; margin-top: 25px; margin-bottom: 10px;">Transaction History</h4>
+                <div style="overflow-x: auto;">
+                    <table class="ledger-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl-passbook-body">
+                            <tr><td colspan="3" style="text-align: center;">Loading ledger history...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 3. ADMIN DASHBOARD CONTAINER -->
+            <div id="section-admin" class="shg-card" style="display: none;">
+                <button class="logout-btn" onclick="handleLogout()">Logout 🚪</button>
+                <h3 style="color:#2b5b84; margin-bottom: 20px;">Master Admin Ledger Portal</h3>
+
+                <div class="admin-tab-btns">
+                    <button id="tab-btn-entry" class="admin-tab-btn active" onclick="switchAdminTab('entry')">Record Transaction</button>
+                    <button id="tab-btn-member" class="admin-tab-btn" onclick="switchAdminTab('member')">Register New Member</button>
+                </div>
+
+                <!-- Admin Tab 1: Record Transaction / Backlog Entry -->
+                <div id="admin-tab-entry">
+                    <form onsubmit="handleAdminRecordTransaction(event)">
+                        <div class="form-group">
+                            <label>Target Member ID</label>
+                            <input type="text" id="adm-entry-mid" class="form-control" placeholder="e.g. M101" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Transaction Date (Use past date for Backlog entry)</label>
+                            <input type="date" id="adm-entry-date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Transaction Type</label>
+                            <select id="adm-entry-type" class="form-control" required>
+                                <option value="deposit">Deposit (Savings Entry)</option>
+                                <option value="withdrawal">Withdrawal / Loan Issued</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Amount (₹)</label>
+                            <input type="number" step="0.01" id="adm-entry-amount" class="form-control" placeholder="Enter amount" required>
+                        </div>
+                        <button type="submit" class="book-now-btn">Save to Master Ledger 💾</button>
+                    </form>
+                    <div id="adm-entry-status" style="margin-top: 15px; text-align: center; font-weight: 600;"></div>
+                </div>
+
+                <!-- Admin Tab 2: Add New Member -->
+                <div id="admin-tab-member" style="display: none;">
+                    <form onsubmit="handleAdminCreateMember(event)">
+                        <div class="form-group">
+                            <label>Member ID (e.g., M101)</label>
+                            <input type="text" id="adm-new-mid" class="form-control" placeholder="e.g. M101" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="adm-new-name" class="form-control" placeholder="Enter member full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mobile Number</label>
+                            <input type="text" id="adm-new-phone" class="form-control" placeholder="10-digit mobile number" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Security PIN</label>
+                            <input type="password" id="adm-new-pin" class="form-control" placeholder="Assign 4-digit PIN" required>
+                        </div>
+                        <button type="submit" class="book-now-btn">Register Member 👤</button>
+                    </form>
+                    <div id="adm-member-status" style="margin-top: 15px; text-align: center; font-weight: 600;"></div>
+                </div>
+
             </div>
 
         </section>
@@ -354,11 +546,24 @@
 
         var currentRole = "member";
 
-        // Auto-detect ?admin=true parameter in URL
         window.addEventListener('DOMContentLoaded', function() {
             var urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('admin') === 'true') {
                 enableAdminMode();
+            }
+
+            // Set today as default date in admin entry form
+            document.getElementById("adm-entry-date").valueAsDate = new Date();
+
+            // Auto-load session if already logged in
+            var savedUser = sessionStorage.getItem('shg_user');
+            if (savedUser) {
+                var user = JSON.parse(savedUser);
+                if (user.role === 'admin') {
+                    showAdminSection();
+                } else {
+                    showPassbookSection(user);
+                }
             }
         });
 
@@ -366,7 +571,6 @@
             document.getElementById("navLinks").classList.toggle("active");
         }
 
-        // Hidden function activated by double clicking 🏛️
         function enableAdminMode() {
             currentRole = "admin";
             document.getElementById("shg-title").innerText = "SHG Master Admin Portal";
@@ -390,43 +594,151 @@
             status.innerText = "Verifying credentials with database...";
 
             try {
-                // Query database for matching member or admin record
                 const { data, error } = await _supabase
                     .from('members')
                     .select('*')
-                    .or(`phone.eq.${identifier},member_id.eq.${identifier}`)
-                    .eq('pin', pin)
-                    .single();
+                    .or(`member_id.ilike.${identifier},phone.eq.${identifier}`)
+                    .eq('pin', pin);
 
-                if (error || !data) {
+                if (error || !data || data.length === 0) {
                     status.style.color = "#ef4444";
                     status.innerText = "❌ Invalid Member ID/Phone or PIN. Please check and try again.";
                     return;
                 }
 
-                if (currentRole === "admin" && data.role !== "admin") {
+                var user = data[0];
+
+                if (currentRole === "admin" && user.role !== "admin") {
                     status.style.color = "#ef4444";
                     status.innerText = "⚠️ Access Denied: This account does not have Admin privileges.";
                     return;
                 }
 
                 status.style.color = "#10b981";
-                status.innerText = "✓ Authentication successful! Loading ledger...";
+                status.innerText = "✓ Authentication successful!";
 
-                // Store logged-in user details in local session
-                sessionStorage.setItem('shg_user', JSON.stringify(data));
+                sessionStorage.setItem('shg_user', JSON.stringify(user));
 
-                // Redirect to passbook view or admin dashboard view
                 setTimeout(function() {
-                    alert("Welcome " + data.full_name + "! You are logged in as " + data.role.toUpperCase() + ".");
-                    // Next step: Load member passbook ledger view
-                }, 800);
+                    if (user.role === 'admin') {
+                        showAdminSection();
+                    } else {
+                        showPassbookSection(user);
+                    }
+                }, 400);
 
             } catch (err) {
                 console.error(err);
                 status.style.color = "#ef4444";
                 status.innerText = "⚠️ Connection error. Please try again.";
             }
+        }
+
+        async function showPassbookSection(user) {
+            document.getElementById("section-login").style.display = "none";
+            document.getElementById("section-admin").style.display = "none";
+            document.getElementById("section-passbook").style.display = "block";
+
+            document.getElementById("welcome-member-name").innerText = "Passbook: " + user.full_name + " (" + user.member_id + ")";
+
+            // Fetch Savings Ledger
+            const { data: savings } = await _supabase
+                .from('savings_ledger')
+                .select('*')
+                .eq('member_id', user.member_id)
+                .order('transaction_date', { ascending: false });
+
+            var totalSavings = 0;
+            var tbody = document.getElementById("tbl-passbook-body");
+            tbody.innerHTML = "";
+
+            if (savings && savings.length > 0) {
+                savings.forEach(function(row) {
+                    if (row.type === 'deposit') totalSavings += parseFloat(row.amount);
+                    else totalSavings -= parseFloat(row.amount);
+
+                    var tr = document.createElement("tr");
+                    tr.innerHTML = "<td>" + row.transaction_date + "</td>" +
+                                   "<td class='badge-" + row.type + "'>" + row.type.toUpperCase() + "</td>" +
+                                   "<td>₹ " + parseFloat(row.amount).toFixed(2) + "</td>";
+                    tbody.appendChild(tr);
+                });
+            } else {
+                tbody.innerHTML = "<tr><td colspan='3' style='text-align: center;'>No transactions recorded yet.</td></tr>";
+            }
+
+            document.getElementById("txt-total-savings").innerText = "₹ " + totalSavings.toFixed(2);
+        }
+
+        function showAdminSection() {
+            document.getElementById("section-login").style.display = "none";
+            document.getElementById("section-passbook").style.display = "none";
+            document.getElementById("section-admin").style.display = "block";
+        }
+
+        function switchAdminTab(tab) {
+            document.getElementById("tab-btn-entry").classList.toggle("active", tab === 'entry');
+            document.getElementById("tab-btn-member").classList.toggle("active", tab === 'member');
+            document.getElementById("admin-tab-entry").style.display = (tab === 'entry') ? "block" : "none";
+            document.getElementById("admin-tab-member").style.display = (tab === 'member') ? "block" : "none";
+        }
+
+        async function handleAdminCreateMember(event) {
+            event.preventDefault();
+            var mid = document.getElementById("adm-new-mid").value.trim().toUpperCase();
+            var name = document.getElementById("adm-new-name").value.trim();
+            var phone = document.getElementById("adm-new-phone").value.trim();
+            var pin = document.getElementById("adm-new-pin").value.trim();
+            var status = document.getElementById("adm-member-status");
+
+            status.style.color = "#2b5b84";
+            status.innerText = "Registering member...";
+
+            const { data, error } = await _supabase
+                .from('members')
+                .insert([{ member_id: mid, full_name: name, phone: phone, pin: pin, role: 'member' }]);
+
+            if (error) {
+                status.style.color = "#ef4444";
+                status.innerText = "❌ Error: " + error.message;
+            } else {
+                status.style.color = "#10b981";
+                status.innerText = "✓ Member " + name + " (" + mid + ") registered successfully!";
+                document.getElementById("adm-new-mid").value = "";
+                document.getElementById("adm-new-name").value = "";
+                document.getElementById("adm-new-phone").value = "";
+                document.getElementById("adm-new-pin").value = "";
+            }
+        }
+
+        async function handleAdminRecordTransaction(event) {
+            event.preventDefault();
+            var mid = document.getElementById("adm-entry-mid").value.trim().toUpperCase();
+            var date = document.getElementById("adm-entry-date").value;
+            var type = document.getElementById("adm-entry-type").value;
+            var amount = parseFloat(document.getElementById("adm-entry-amount").value);
+            var status = document.getElementById("adm-entry-status");
+
+            status.style.color = "#2b5b84";
+            status.innerText = "Recording transaction...";
+
+            const { data, error } = await _supabase
+                .from('savings_ledger')
+                .insert([{ member_id: mid, transaction_date: date, type: type, amount: amount }]);
+
+            if (error) {
+                status.style.color = "#ef4444";
+                status.innerText = "❌ Error: " + error.message;
+            } else {
+                status.style.color = "#10b981";
+                status.innerText = "✓ Transaction recorded for " + mid + " (" + type + " ₹" + amount + ") on " + date;
+                document.getElementById("adm-entry-amount").value = "";
+            }
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem('shg_user');
+            window.location.reload();
         }
     </script>
 
