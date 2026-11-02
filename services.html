@@ -9,13 +9,11 @@
     <title>Anandi Services | Self Help Group Member Portal</title>
     <meta name="description" content="Official Self Help Group community banking portal for managing member savings, digital passbooks, and loan ledgers.">
     <meta name="keywords" content="SHG portal, Self Help Group passbook, community banking, Anandi Services">
-    <meta property="og:title" content="Anandi Services | SHG Member Portal">
-    <meta property="og:description" content="Digital passbook and savings ledger portal for Self Help Group members.">
-    <meta property="og:url" content="https://anandigroup.in/services.html">
-    <meta property="og:image" content="https://anandigroup.in/logo.png">
 
     <!-- Supabase JS Client SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Dynamic QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         * {
@@ -102,9 +100,7 @@
             transition: color 0.2s;
         }
 
-        .nav-links a:hover, .nav-links a.active {
-            color: #1b9aaa;
-        }
+        .nav-links a:hover, .nav-links a.active { color: #1b9aaa; }
 
         .nav-cta-btn {
             background-color: #1b9aaa;
@@ -130,18 +126,8 @@
             color: #ffffff;
         }
 
-        .page-header h1 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-
-        .page-header p {
-            font-size: 1rem;
-            color: #f8f4e9;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        .page-header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
+        .page-header p { font-size: 1rem; color: #f8f4e9; max-width: 800px; margin: 0 auto; }
 
         .content-container {
             max-width: 1250px;
@@ -186,6 +172,34 @@
         .stat-box h4 { font-size: 0.78rem; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
         .stat-box p { font-size: 1.5rem; font-weight: 800; color: #2b5b84; font-family: "Courier New", Courier, monospace; }
 
+        /* UPI Payment Card */
+        .upi-card {
+            background: #ffffff;
+            border: 2px dashed #1b9aaa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 15px;
+        }
+
+        .upi-pay-btn {
+            background: linear-gradient(135deg, #2b5b84 0%, #1b9aaa 100%);
+            color: #ffffff;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 800;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(27, 154, 170, 0.25);
+            transition: transform 0.2s;
+        }
+        .upi-pay-btn:hover { transform: translateY(-2px); }
+
         .passbook-scroll { width: 100%; overflow-x: auto; border: 1px solid #d5c8b2; border-radius: 6px; background: #ffffff; }
         .passbook-table { width: 100%; min-width: 800px; border-collapse: collapse; font-family: "Courier New", Courier, monospace; }
         .passbook-table th {
@@ -216,6 +230,14 @@
 
         .float-wa { position: fixed; bottom: 25px; right: 25px; background-color: #25d366; color: #ffffff; border-radius: 50px; padding: 12px 22px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); z-index: 1000; }
         footer { text-align: center; padding: 30px 20px; background: #f8f4e9; border-top: 1px solid #e2dcd0; margin-top: auto; font-size: 0.9rem; color: #94a3b8; }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn { display: block; }
+            .nav-links {
+                display: none; flex-direction: column; position: absolute; top: 80px; left: 0; width: 100%; background-color: #f8f4e9; padding: 20px; box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05); border-top: 1px solid #e2dcd0;
+            }
+            .nav-links.active { display: flex; }
+        }
     </style>
 </head>
 <body>
@@ -292,6 +314,40 @@
                     </div>
                 </div>
 
+                <!-- DYNAMIC UPI QR & DIRECT APP LINK CARD -->
+                <div class="upi-card">
+                    <div>
+                        <h4 style="color: #2b5b84; font-size: 1.1rem; margin-bottom: 4px;">💳 Online Deposit via UPI / QR Code</h4>
+                        <p style="font-size: 0.85rem; color: #64748b;">Scan with Google Pay, PhonePe, Paytm, or BHIM — or tap below on mobile.</p>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; align-items: center; justify-content: center;">
+                        <label style="font-weight: 700; font-size: 0.9rem; color: #475569;">Amount (₹):</label>
+                        <input type="number" id="upi-deposit-amount" class="form-control" value="200" style="width: 140px; text-align: center; font-weight: 800; font-size: 1rem;" oninput="generateDynamicUpiQr()">
+                    </div>
+
+                    <div id="qrcode-container" style="background: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #cbd5e1; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                        <div id="qrcode"></div>
+                    </div>
+
+                    <div>
+                        <a id="upi-direct-link" href="#" class="upi-pay-btn" onclick="openUpiApp(event)">
+                            Open Google Pay / PhonePe / Paytm 📲
+                        </a>
+                    </div>
+                </div>
+
+                <!-- UTR Submission Box -->
+                <div id="upi-utr-box" style="display: none; background: #e0f2fe; border: 1px solid #0284c7; border-radius: 10px; padding: 15px; margin-bottom: 20px;">
+                    <h5 style="color: #0369a1; margin-bottom: 6px;">Confirm Payment</h5>
+                    <p style="font-size: 0.85rem; color: #0c4a6e; margin-bottom: 10px;">After completing the payment in your UPI app, paste the 12-digit UPI Transaction Ref / UTR number below to log your deposit immediately:</p>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="upi-utr-number" class="form-control" placeholder="Enter 12-digit UTR Number" maxlength="15">
+                        <button class="book-now-btn" style="width: 180px;" onclick="submitUpiDeposit()">Submit Entry 📥</button>
+                    </div>
+                    <div id="upi-status" style="margin-top: 8px; font-weight: 600; font-size: 0.85rem;"></div>
+                </div>
+
                 <!-- Ledger Selector Toggle -->
                 <div class="ledger-toggle-btns">
                     <button id="btn-toggle-savings" class="ledger-toggle-btn active" onclick="switchMemberLedgerView('savings')">Savings Passbook (1% Interest Earned)</button>
@@ -316,7 +372,7 @@
                 </div>
             </div>
 
-            <!-- 3. ADMIN DASHBOARD WITH LIVE PREVIEW -->
+            <!-- 3. ADMIN DASHBOARD -->
             <div id="section-admin" class="shg-card" style="display: none; max-width: 1150px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h3 style="color:#2b5b84;">Master Admin Ledger Portal</h3>
@@ -441,6 +497,10 @@
         const SUPABASE_URL = "https://cmfqgudmhifddoutdgif.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtZnFndWRtaGlmZGRvdXRkZ2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1OTk5MDMsImV4cCI6MjEwOTE3NTkwM30.sq9rQYRox0Nz-PrRZC9C-8J2ldPXf8JsyJ2R05e95j0";
         
+        // Exact UPI Details Linked
+        const SHG_UPI_ID = "shubhambhabal123-2@okicici"; 
+        const SHG_NAME = "Anandi Self Help Group";
+
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         var currentUser = null;
@@ -527,10 +587,92 @@
 
             loadMemberStats(user.member_id);
             renderPassbookTable(user.member_id, currentMemberLedgerType, "tbl-passbook-body");
+            
+            // Initialize Dynamic QR Code Display
+            generateDynamicUpiQr();
+        }
+
+        /* Dynamic QR & UPI Links */
+        function getUpiString() {
+            var amt = parseFloat(document.getElementById("upi-deposit-amount").value) || 0;
+            var note = "Deposit_" + (currentUser ? currentUser.member_id : "MEMBER");
+            
+            return "upi://pay?pa=" + encodeURIComponent(SHG_UPI_ID) + 
+                   "&pn=" + encodeURIComponent(SHG_NAME) + 
+                   "&am=" + amt.toFixed(2) + 
+                   "&cu=INR" + 
+                   "&tn=" + encodeURIComponent(note);
+        }
+
+        function generateDynamicUpiQr() {
+            var upiUri = getUpiString();
+            var qrContainer = document.getElementById("qrcode");
+            
+            qrContainer.innerHTML = "";
+
+            new QRCode(qrContainer, {
+                text: upiUri,
+                width: 160,
+                height: 160,
+                colorDark: "#1e293b",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+
+            document.getElementById("upi-direct-link").href = upiUri;
+        }
+
+        function openUpiApp(event) {
+            event.preventDefault();
+            var upiUri = getUpiString();
+            window.location.href = upiUri;
+            document.getElementById("upi-utr-box").style.display = "block";
+        }
+
+        async function submitUpiDeposit() {
+            var amt = parseFloat(document.getElementById("upi-deposit-amount").value);
+            var utr = document.getElementById("upi-utr-number").value.trim();
+            var status = document.getElementById("upi-status");
+
+            if (!utr || utr.length < 8) {
+                status.style.color = "#ef4444";
+                status.innerText = "❌ Please enter a valid 12-digit UTR/Ref number.";
+                return;
+            }
+
+            status.style.color = "#0284c7";
+            status.innerText = "Logging payment...";
+
+            var today = new Date().toISOString().split('T')[0];
+
+            const { data, error } = await _supabase
+                .from('savings_ledger')
+                .insert([{
+                    member_id: currentUser.member_id,
+                    transaction_date: today,
+                    type: 'deposit',
+                    amount: amt,
+                    payment_ref: utr,
+                    payment_status: 'completed'
+                }]);
+
+            if (error) {
+                status.style.color = "#ef4444";
+                status.innerText = "❌ Error: " + error.message;
+            } else {
+                await _supabase.rpc('trigger_recalculate_all');
+
+                status.style.color = "#10b981";
+                status.innerText = "✓ Payment logged successfully! Passbook updated.";
+                document.getElementById("upi-utr-number").value = "";
+                document.getElementById("upi-utr-box").style.display = "none";
+
+                loadMemberStats(currentUser.member_id);
+                renderPassbookTable(currentUser.member_id, currentMemberLedgerType, "tbl-passbook-body");
+            }
         }
 
         async function loadMemberStats(memberId) {
-            // Compute Savings Total
             const { data: sav } = await _supabase.from('savings_ledger').select('amount, type').eq('member_id', memberId);
             var savTot = 0;
             if (sav) {
@@ -541,7 +683,6 @@
             }
             document.getElementById("txt-total-savings").innerText = "₹ " + savTot.toFixed(2);
 
-            // Compute Loan Total
             const { data: loan } = await _supabase.from('loan_transactions').select('amount, type').eq('member_id', memberId);
             var loanTot = 0;
             if (loan) {
@@ -599,7 +740,6 @@
                             colMinus = "₹ " + amt.toFixed(2);
                         }
                     } else {
-                        // Loan Ledger Logic
                         if (row.type === 'disbursement' || row.type === 'interest_charge') {
                             runningBalance += amt;
                             colPlus = "₹ " + amt.toFixed(2);
@@ -614,7 +754,8 @@
                         type: row.type,
                         plus: colPlus,
                         minus: colMinus,
-                        balance: "₹ " + runningBalance.toFixed(2)
+                        balance: "₹ " + runningBalance.toFixed(2),
+                        ref: row.payment_ref
                     });
                 });
 
@@ -635,6 +776,10 @@
                     if (row.type === 'repayment') {
                         typeLabel = "LOAN REPAYMENT";
                         typeClass = "txt-deposit";
+                    }
+
+                    if (row.ref) {
+                        typeLabel += " (UPI: " + row.ref + ")";
                     }
 
                     tr.innerHTML = 
@@ -733,45 +878,42 @@
         }
 
         async function handleAdminRecordTransaction(event) {
-    event.preventDefault();
-    var mid = document.getElementById("adm-entry-mid").value;
-    var cat = document.getElementById("adm-entry-category").value;
-    var date = document.getElementById("adm-entry-date").value;
-    var type = document.getElementById("adm-entry-type").value;
-    var amount = parseFloat(document.getElementById("adm-entry-amount").value);
-    var status = document.getElementById("adm-entry-status");
+            event.preventDefault();
+            var mid = document.getElementById("adm-entry-mid").value;
+            var cat = document.getElementById("adm-entry-category").value;
+            var date = document.getElementById("adm-entry-date").value;
+            var type = document.getElementById("adm-entry-type").value;
+            var amount = parseFloat(document.getElementById("adm-entry-amount").value);
+            var status = document.getElementById("adm-entry-status");
 
-    if (!mid) {
-        status.style.color = "#ef4444";
-        status.innerText = "❌ Please select a member first.";
-        return;
-    }
+            if (!mid) {
+                status.style.color = "#ef4444";
+                status.innerText = "❌ Please select a member first.";
+                return;
+            }
 
-    status.style.color = "#2b5b84";
-    status.innerText = "Recording & calculating interest...";
+            status.style.color = "#2b5b84";
+            status.innerText = "Recording & calculating interest...";
 
-    var tableName = (cat === 'savings') ? 'savings_ledger' : 'loan_transactions';
+            var tableName = (cat === 'savings') ? 'savings_ledger' : 'loan_transactions';
 
-    // 1. Insert new entry into ledger
-    const { data, error } = await _supabase
-        .from(tableName)
-        .insert([{ member_id: mid, transaction_date: date, type: type, amount: amount }]);
+            const { data, error } = await _supabase
+                .from(tableName)
+                .insert([{ member_id: mid, transaction_date: date, type: type, amount: amount }]);
 
-    if (error) {
-        status.style.color = "#ef4444";
-        status.innerText = "❌ Error: " + error.message;
-    } else {
-        // 2. Automatically trigger recalculation of 1% savings & 2% loan interest
-        await _supabase.rpc('trigger_recalculate_all');
+            if (error) {
+                status.style.color = "#ef4444";
+                status.innerText = "❌ Error: " + error.message;
+            } else {
+                await _supabase.rpc('trigger_recalculate_all');
 
-        status.style.color = "#10b981";
-        status.innerText = "✓ Entry saved & interest recalculated automatically!";
-        document.getElementById("adm-entry-amount").value = "";
-        
-        // 3. Immediately refresh live passbook preview
-        loadAdminMemberPassbookPreview(mid);
-    }
-}
+                status.style.color = "#10b981";
+                status.innerText = "✓ Entry saved & interest recalculated!";
+                document.getElementById("adm-entry-amount").value = "";
+                
+                loadAdminMemberPassbookPreview(mid);
+            }
+        }
 
         async function handleAdminCreateMember(event) {
             event.preventDefault();
