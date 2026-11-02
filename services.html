@@ -199,6 +199,20 @@
         }
         .upi-copy-btn:hover { background: #1b9aaa; }
 
+        .wa-notify-btn {
+            background: #25d366;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 800;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+            transition: transform 0.2s;
+        }
+        .wa-notify-btn:hover { transform: translateY(-2px); background: #1ebd56; }
+
         .passbook-scroll { width: 100%; overflow-x: auto; border: 1px solid #d5c8b2; border-radius: 6px; background: #ffffff; }
         .passbook-table { width: 100%; min-width: 800px; border-collapse: collapse; font-family: "Courier New", Courier, monospace; }
         .passbook-table th {
@@ -313,11 +327,11 @@
                     </div>
                 </div>
 
-                <!-- DIRECT UPI PAY VIA COPY & QR CARD -->
+                <!-- EASY DIRECT PAYMENT & ONE-TAP NOTIFY CARD -->
                 <div class="upi-card">
                     <div>
-                        <h4 style="color: #2b5b84; font-size: 1.1rem; margin-bottom: 4px;">💳 Deposit via UPI / QR Code</h4>
-                        <p style="font-size: 0.85rem; color: #64748b;">Scan QR Code or copy UPI ID to pay from GPay, PhonePe, or Paytm.</p>
+                        <h4 style="color: #2b5b84; font-size: 1.1rem; margin-bottom: 4px;">💳 Pay Deposit via PhonePe / GPay / Paytm</h4>
+                        <p style="font-size: 0.85rem; color: #64748b;">Scan QR Code or copy UPI ID below to pay directly from your payment app.</p>
                     </div>
 
                     <div id="qrcode-container" style="background: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #cbd5e1; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
@@ -328,18 +342,14 @@
                         <span id="upi-id-display" style="font-weight: 800; color: #2b5b84; font-size: 1rem; font-family: monospace;">shubhambhabal123-2@okicici</span>
                         <button class="upi-copy-btn" onclick="copyUpiId()">Copy UPI ID 📋</button>
                     </div>
-                </div>
 
-                <!-- UTR Submission Box -->
-                <div id="upi-utr-box" style="background: #e0f2fe; border: 1px solid #0284c7; border-radius: 10px; padding: 18px; margin-bottom: 25px;">
-                    <h5 style="color: #0369a1; margin-bottom: 6px; font-size: 1rem;">Confirm Your Online Deposit</h5>
-                    <p style="font-size: 0.85rem; color: #0c4a6e; margin-bottom: 12px;">After completing payment in GPay/PhonePe/Paytm, enter deposit amount and 12-digit UTR/Ref Number below:</p>
-                    <div style="display: grid; grid-template-columns: 1fr 1.5fr auto; gap: 10px;">
-                        <input type="number" id="upi-deposit-amount" class="form-control" placeholder="Amount (₹)" value="200" required>
-                        <input type="text" id="upi-utr-number" class="form-control" placeholder="12-digit UPI UTR / Ref No." maxlength="15" required>
-                        <button class="book-now-btn" style="width: 140px;" onclick="submitUpiDeposit()">Submit 📥</button>
+                    <!-- 1-TAP WHATSAPP CONFIRMATION BUTTON -->
+                    <div style="margin-top: 10px; border-top: 1px dashed #cbd5e1; pt-15; width: 100%; text-align: center;">
+                        <p style="font-size: 0.85rem; color: #475569; margin-bottom: 10px; margin-top: 10px;">Done with payment? Tap below to notify Admin automatically:</p>
+                        <a href="#" class="wa-notify-btn" onclick="notifyAdminPayment(event)">
+                            ✅ Done Payment (Notify Admin on WhatsApp)
+                        </a>
                     </div>
-                    <div id="upi-status" style="margin-top: 8px; font-weight: 600; font-size: 0.85rem;"></div>
                 </div>
 
                 <!-- Ledger Selector Toggle -->
@@ -493,6 +503,7 @@
         
         const SHG_UPI_ID = "shubhambhabal123-2@okicici"; 
         const SHG_NAME = "Anandi Self Help Group";
+        const ADMIN_PHONE_WA = "919561805990"; // WhatsApp notification destination
 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -605,52 +616,11 @@
             });
         }
 
-        async function submitUpiDeposit() {
-            var amt = parseFloat(document.getElementById("upi-deposit-amount").value);
-            var utr = document.getElementById("upi-utr-number").value.trim();
-            var status = document.getElementById("upi-status");
-
-            if (!amt || amt <= 0) {
-                status.style.color = "#ef4444";
-                status.innerText = "❌ Please enter a valid deposit amount.";
-                return;
-            }
-
-            if (!utr || utr.length < 8) {
-                status.style.color = "#ef4444";
-                status.innerText = "❌ Please enter a valid 12-digit UTR/Ref number.";
-                return;
-            }
-
-            status.style.color = "#0284c7";
-            status.innerText = "Logging payment...";
-
-            var today = new Date().toISOString().split('T')[0];
-
-            const { data, error } = await _supabase
-                .from('savings_ledger')
-                .insert([{
-                    member_id: currentUser.member_id,
-                    transaction_date: today,
-                    type: 'deposit',
-                    amount: amt,
-                    payment_ref: utr,
-                    payment_status: 'completed'
-                }]);
-
-            if (error) {
-                status.style.color = "#ef4444";
-                status.innerText = "❌ Error: " + error.message;
-            } else {
-                await _supabase.rpc('trigger_recalculate_all');
-
-                status.style.color = "#10b981";
-                status.innerText = "✓ Payment logged successfully! Passbook updated.";
-                document.getElementById("upi-utr-number").value = "";
-
-                loadMemberStats(currentUser.member_id);
-                renderPassbookTable(currentUser.member_id, currentMemberLedgerType, "tbl-passbook-body");
-            }
+        function notifyAdminPayment(event) {
+            event.preventDefault();
+            var msg = "Hi Admin, I (" + currentUser.member_id + " - " + currentUser.full_name + ") have completed my deposit via UPI. Please confirm and update my passbook.";
+            var waUrl = "https://wa.me/" + ADMIN_PHONE_WA + "?text=" + encodeURIComponent(msg);
+            window.open(waUrl, '_blank');
         }
 
         async function loadMemberStats(memberId) {
