@@ -6,11 +6,11 @@
     
     <link rel="icon" type="image/png" href="logo.png">
 
-    <title>Anandi Services | Financial Consultancy, Business Advisory & SHG Portal</title>
-    <meta name="description" content="Professional financial planning, business registration, capital advisory, corporate compliance, and Self Help Group community banking portal.">
-    <meta name="keywords" content="financial consultancy Maharashtra, business advisory, tax planning support, startup setup consulting, SHG passbook, Anandi Services">
-    <meta property="og:title" content="Anandi Services | Financial & Business Advisory">
-    <meta property="og:description" content="Strategic financial advisory, business setup support, corporate compliance consulting, and SHG community banking.">
+    <title>Anandi Services | Self Help Group Member Portal</title>
+    <meta name="description" content="Official Self Help Group community banking portal for managing member savings, digital passbooks, and loan ledgers.">
+    <meta name="keywords" content="SHG portal, Self Help Group passbook, community banking, Anandi Services">
+    <meta property="og:title" content="Anandi Services | SHG Member Portal">
+    <meta property="og:description" content="Digital passbook and savings ledger portal for Self Help Group members.">
     <meta property="og:url" content="https://anandigroup.in/services.html">
     <meta property="og:image" content="https://anandigroup.in/logo.png">
 
@@ -153,8 +153,8 @@
             background: #f8f4e9;
             border-radius: 16px;
             padding: 35px 30px;
-            max-width: 500px;
-            margin: 0 auto 50px;
+            max-width: 480px;
+            margin: 0 auto;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
             border: 1px solid #e2dcd0;
         }
@@ -231,77 +231,6 @@
             background-color: #1ebd56;
         }
 
-        /* Services Grid Styling */
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .card {
-            background: #f8f4e9;
-            border-radius: 12px;
-            padding: 35px 30px;
-            border: 1px solid #e2dcd0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
-        }
-
-        .card h3 {
-            font-size: 1.4rem;
-            color: #2b5b84;
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-
-        .card p {
-            color: #64748b;
-            line-height: 1.6;
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-        }
-
-        .feature-list {
-            list-style: none;
-            margin-bottom: 25px;
-        }
-
-        .feature-list li {
-            font-size: 0.95rem;
-            color: #334155;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-        }
-
-        .btn-wa {
-            display: inline-block;
-            width: 100%;
-            text-align: center;
-            background-color: #25d366;
-            color: #ffffff;
-            text-decoration: none;
-            padding: 12px 0;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            transition: background 0.2s;
-        }
-
-        .btn-wa:hover {
-            background-color: #1ebd56;
-        }
-
         .float-wa {
             position: fixed;
             bottom: 25px;
@@ -369,8 +298,8 @@
         </nav>
 
         <section class="page-header">
-            <h1>Anandi Services</h1>
-            <p>Professional business advisory, financial planning, management consulting, and community Self Help Group passbook portal.</p>
+            <h1>SHG Banking Portal</h1>
+            <p>Access your digital passbook, track monthly savings, and view your active loan ledger.</p>
         </section>
 
         <section class="content-container">
@@ -395,60 +324,15 @@
                         <input type="password" id="shg-password" class="form-control" placeholder="Enter PIN" required>
                     </div>
 
-                    <button type="submit" id="shg-submit-btn" class="book-now-btn">View Passbook 🔐</button>
+                    <button type="submit" id="shg-submit-btn" class="book-now-btn">Login 🔐</button>
                 </form>
 
                 <div id="login-status" style="margin-top: 15px; text-align: center; font-size: 0.9rem; font-weight: 600;"></div>
             </div>
 
-            <!-- Standard Advisory Services Grid -->
-            <div class="grid-3">
-                <div class="card">
-                    <div>
-                        <h3>Financial Advisory</h3>
-                        <p>Strategic financial planning, capital advisory, and working capital optimization for expanding enterprises.</p>
-                        <ul class="feature-list">
-                            <li>📊 Cash Flow Management</li>
-                            <li>📈 Capital Budgeting & Investment Planning</li>
-                            <li>💼 Corporate Financial Restructuring</li>
-                            <li>📝 Risk & Portfolio Management</li>
-                        </ul>
-                    </div>
-                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Services,%20I%20would%20like%20to%20consult%20regarding%20Financial%20Advisory." class="btn-wa" target="_blank">Book Consultation</a>
-                </div>
-
-                <div class="card">
-                    <div>
-                        <h3>Business Consultancy</h3>
-                        <p>End-to-end guidance for business formation, operational efficiency, and corporate compliance.</p>
-                        <ul class="feature-list">
-                            <li>🚀 Startup Business Setup Support</li>
-                            <li>📜 Registration & Licensing Guidance</li>
-                            <li>⚙ Process & Workflow Optimization</li>
-                            <li>🤝 Strategic Partnerships & Growth</li>
-                        </ul>
-                    </div>
-                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Services,%20I%20am%20interested%20in%20Business%20Consultancy." class="btn-wa" target="_blank">Inquire Business Services</a>
-                </div>
-
-                <div class="card">
-                    <div>
-                        <h3>Tax & Compliance Support</h3>
-                        <p>Expert consulting to help your organization maintain regulatory compliance and optimal tax strategies.</p>
-                        <ul class="feature-list">
-                            <li>📑 Tax Planning & Strategy</li>
-                            <li>🛡 Statutory Compliance Audits</li>
-                            <li>🔍 Document Review & Advisory</li>
-                            <li>🏛 Regulatory Documentation Support</li>
-                        </ul>
-                    </div>
-                    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Services,%20I%20need%20Tax%20and%20Compliance%20Advisory." class="btn-wa" target="_blank">Consult Tax Specialist</a>
-                </div>
-            </div>
-
         </section>
 
-        <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Services,%20I%20have%20a%20consulting%20inquiry." class="float-wa" target="_blank">
+        <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Services,%20I%20have%20an%20SHG%20portal%20inquiry." class="float-wa" target="_blank">
             💬 Chat on WhatsApp
         </a>
 
