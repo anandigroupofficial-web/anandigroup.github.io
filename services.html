@@ -14,6 +14,9 @@
     <meta property="og:url" content="https://anandigroup.in/services.html">
     <meta property="og:image" content="https://anandigroup.in/logo.png">
 
+    <!-- Supabase JS Client SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -343,6 +346,12 @@
     </div>
 
     <script>
+        // Supabase Client Connection Configuration
+        const SUPABASE_URL = "https://cmfqgudmhifddoutdgif.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtZnFndWRtaGlmZGRvdXRkZ2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1OTk5MDMsImV4cCI6MjEwOTE3NTkwM30.sq9rQYRox0Nz-PrRZC9C-8J2ldPXf8JsyJ2R05e95j0";
+        
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         var currentRole = "member";
 
         // Auto-detect ?admin=true parameter in URL
@@ -362,8 +371,8 @@
             currentRole = "admin";
             document.getElementById("shg-title").innerText = "SHG Master Admin Portal";
             document.getElementById("shg-subtitle").innerText = "Enter Admin credentials to manage ledger & record transactions.";
-            document.getElementById("lbl-identifier").innerText = "Admin Username / Email";
-            document.getElementById("shg-identifier").placeholder = "Enter admin username";
+            document.getElementById("lbl-identifier").innerText = "Admin Mobile / ID";
+            document.getElementById("shg-identifier").placeholder = "Enter admin mobile or ID";
             document.getElementById("shg-submit-btn").innerText = "Access Master Ledger 🔑";
             
             var status = document.getElementById("login-status");
@@ -371,16 +380,53 @@
             status.innerText = "🔒 Admin mode activated.";
         }
 
-        function handleSHGLogin(event) {
+        async function handleSHGLogin(event) {
             event.preventDefault();
-            var id = document.getElementById("shg-identifier").value.trim();
-            var pass = document.getElementById("shg-password").value;
+            var identifier = document.getElementById("shg-identifier").value.trim();
+            var pin = document.getElementById("shg-password").value.trim();
             var status = document.getElementById("login-status");
 
             status.style.color = "#2b5b84";
-            status.innerText = "Authenticating " + currentRole + "...";
+            status.innerText = "Verifying credentials with database...";
 
-            // Next step: Connect database verification
+            try {
+                // Query database for matching member or admin record
+                const { data, error } = await _supabase
+                    .from('members')
+                    .select('*')
+                    .or(`phone.eq.${identifier},member_id.eq.${identifier}`)
+                    .eq('pin', pin)
+                    .single();
+
+                if (error || !data) {
+                    status.style.color = "#ef4444";
+                    status.innerText = "❌ Invalid Member ID/Phone or PIN. Please check and try again.";
+                    return;
+                }
+
+                if (currentRole === "admin" && data.role !== "admin") {
+                    status.style.color = "#ef4444";
+                    status.innerText = "⚠️ Access Denied: This account does not have Admin privileges.";
+                    return;
+                }
+
+                status.style.color = "#10b981";
+                status.innerText = "✓ Authentication successful! Loading ledger...";
+
+                // Store logged-in user details in local session
+                sessionStorage.setItem('shg_user', JSON.stringify(data));
+
+                // Redirect to passbook view or admin dashboard view
+                setTimeout(function() {
+                    alert("Welcome " + data.full_name + "! You are logged in as " + data.role.toUpperCase() + ".");
+                    // Next step: Load member passbook ledger view
+                }, 800);
+
+            } catch (err) {
+                console.error(err);
+                status.style.color = "#ef4444";
+                status.innerText = "⚠️ Connection error. Please try again.";
+            }
         }
     </script>
 
