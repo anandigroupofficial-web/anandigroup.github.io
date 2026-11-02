@@ -18,7 +18,7 @@
             <input type="password" id="shg-password" class="form-control" placeholder="Enter PIN" required>
         </div>
 
-        <button type="submit" id="shg-submit-btn" class="book-now-btn" style="margin-top: 10px;">View Passbook 🔐</button>
+        <button type="submit" id="shg-submit-btn" class="book-now-btn" style="margin-top: 15px;">View Passbook 🔐</button>
     </form>
 
     <div id="login-status" style="margin-top: 15px; text-align: center; font-size: 0.9rem; font-weight: 600;"></div>
@@ -26,12 +26,12 @@
 
 <style>
     .shg-login-card {
-        background: #ffffff;
+        background: #f8f4e9;
         border-radius: 16px;
         padding: 35px 30px;
         max-width: 480px;
         margin: 40px auto;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
         border: 1px solid #e2dcd0;
     }
 
@@ -60,6 +60,53 @@
         font-size: 0.85rem;
         line-height: 1.4;
     }
+
+    .shg-login-card .form-group {
+        margin-bottom: 16px;
+    }
+
+    .shg-login-card .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+    }
+
+    .shg-login-card .form-control {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        background-color: #ffffff;
+        outline: none;
+        cursor: text;
+    }
+
+    .shg-login-card .form-control:focus {
+        border-color: #1b9aaa;
+    }
+
+    .shg-login-card .book-now-btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        background-color: #25d366;
+        color: #ffffff;
+        padding: 14px;
+        border-radius: 8px;
+        font-weight: 800;
+        font-size: 0.95rem;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .shg-login-card .book-now-btn:hover {
+        background-color: #1ebd56;
+    }
 </style>
 
 <script>
@@ -73,7 +120,7 @@
         }
     });
 
-    // Hidden trigger to switch to Admin mode
+    // Hidden trigger: double-clicking 🏛️ activates Admin mode
     function enableAdminMode() {
         currentRole = "admin";
         document.getElementById("shg-title").innerText = "SHG Master Admin Portal";
