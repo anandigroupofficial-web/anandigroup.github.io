@@ -1,29 +1,24 @@
-<!-- SHG Community Bank Authentication Section -->
+<!-- SHG Community Bank Member Login Section -->
 <div class="shg-login-card">
     <div class="shg-header">
-        <span class="shg-icon">🏛️</span>
-        <h2>Anandi SHG Member Portal</h2>
-        <p>Enter your credentials to access your Digital Passbook & Savings Ledger</p>
-    </div>
-
-    <!-- Toggle between Member & Admin Login -->
-    <div class="role-toggle">
-        <button id="btn-role-member" class="role-btn active" onclick="switchLoginRole('member')">Member Login</button>
-        <button id="btn-role-admin" class="role-btn" onclick="switchLoginRole('admin')">Admin Access</button>
+        <!-- Secret trigger: Double-click the icon to reveal Admin Login -->
+        <span class="shg-icon" title="SHG Portal" ondblclick="enableAdminMode()">🏛️</span>
+        <h2 id="shg-title">SHG Member Passbook</h2>
+        <p id="shg-subtitle">Enter your Mobile Number and Security PIN to view your savings and loan ledger.</p>
     </div>
 
     <form id="shg-auth-form" onsubmit="handleSHGLogin(event)">
         <div class="form-group">
             <label id="lbl-identifier">Mobile Number / Member ID</label>
-            <input type="text" id="shg-identifier" class="form-control" placeholder="Enter registered phone or ID" required>
+            <input type="text" id="shg-identifier" class="form-control" placeholder="Enter 10-digit mobile number or ID" required>
         </div>
 
         <div class="form-group">
-            <label>Password / Security PIN</label>
-            <input type="password" id="shg-password" class="form-control" placeholder="Enter PIN or password" required>
+            <label id="lbl-password">Security PIN / Password</label>
+            <input type="password" id="shg-password" class="form-control" placeholder="Enter PIN" required>
         </div>
 
-        <button type="submit" class="book-now-btn" style="margin-top: 10px;">Login to Passbook 🔐</button>
+        <button type="submit" id="shg-submit-btn" class="book-now-btn" style="margin-top: 10px;">View Passbook 🔐</button>
     </form>
 
     <div id="login-status" style="margin-top: 15px; text-align: center; font-size: 0.9rem; font-weight: 600;"></div>
@@ -49,6 +44,8 @@
         font-size: 2.5rem;
         display: block;
         margin-bottom: 8px;
+        cursor: pointer;
+        user-select: none;
     }
 
     .shg-header h2 {
@@ -63,49 +60,31 @@
         font-size: 0.85rem;
         line-height: 1.4;
     }
-
-    .role-toggle {
-        display: flex;
-        background: #f1f5f9;
-        border-radius: 8px;
-        padding: 4px;
-        margin-bottom: 20px;
-    }
-
-    .role-btn {
-        flex: 1;
-        padding: 10px;
-        border: none;
-        background: transparent;
-        font-weight: 700;
-        font-size: 0.85rem;
-        color: #64748b;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .role-btn.active {
-        background: #2b5b84;
-        color: #ffffff;
-    }
 </style>
 
 <script>
     var currentRole = "member";
 
-    function switchLoginRole(role) {
-        currentRole = role;
-        document.getElementById("btn-role-member").classList.toggle("active", role === 'member');
-        document.getElementById("btn-role-admin").classList.toggle("active", role === 'admin');
-
-        if (role === 'admin') {
-            document.getElementById("lbl-identifier").innerText = "Admin Username / Email";
-            document.getElementById("shg-identifier").placeholder = "Enter admin username";
-        } else {
-            document.getElementById("lbl-identifier").innerText = "Mobile Number / Member ID";
-            document.getElementById("shg-identifier").placeholder = "Enter registered phone or ID";
+    // Auto-check if URL has ?admin=true secret parameter
+    window.addEventListener('DOMContentLoaded', function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === 'true') {
+            enableAdminMode();
         }
+    });
+
+    // Hidden trigger to switch to Admin mode
+    function enableAdminMode() {
+        currentRole = "admin";
+        document.getElementById("shg-title").innerText = "SHG Master Admin Portal";
+        document.getElementById("shg-subtitle").innerText = "Enter Admin credentials to manage ledger & record transactions.";
+        document.getElementById("lbl-identifier").innerText = "Admin Username / Email";
+        document.getElementById("shg-identifier").placeholder = "Enter admin username";
+        document.getElementById("shg-submit-btn").innerText = "Access Master Ledger 🔑";
+        
+        var status = document.getElementById("login-status");
+        status.style.color = "#0284c7";
+        status.innerText = "🔒 Admin mode activated.";
     }
 
     function handleSHGLogin(event) {
@@ -117,6 +96,6 @@
         status.style.color = "#2b5b84";
         status.innerText = "Authenticating " + currentRole + "...";
 
-        // Next step: Connect to backend database (Supabase / Firebase Auth)
+        // Next Step: Verify credentials with backend database
     }
 </script>
