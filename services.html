@@ -733,40 +733,45 @@
         }
 
         async function handleAdminRecordTransaction(event) {
-            event.preventDefault();
-            var mid = document.getElementById("adm-entry-mid").value;
-            var cat = document.getElementById("adm-entry-category").value;
-            var date = document.getElementById("adm-entry-date").value;
-            var type = document.getElementById("adm-entry-type").value;
-            var amount = parseFloat(document.getElementById("adm-entry-amount").value);
-            var status = document.getElementById("adm-entry-status");
+    event.preventDefault();
+    var mid = document.getElementById("adm-entry-mid").value;
+    var cat = document.getElementById("adm-entry-category").value;
+    var date = document.getElementById("adm-entry-date").value;
+    var type = document.getElementById("adm-entry-type").value;
+    var amount = parseFloat(document.getElementById("adm-entry-amount").value);
+    var status = document.getElementById("adm-entry-status");
 
-            if (!mid) {
-                status.style.color = "#ef4444";
-                status.innerText = "❌ Please select a member first.";
-                return;
-            }
+    if (!mid) {
+        status.style.color = "#ef4444";
+        status.innerText = "❌ Please select a member first.";
+        return;
+    }
 
-            status.style.color = "#2b5b84";
-            status.innerText = "Recording transaction...";
+    status.style.color = "#2b5b84";
+    status.innerText = "Recording & calculating interest...";
 
-            var tableName = (cat === 'savings') ? 'savings_ledger' : 'loan_transactions';
+    var tableName = (cat === 'savings') ? 'savings_ledger' : 'loan_transactions';
 
-            const { data, error } = await _supabase
-                .from(tableName)
-                .insert([{ member_id: mid, transaction_date: date, type: type, amount: amount }]);
+    // 1. Insert new entry into ledger
+    const { data, error } = await _supabase
+        .from(tableName)
+        .insert([{ member_id: mid, transaction_date: date, type: type, amount: amount }]);
 
-            if (error) {
-                status.style.color = "#ef4444";
-                status.innerText = "❌ Error: " + error.message;
-            } else {
-                status.style.color = "#10b981";
-                status.innerText = "✓ Transaction recorded!";
-                document.getElementById("adm-entry-amount").value = "";
-                
-                loadAdminMemberPassbookPreview(mid);
-            }
-        }
+    if (error) {
+        status.style.color = "#ef4444";
+        status.innerText = "❌ Error: " + error.message;
+    } else {
+        // 2. Automatically trigger recalculation of 1% savings & 2% loan interest
+        await _supabase.rpc('trigger_recalculate_all');
+
+        status.style.color = "#10b981";
+        status.innerText = "✓ Entry saved & interest recalculated automatically!";
+        document.getElementById("adm-entry-amount").value = "";
+        
+        // 3. Immediately refresh live passbook preview
+        loadAdminMemberPassbookPreview(mid);
+    }
+}
 
         async function handleAdminCreateMember(event) {
             event.preventDefault();
