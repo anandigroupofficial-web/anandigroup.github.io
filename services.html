@@ -12,8 +12,6 @@
 
     <!-- Supabase JS Client SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Dynamic QR Code Generator Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <!-- jsPDF Library for PDF Passbook Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -158,9 +156,9 @@
         }
 
         .book-now-btn {
-            display: block; width: 100%; text-align: center; background-color: #25d366; color: #ffffff; padding: 14px; border-radius: 8px; font-weight: 800; font-size: 0.95rem; border: none; cursor: pointer; transition: background 0.2s;
+            display: block; width: 100%; text-align: center; background-color: #2b5b84; color: #ffffff; padding: 14px; border-radius: 8px; font-weight: 800; font-size: 0.95rem; border: none; cursor: pointer; transition: background 0.2s;
         }
-        .book-now-btn:hover { background-color: #1ebd56; }
+        .book-now-btn:hover { background-color: #1b9aaa; }
 
         .passbook-container {
             max-width: 1150px; background: #fffdf6; border: 2px solid #b8a686; border-radius: 12px; padding: 25px 30px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin: 0 auto;
@@ -173,94 +171,6 @@
         .stat-box { background: #f8f4e9; padding: 15px 20px; border-radius: 8px; border-left: 5px solid #2b5b84; }
         .stat-box h4 { font-size: 0.78rem; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
         .stat-box p { font-size: 1.5rem; font-weight: 800; color: #2b5b84; font-family: "Courier New", Courier, monospace; }
-
-        /* UPI Payment Card */
-        .upi-card {
-            background: #ffffff;
-            border: 2px dashed #1b9aaa;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 15px;
-        }
-
-        .qr-merchant-img {
-            max-width: 220px;
-            height: auto;
-            border-radius: 10px;
-            border: 1px solid #cbd5e1;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        .upi-copy-btn {
-            background: #2b5b84;
-            color: #ffffff;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background 0.2s;
-        }
-        .upi-copy-btn:hover { background: #1b9aaa; }
-
-        /* One-Tap App Redirect Buttons */
-        .app-btn-group {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-            justify-content: center;
-            margin-top: 5px;
-            flex-wrap: wrap;
-        }
-
-        .app-pay-btn {
-            flex: 1;
-            min-width: 130px;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-weight: 700;
-            text-decoration: none;
-            font-size: 0.85rem;
-            color: #ffffff;
-            text-align: center;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: transform 0.1s, opacity 0.2s;
-        }
-        .app-pay-btn:active { transform: scale(0.98); }
-
-        .btn-gpay { background-color: #4285f4; }
-        .btn-gpay:hover { background-color: #3367d6; }
-
-        .btn-phonepe { background-color: #5f259f; }
-        .btn-phonepe:hover { background-color: #4a1c7d; }
-
-        .btn-paytm { background-color: #00baf2; }
-        .btn-paytm:hover { background-color: #0099cc; }
-
-        .wa-notify-btn {
-            background: #25d366;
-            color: #ffffff;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 800;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 0.95rem;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
-            transition: transform 0.2s;
-        }
-        .wa-notify-btn:hover { transform: translateY(-2px); background: #1ebd56; }
 
         .passbook-scroll { width: 100%; overflow-x: auto; border: 1px solid #d5c8b2; border-radius: 6px; background: #ffffff; }
         .passbook-table { width: 100%; min-width: 800px; border-collapse: collapse; font-family: "Courier New", Courier, monospace; }
@@ -379,38 +289,6 @@
                     <div class="stat-box">
                         <h4>Outstanding Loan Balance</h4>
                         <p id="txt-loan-balance">₹ 0.00</p>
-                    </div>
-                </div>
-
-                <!-- EASY DIRECT PAYMENT & ONE-TAP NOTIFY CARD -->
-                <div class="upi-card">
-                    <div>
-                        <h4 style="color: #2b5b84; font-size: 1.1rem; margin-bottom: 4px;">💳 Pay Deposit via PhonePe / GPay / Paytm</h4>
-                        <p style="font-size: 0.85rem; color: #64748b;">Scan QR Code, tap your payment app, or copy UPI ID below:</p>
-                    </div>
-
-                    <div id="qrcode-container" style="background: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #cbd5e1; display: inline-block;">
-                        <img src="paytm-qr.jpg" alt="Paytm Business Merchant QR Code" class="qr-merchant-img">
-                    </div>
-
-                    <div style="background: #f1f5f9; padding: 12px 20px; border-radius: 8px; border: 1px solid #cbd5e1; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
-                        <span id="upi-id-display" style="font-weight: 800; color: #2b5b84; font-size: 1rem; font-family: monospace;">paytm.s4mijkf@pty</span>
-                        <button class="upi-copy-btn" onclick="copyUpiId()">Copy UPI ID 📋</button>
-                    </div>
-
-                    <!-- DIRECT ONE-TAP APP INTENT BUTTONS -->
-                    <div class="app-btn-group">
-                        <a href="#" onclick="openUpiApp(event, 'gpay')" class="app-pay-btn btn-gpay">📱 Google Pay</a>
-                        <a href="#" onclick="openUpiApp(event, 'phonepe')" class="app-pay-btn btn-phonepe">📱 PhonePe</a>
-                        <a href="#" onclick="openUpiApp(event, 'paytm')" class="app-pay-btn btn-paytm">📱 Paytm</a>
-                    </div>
-
-                    <!-- 1-TAP WHATSAPP CONFIRMATION BUTTON -->
-                    <div style="margin-top: 10px; border-top: 1px dashed #cbd5e1; padding-top: 15px; width: 100%; text-align: center;">
-                        <p style="font-size: 0.85rem; color: #475569; margin-bottom: 10px; margin-top: 10px;">Done with payment? Tap below to notify Admin automatically:</p>
-                        <a href="#" class="wa-notify-btn" onclick="notifyAdminPayment(event)">
-                            ✅ Done Payment (Notify Admin on WhatsApp)
-                        </a>
                     </div>
                 </div>
 
@@ -566,11 +444,6 @@
         const SUPABASE_URL = "https://cmfqgudmhifddoutdgif.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtZnFndWRtaGlmZGRvdXRkZ2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1OTk5MDMsImV4cCI6MjEwOTE3NTkwM30.sq9rQYRox0Nz-PrRZC9C-8J2ldPXf8JsyJ2R05e95j0";
         
-        // Official Paytm Business Merchant Details
-        const SHG_UPI_ID = "paytm.s4mijkf@pty"; 
-        const SHG_NAME = "Anandi Self Help Group";
-        const ADMIN_PHONE_WA = "919561805990"; 
-
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         var currentUser = null;
@@ -657,35 +530,6 @@
 
             loadMemberStats(user.member_id);
             renderPassbookTable(user.member_id, currentMemberLedgerType, "tbl-passbook-body");
-        }
-
-        function copyUpiId() {
-            navigator.clipboard.writeText(SHG_UPI_ID);
-            alert("✓ UPI ID copied: " + SHG_UPI_ID + "\nOpen Google Pay, PhonePe, or Paytm and paste to pay!");
-        }
-
-        function openUpiApp(event, app) {
-            event.preventDefault();
-            var upiUrl = "upi://pay?pa=" + encodeURIComponent(SHG_UPI_ID) + "&pn=" + encodeURIComponent(SHG_NAME) + "&cu=INR";
-            
-            if (app === 'gpay') {
-                window.location.href = "gpay://upi/pay?pa=" + encodeURIComponent(SHG_UPI_ID) + "&pn=" + encodeURIComponent(SHG_NAME) + "&cu=INR";
-            } else if (app === 'phonepe') {
-                window.location.href = "phonepe://pay?pa=" + encodeURIComponent(SHG_UPI_ID) + "&pn=" + encodeURIComponent(SHG_NAME) + "&cu=INR";
-            } else {
-                window.location.href = upiUrl;
-            }
-
-            setTimeout(function() {
-                window.location.href = upiUrl;
-            }, 1200);
-        }
-
-        function notifyAdminPayment(event) {
-            event.preventDefault();
-            var msg = "Hi Admin, I (" + currentUser.member_id + " - " + currentUser.full_name + ") have completed my deposit via UPI. Please confirm and update my passbook.";
-            var waUrl = "https://wa.me/" + ADMIN_PHONE_WA + "?text=" + encodeURIComponent(msg);
-            window.open(waUrl, '_blank');
         }
 
         async function loadMemberStats(memberId) {
