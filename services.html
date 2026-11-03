@@ -168,9 +168,23 @@
         .passbook-meta { font-size: 0.9rem; color: #475569; line-height: 1.4; }
 
         .dash-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px; }
-        .stat-box { background: #f8f4e9; padding: 15px 20px; border-radius: 8px; border-left: 5px solid #2b5b84; }
+        @media (max-width: 768px) { .dash-stats { grid-template-columns: 1fr; } }
+        
+        .stat-box { background: #f8f4e9; padding: 18px 20px; border-radius: 8px; border-left: 5px solid #2b5b84; }
         .stat-box h4 { font-size: 0.78rem; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
-        .stat-box p { font-size: 1.5rem; font-weight: 800; color: #2b5b84; font-family: "Courier New", Courier, monospace; }
+        .stat-box p { font-size: 1.4rem; font-weight: 800; color: #2b5b84; font-family: "Courier New", Courier, monospace; }
+
+        .alert-box {
+            background: #fffbeb; border: 1px solid #f59e0b; border-left: 5px solid #d97706; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; color: #92400e; line-height: 1.5;
+        }
+        .alert-box.danger {
+            background: #fef2f2; border: 1px solid #ef4444; border-left: 5px solid #dc2626; color: #991b1b;
+        }
+
+        .wa-reminder-btn {
+            background-color: #25d366; color: #ffffff; padding: 8px 16px; border-radius: 6px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; text-decoration: none; margin-top: 8px;
+        }
+        .wa-reminder-btn:hover { background-color: #1ebd56; }
 
         .passbook-scroll { width: 100%; overflow-x: auto; border: 1px solid #d5c8b2; border-radius: 6px; background: #ffffff; }
         .passbook-table { width: 100%; min-width: 800px; border-collapse: collapse; font-family: "Courier New", Courier, monospace; }
@@ -281,14 +295,26 @@
                     </div>
                 </div>
 
+                <!-- Loan Eligibility & Interest Notice Banner -->
+                <div id="loan-eligibility-banner" class="alert-box" style="display: none;"></div>
+
+                <!-- Dashboard Stats Grid -->
                 <div class="dash-stats">
                     <div class="stat-box">
-                        <h4>Current Savings Balance</h4>
+                        <h4>Total Group Funds Raised</h4>
+                        <p id="txt-group-funds">₹ 0.00</p>
+                    </div>
+                    <div class="stat-box">
+                        <h4>Total Loans Distributed (Group)</h4>
+                        <p id="txt-group-loans">₹ 0.00</p>
+                    </div>
+                    <div class="stat-box">
+                        <h4>Your Current Savings</h4>
                         <p id="txt-total-savings">₹ 0.00</p>
                     </div>
                     <div class="stat-box">
-                        <h4>Outstanding Loan Balance</h4>
-                        <p id="txt-loan-balance">₹ 0.00</p>
+                        <h4>Max Loan Eligibility (4x Savings)</h4>
+                        <p id="txt-max-eligibility">₹ 0.00</p>
                     </div>
                 </div>
 
@@ -465,11 +491,9 @@
 
             if (savedUser && sessionToken) {
                 currentUser = JSON.parse(savedUser);
-                // Validate session with database single-device enforcement
                 validateActiveSession(currentUser.member_id, sessionToken);
             }
 
-            // Setup activity listeners for 10-min timeout reset
             ['mousemove', 'keydown', 'click', 'touchstart'].forEach(function(evt) {
                 window.addEventListener(evt, resetInactivityTimer);
             });
@@ -511,11 +535,8 @@
                 }
 
                 currentUser = data[0];
-                
-                // Generate unique session token for single-device restriction
                 var newSessionToken = 'sess_' + Math.random().toString(36).substring(2) + Date.now();
                 
-                // Update session token in database
                 await _supabase
                     .from('members')
                     .update({ active_session_token: newSessionToken })
@@ -539,7 +560,6 @@
             }
         }
 
-        // Validate that this browser session token matches the active database token (prevents concurrent multi-device logins)
         async function validateActiveSession(memberId, token) {
             const { data, error } = await _supabase
                 .from('members')
@@ -588,30 +608,75 @@
             document.getElementById("passbook-member-info").innerHTML = 
                 "Account Holder: <strong>" + user.full_name + "</strong> | Member ID: <strong>" + user.member_id + "</strong> | Phone: <strong>" + user.phone + "</strong>";
 
-            loadMemberStats(user.member_id);
+            await loadGroupAndMemberStats(user.member_id);
             renderPassbookTable(user.member_id, currentMemberLedgerType, "tbl-passbook-body");
         }
 
-        async function loadMemberStats(memberId) {
-            const { data: sav } = await _supabase.from('savings_ledger').select('amount, type').eq('member_id', memberId);
-            var savTot = 0;
-            if (sav) {
-                sav.forEach(r => {
-                    if (r.type === 'deposit' || r.type === 'interest') savTot += parseFloat(r.amount);
-                    if (r.type === 'withdrawal') savTot -= parseFloat(r.amount);
+        async function loadGroupAndMemberStats(memberId) {
+            // 1. Calculate Total Group Funds Raised (Sum of all savings deposits minus withdrawals across all members)
+            const { data: allSavings } = await _supabase.from('savings_ledger').select('amount, type');
+            var groupFunds = 0;
+            if (allSavings) {
+                allSavings.forEach(r => {
+                    if (r.type === 'deposit' || r.type === 'interest') groupFunds += parseFloat(r.amount);
+                    if (r.type === 'withdrawal') groupFunds -= parseFloat(r.amount);
                 });
             }
-            document.getElementById("txt-total-savings").innerText = "₹ " + savTot.toFixed(2);
+            document.getElementById("txt-group-funds").innerText = "₹ " + groupFunds.toFixed(2);
 
-            const { data: loan } = await _supabase.from('loan_transactions').select('amount, type').eq('member_id', memberId);
-            var loanTot = 0;
-            if (loan) {
-                loan.forEach(r => {
-                    if (r.type === 'disbursement' || r.type === 'interest_charge') loanTot += parseFloat(r.amount);
-                    if (r.type === 'repayment') loanTot -= parseFloat(r.amount);
+            // 2. Calculate Total Loans Distributed in Group (Sum of all loan disbursements across all members)
+            const { data: allLoans } = await _supabase.from('loan_transactions').select('amount, type');
+            var groupLoans = 0;
+            if (allLoans) {
+                allLoans.forEach(r => {
+                    if (r.type === 'disbursement' || r.type === 'interest_charge') groupLoans += parseFloat(r.amount);
+                    if (r.type === 'repayment') groupLoans -= parseFloat(r.amount);
                 });
             }
-            document.getElementById("txt-loan-balance").innerText = "₹ " + loanTot.toFixed(2);
+            document.getElementById("txt-group-loans").innerText = "₹ " + groupLoans.toFixed(2);
+
+            // 3. Calculate Member's Personal Savings Balance
+            const { data: memberSav } = await _supabase.from('savings_ledger').select('amount, type').eq('member_id', memberId);
+            var memberSavingsTot = 0;
+            if (memberSav) {
+                memberSav.forEach(r => {
+                    if (r.type === 'deposit' || r.type === 'interest') memberSavingsTot += parseFloat(r.amount);
+                    if (r.type === 'withdrawal') memberSavingsTot -= parseFloat(r.amount);
+                });
+            }
+            document.getElementById("txt-total-savings").innerText = "₹ " + memberSavingsTot.toFixed(2);
+
+            // 4. Calculate Max Loan Eligibility (4x of savings)
+            var maxEligibility = memberSavingsTot * 4;
+            document.getElementById("txt-max-eligibility").innerText = "₹ " + maxEligibility.toFixed(2);
+
+            // 5. Calculate Member's Current Outstanding Loan Balance
+            const { data: memberLoan } = await _supabase.from('loan_transactions').select('amount, type').eq('member_id', memberId);
+            var memberLoanTot = 0;
+            if (memberLoan) {
+                memberLoan.forEach(r => {
+                    if (r.type === 'disbursement' || r.type === 'interest_charge') memberLoanTot += parseFloat(r.amount);
+                    if (r.type === 'repayment') memberLoanTot -= parseFloat(r.amount);
+                });
+            }
+            document.getElementById("txt-loan-balance").innerText = "₹ " + memberLoanTot.toFixed(2);
+
+            // 6. Check eligibility vs loan taken & check for pending interest charges
+            var banner = document.getElementById("loan-eligibility-banner");
+            banner.style.display = "block";
+
+            var hasExcessLoan = memberLoanTot > maxEligibility;
+            var excessAmount = memberLoanTot - maxEligibility;
+
+            if (hasExcessLoan) {
+                banner.className = "alert-box danger";
+                banner.innerHTML = `<strong>⚠️ Excess Loan Warning:</strong> Your current outstanding loan (₹${memberLoanTot.toFixed(2)}) exceeds your 4x savings eligibility limit (₹${maxEligibility.toFixed(2)}) by ₹${excessAmount.toFixed(2)}. Please increase your savings or repay the pending amount immediately.<br>` +
+                    `<a href="https://wa.me/919561805990?text=` + encodeURIComponent(`Hi Admin, I (${memberId} - ${currentUser.full_name}) want to inquire about clearing my excess loan balance.`) + `" class="wa-reminder-btn" target="_blank">💬 Contact Admin on WhatsApp</a>`;
+            } else {
+                banner.className = "alert-box";
+                banner.innerHTML = `<strong>💡 Loan & Interest Reminder:</strong> You are eligible for a maximum loan of up to 4x your savings (₹${maxEligibility.toFixed(2)}). Please ensure you regularly clear your monthly interest charges apart from your principal loan repayments.<br>` +
+                    `<a href="https://wa.me/919561805990?text=` + encodeURIComponent(`Hi Admin, I (${memberId} - ${currentUser.full_name}) would like to clear my monthly interest / loan payment.`) + `" class="wa-reminder-btn" target="_blank">💬 Pay Interest via WhatsApp Reminder</a>`;
+            }
         }
 
         function switchMemberLedgerView(type) {
