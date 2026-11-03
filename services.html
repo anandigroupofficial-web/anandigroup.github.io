@@ -6,577 +6,584 @@
     
     <link rel="icon" type="image/png" href="logo.png">
 
-    <title>Anandi Services | Self Help Group Member Portal</title>
-    <meta name="description" content="Official Self Help Group community banking portal for managing member savings, digital passbooks, and loan ledgers.">
-    <meta name="keywords" content="SHG portal, Self Help Group passbook, community banking, Anandi Services">
+<title>Anandi Services | Self Help Group Member Portal</title>
+<meta name="description" content="Official Self Help Group community banking portal for managing member savings, digital passbooks, and loan ledgers.">
+<meta name="keywords" content="SHG portal, Self Help Group passbook, community banking, Anandi Services">
 
-    <!-- Supabase JS Client SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- jsPDF Library for PDF Passbook Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Supabase JS Client SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- jsPDF Library for PDF Passbook Export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            scroll-behavior: smooth;
-        }
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        scroll-behavior: smooth;
+    }
 
-        html, body {
-            width: 100%;
-            background-color: #f8f4e9;
-            color: #1e293b;
-        }
+    html, body {
+        width: 100%;
+        background-color: #f8f4e9;
+        color: #1e293b;
+    }
 
-        .watermark-bg {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 450px;
-            height: 450px;
-            background: url('logo.png') no-repeat center center;
-            background-size: contain;
-            opacity: 0.07;
-            z-index: 1;
-            pointer-events: none;
-        }
+    .watermark-bg {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 450px;
+        height: 450px;
+        background: url('logo.png') no-repeat center center;
+        background-size: contain;
+        opacity: 0.07;
+        z-index: 1;
+        pointer-events: none;
+    }
 
-        .main-wrapper {
-            position: relative;
-            z-index: 2;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+    .main-wrapper {
+        position: relative;
+        z-index: 2;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
 
-        nav {
-            background-color: #f8f4e9;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 5%;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    nav {
+        background-color: #f8f4e9;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5%;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
 
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
+    .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+    }
 
-        .nav-logo img {
-            height: 48px;
-            width: auto;
-            object-fit: contain;
-        }
+    .nav-logo img {
+        height: 48px;
+        width: auto;
+        object-fit: contain;
+    }
 
-        .nav-logo-text {
-            font-size: 1.6rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: #2b5b84;
-        }
+    .nav-logo-text {
+        font-size: 1.6rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        color: #2b5b84;
+    }
 
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        list-style: none;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: #475569;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active { color: #1b9aaa; }
+
+    .nav-cta-btn {
+        background-color: #1b9aaa;
+        color: #ffffff !important;
+        padding: 10px 22px;
+        border-radius: 6px;
+        font-weight: 600 !important;
+    }
+
+    .mobile-menu-btn {
+        display: none;
+        font-size: 1.8rem;
+        background: none;
+        border: none;
+        color: #2b5b84;
+        cursor: pointer;
+    }
+
+    .page-header {
+        text-align: center;
+        padding: 50px 20px 30px;
+        background: linear-gradient(135deg, #2b5b84 0%, #1b9aaa 100%);
+        color: #ffffff;
+    }
+
+    .page-header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
+    .page-header p { font-size: 1rem; color: #f8f4e9; max-width: 800px; margin: 0 auto; }
+
+    .content-container {
+        max-width: 1250px;
+        margin: 40px auto 60px;
+        padding: 0 20px;
+    }
+
+    .shg-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 30px;
+        margin: 0 auto;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2dcd0;
+    }
+
+    .shg-header { text-align: center; margin-bottom: 25px; }
+    .shg-icon { font-size: 2.8rem; display: block; margin-bottom: 8px; cursor: pointer; user-select: none; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+        display: block; font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase;
+    }
+    .form-control {
+        width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; background-color: #ffffff; outline: none;
+    }
+
+    .book-now-btn {
+        display: block; width: 100%; text-align: center; background-color: #2b5b84; color: #ffffff; padding: 14px; border-radius: 8px; font-weight: 800; font-size: 0.95rem; border: none; cursor: pointer; transition: background 0.2s;
+    }
+    .book-now-btn:hover { background-color: #1b9aaa; }
+
+    /* Group Dashboard Section (Separate Container Above Passbook) */
+    .group-dashboard-container {
+        max-width: 1150px;
+        margin: 0 auto 30px;
+        background: #ffffff;
+        border: 2px solid #2b5b84;
+        border-radius: 12px;
+        padding: 25px 30px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    }
+
+    .group-dash-title {
+        color: #2b5b84;
+        font-size: 1.2rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+        border-bottom: 2px solid #e2dcd0;
+        padding-bottom: 10px;
+    }
+
+    .group-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    @media (max-width: 768px) { .group-stats-grid { grid-template-columns: 1fr; } }
+
+    .passbook-container {
+        max-width: 1150px; background: #fffdf6; border: 2px solid #b8a686; border-radius: 12px; padding: 25px 30px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin: 0 auto;
+    }
+    .passbook-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2b5b84; padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+    .passbook-title { color: #2b5b84; font-size: 1.4rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+    .passbook-meta { font-size: 0.9rem; color: #475569; line-height: 1.4; }
+
+    .dash-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; }
+    @media (max-width: 900px) { .dash-stats { grid-template-columns: 1fr; } }
+    
+    .stat-box { background: #f8f4e9; padding: 18px 20px; border-radius: 8px; border-left: 5px solid #2b5b84; }
+    .stat-box h4 { font-size: 0.78rem; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
+    .stat-box p { font-size: 1.35rem; font-weight: 800; color: #2b5b84; font-family: "Courier New", Courier, monospace; }
+
+    .alert-box {
+        background: #fffbeb; border: 1px solid #f59e0b; border-left: 5px solid #d97706; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; color: #92400e; line-height: 1.5;
+    }
+    .alert-box.danger {
+        background: #fef2f2; border: 1px solid #ef4444; border-left: 5px solid #dc2626; color: #991b1b;
+    }
+
+    .wa-reminder-btn {
+        background-color: #25d366; color: #ffffff; padding: 8px 16px; border-radius: 6px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; text-decoration: none; margin-top: 8px;
+    }
+    .wa-reminder-btn:hover { background-color: #1ebd56; }
+
+    .passbook-scroll { width: 100%; overflow-x: auto; border: 1px solid #d5c8b2; border-radius: 6px; background: #ffffff; }
+    .passbook-table { width: 100%; min-width: 800px; border-collapse: collapse; font-family: "Courier New", Courier, monospace; }
+    .passbook-table th {
+        background: #2b5b84; color: #ffffff; font-weight: 700; font-family: -apple-system, sans-serif; font-size: 0.85rem; text-transform: uppercase; padding: 12px 15px; border-bottom: 2px solid #1e3a5f; text-align: right;
+    }
+    .passbook-table th:nth-child(1), .passbook-table th:nth-child(2) { text-align: left; }
+    .passbook-table td { padding: 10px 15px; font-size: 0.95rem; border-bottom: 1px dashed #d5c8b2; color: #0f172a; text-align: right; }
+    .passbook-table td:nth-child(1), .passbook-table td:nth-child(2) { text-align: left; }
+    .passbook-table tbody tr:nth-child(even) { background-color: #faf7f0; }
+
+    .txt-deposit { color: #059669; font-weight: 700; }
+    .txt-withdrawal { color: #dc2626; font-weight: 700; }
+    .txt-interest { color: #2563eb; font-weight: 700; }
+    .txt-balance { font-weight: 800; color: #1e293b; }
+
+    .ledger-toggle-btns { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .ledger-toggle-btn {
+        flex: 1; min-width: 200px; padding: 10px; border: 1px solid #b8a686; background: #ffffff; color: #2b5b84; font-weight: 800; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem;
+    }
+    .ledger-toggle-btn.active { background: #2b5b84; color: #ffffff; }
+
+    .admin-tab-btns { display: flex; gap: 10px; margin-bottom: 20px; }
+    .admin-tab-btn { flex: 1; padding: 10px; border: 1px solid #cbd5e1; background: #ffffff; color: #475569; font-weight: 700; border-radius: 6px; cursor: pointer; }
+    .admin-tab-btn.active { background: #2b5b84; color: #ffffff; border-color: #2b5b84; }
+
+    .logout-btn { background: #ef4444; color: #fff; padding: 8px 16px; border-radius: 6px; border: none; font-weight: 700; cursor: pointer; font-size: 0.85rem; }
+    .logout-btn:hover { background: #dc2626; }
+
+    .pdf-export-btn { background-color: #2b5b84; color: #ffffff; padding: 10px 18px; border-radius: 6px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: background 0.2s; }
+    .pdf-export-btn:hover { background-color: #1b9aaa; }
+
+    .float-wa { position: fixed; bottom: 25px; right: 25px; background-color: #25d366; color: #ffffff; border-radius: 50px; padding: 12px 22px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); z-index: 1000; }
+    footer { text-align: center; padding: 30px 20px; background: #f8f4e9; border-top: 1px solid #e2dcd0; margin-top: auto; font-size: 0.9rem; color: #94a3b8; }
+
+    @media (max-width: 768px) {
+        .mobile-menu-btn { display: block; }
         .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            list-style: none;
+            display: none; flex-direction: column; position: absolute; top: 80px; left: 0; width: 100%; background-color: #f8f4e9; padding: 20px; box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05); border-top: 1px solid #e2dcd0;
         }
+        .nav-links.active { display: flex; }
+    }
+</style>
 
-        .nav-links a {
-            text-decoration: none;
-            color: #475569;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: color 0.2s;
-        }
 
-        .nav-links a:hover, .nav-links a.active { color: #1b9aaa; }
+<div class="watermark-bg"></div>
 
-        .nav-cta-btn {
-            background-color: #1b9aaa;
-            color: #ffffff !important;
-            padding: 10px 22px;
-            border-radius: 6px;
-            font-weight: 600 !important;
-        }
+<div class="main-wrapper">
 
-        .mobile-menu-btn {
-            display: none;
-            font-size: 1.8rem;
-            background: none;
-            border: none;
-            color: #2b5b84;
-            cursor: pointer;
-        }
-
-        .page-header {
-            text-align: center;
-            padding: 50px 20px 30px;
-            background: linear-gradient(135deg, #2b5b84 0%, #1b9aaa 100%);
-            color: #ffffff;
-        }
-
-        .page-header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
-        .page-header p { font-size: 1rem; color: #f8f4e9; max-width: 800px; margin: 0 auto; }
-
-        .content-container {
-            max-width: 1250px;
-            margin: 40px auto 60px;
-            padding: 0 20px;
-        }
-
-        .shg-card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 30px;
-            margin: 0 auto;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            border: 1px solid #e2dcd0;
-        }
-
-        .shg-header { text-align: center; margin-bottom: 25px; }
-        .shg-icon { font-size: 2.8rem; display: block; margin-bottom: 8px; cursor: pointer; user-select: none; }
-
-        .form-group { margin-bottom: 16px; }
-        .form-group label {
-            display: block; font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase;
-        }
-        .form-control {
-            width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; background-color: #ffffff; outline: none;
-        }
-
-        .book-now-btn {
-            display: block; width: 100%; text-align: center; background-color: #2b5b84; color: #ffffff; padding: 14px; border-radius: 8px; font-weight: 800; font-size: 0.95rem; border: none; cursor: pointer; transition: background 0.2s;
-        }
-        .book-now-btn:hover { background-color: #1b9aaa; }
-
-        .passbook-container {
-            max-width: 1150px; background: #fffdf6; border: 2px solid #b8a686; border-radius: 12px; padding: 25px 30px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin: 0 auto;
-        }
-        .passbook-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2b5b84; padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        .passbook-title { color: #2b5b84; font-size: 1.4rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
-        .passbook-meta { font-size: 0.9rem; color: #475569; line-height: 1.4; }
-
-        .dash-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px; }
-        @media (max-width: 768px) { .dash-stats { grid-template-columns: 1fr; } }
-        
-        .stat-box { background: #f8f4e9; padding: 18px 20px; border-radius: 8px; border-left: 5px solid #2b5b84; }
-        .stat-box h4 { font-size: 0.78rem; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
-        .stat-box p { font-size: 1.4rem; font-weight: 800; color: #2b5b84; font-family: "Courier New", Courier, monospace; }
-
-        .alert-box {
-            background: #fffbeb; border: 1px solid #f59e0b; border-left: 5px solid #d97706; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; color: #92400e; line-height: 1.5;
-        }
-        .alert-box.danger {
-            background: #fef2f2; border: 1px solid #ef4444; border-left: 5px solid #dc2626; color: #991b1b;
-        }
-
-        .wa-reminder-btn {
-            background-color: #25d366; color: #ffffff; padding: 8px 16px; border-radius: 6px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; text-decoration: none; margin-top: 8px;
-        }
-        .wa-reminder-btn:hover { background-color: #1ebd56; }
-
-        .passbook-scroll { width: 100%; overflow-x: auto; border: 1px solid #d5c8b2; border-radius: 6px; background: #ffffff; }
-        .passbook-table { width: 100%; min-width: 800px; border-collapse: collapse; font-family: "Courier New", Courier, monospace; }
-        .passbook-table th {
-            background: #2b5b84; color: #ffffff; font-weight: 700; font-family: -apple-system, sans-serif; font-size: 0.85rem; text-transform: uppercase; padding: 12px 15px; border-bottom: 2px solid #1e3a5f; text-align: right;
-        }
-        .passbook-table th:nth-child(1), .passbook-table th:nth-child(2) { text-align: left; }
-        .passbook-table td { padding: 10px 15px; font-size: 0.95rem; border-bottom: 1px dashed #d5c8b2; color: #0f172a; text-align: right; }
-        .passbook-table td:nth-child(1), .passbook-table td:nth-child(2) { text-align: left; }
-        .passbook-table tbody tr:nth-child(even) { background-color: #faf7f0; }
-
-        .txt-deposit { color: #059669; font-weight: 700; }
-        .txt-withdrawal { color: #dc2626; font-weight: 700; }
-        .txt-interest { color: #2563eb; font-weight: 700; }
-        .txt-balance { font-weight: 800; color: #1e293b; }
-
-        .ledger-toggle-btns { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .ledger-toggle-btn {
-            flex: 1; min-width: 200px; padding: 10px; border: 1px solid #b8a686; background: #ffffff; color: #2b5b84; font-weight: 800; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem;
-        }
-        .ledger-toggle-btn.active { background: #2b5b84; color: #ffffff; }
-
-        .admin-tab-btns { display: flex; gap: 10px; margin-bottom: 20px; }
-        .admin-tab-btn { flex: 1; padding: 10px; border: 1px solid #cbd5e1; background: #ffffff; color: #475569; font-weight: 700; border-radius: 6px; cursor: pointer; }
-        .admin-tab-btn.active { background: #2b5b84; color: #ffffff; border-color: #2b5b84; }
-
-        .logout-btn { background: #ef4444; color: #fff; padding: 8px 16px; border-radius: 6px; border: none; font-weight: 700; cursor: pointer; font-size: 0.85rem; }
-        .logout-btn:hover { background: #dc2626; }
-
-        .pdf-export-btn { background-color: #2b5b84; color: #ffffff; padding: 10px 18px; border-radius: 6px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: background 0.2s; }
-        .pdf-export-btn:hover { background-color: #1b9aaa; }
-
-        .float-wa { position: fixed; bottom: 25px; right: 25px; background-color: #25d366; color: #ffffff; border-radius: 50px; padding: 12px 22px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); z-index: 1000; }
-        footer { text-align: center; padding: 30px 20px; background: #f8f4e9; border-top: 1px solid #e2dcd0; margin-top: auto; font-size: 0.9rem; color: #94a3b8; }
-
-        @media (max-width: 768px) {
-            .mobile-menu-btn { display: block; }
-            .nav-links {
-                display: none; flex-direction: column; position: absolute; top: 80px; left: 0; width: 100%; background-color: #f8f4e9; padding: 20px; box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05); border-top: 1px solid #e2dcd0;
-            }
-            .nav-links.active { display: flex; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="watermark-bg"></div>
-
-    <div class="main-wrapper">
-
-        <nav>
-            <a href="index.html" class="nav-logo">
-                <img src="logo.png" alt="Anandi Group Logo">
-                <span class="nav-logo-text">ANANDI</span>
-            </a>
-            <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="index.html#about">About</a></li>
-                <li><a href="stays.html">Stays</a></li>
-                <li><a href="travels.html">Travels</a></li>
-                <li><a href="services.html" class="active">Services</a></li>
-                <li><a href="https://wa.me/919561805990" class="nav-cta-btn" target="_blank">Contact Us</a></li>
-            </ul>
-        </nav>
-
-        <section class="page-header">
-            <h1 id="header-title">SHG Member Portal</h1>
-            <p id="header-subtitle">Official Self Help Group digital passbook and ledger portal.</p>
-        </section>
-
-        <section class="content-container">
-
-            <!-- 1. LOGIN -->
-            <div id="section-login" class="shg-card" style="max-width: 480px;">
-                <div class="shg-header">
-                    <span class="shg-icon" title="SHG Portal" ondblclick="enableAdminMode()">🏛️</span>
-                    <h2 id="shg-title">SHG Member Passbook</h2>
-                    <p id="shg-subtitle">Enter Mobile Number / Member ID and Security PIN to view passbook.</p>
-                </div>
-
-                <form id="shg-auth-form" onsubmit="handleSHGLogin(event)">
-                    <div class="form-group">
-                        <label id="lbl-identifier">Mobile Number / Member ID</label>
-                        <input type="text" id="shg-identifier" class="form-control" placeholder="Enter mobile number or ID (e.g. M001)" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label id="lbl-password">Security PIN / Password</label>
-                        <input type="password" id="shg-password" class="form-control" placeholder="Enter PIN" required>
-                    </div>
-
-                    <button type="submit" id="shg-submit-btn" class="book-now-btn">Login 🔐</button>
-                </form>
-
-                <div id="login-status" style="margin-top: 15px; text-align: center; font-size: 0.9rem; font-weight: 600;"></div>
-            </div>
-
-            <!-- 2. MEMBER PASSBOOK VIEW -->
-            <div id="section-passbook" class="passbook-container" style="display: none;">
-                <div class="passbook-header">
-                    <div>
-                        <div class="passbook-title">📖 Member Passbook</div>
-                        <div class="passbook-meta" id="passbook-member-info">Loading account details...</div>
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                        <button class="pdf-export-btn" onclick="downloadPassbookPDF()">📄 Download PDF Statement</button>
-                        <button class="logout-btn" onclick="handleLogout()">Logout 🚪</button>
-                    </div>
-                </div>
-
-                <!-- Loan Eligibility & Interest Notice Banner -->
-                <div id="loan-eligibility-banner" class="alert-box" style="display: none;"></div>
-
-                <!-- Dashboard Stats Grid -->
-                <div class="dash-stats">
-                    <div class="stat-box">
-                        <h4>Total Group Funds Raised</h4>
-                        <p id="txt-group-funds">₹ 0.00</p>
-                    </div>
-                    <div class="stat-box">
-                        <h4>Total Loans Distributed (Group)</h4>
-                        <p id="txt-group-loans">₹ 0.00</p>
-                    </div>
-                    <div class="stat-box">
-                        <h4>Your Current Savings</h4>
-                        <p id="txt-total-savings">₹ 0.00</p>
-                    </div>
-                    <div class="stat-box">
-                        <h4>Max Loan Eligibility (4x Savings)</h4>
-                        <p id="txt-max-eligibility">₹ 0.00</p>
-                    </div>
-                </div>
-
-                <!-- Ledger Selector Toggle -->
-                <div class="ledger-toggle-btns">
-                    <button id="btn-toggle-savings" class="ledger-toggle-btn active" onclick="switchMemberLedgerView('savings')">Savings Passbook (1% Interest Earned)</button>
-                    <button id="btn-toggle-loan" class="ledger-toggle-btn" onclick="switchMemberLedgerView('loan')">Loan Passbook (2% Interest Charged)</button>
-                </div>
-
-                <div class="passbook-scroll">
-                    <table class="passbook-table">
-                        <thead>
-                            <tr id="tbl-passbook-headers">
-                                <th>Date</th>
-                                <th>Particulars / Type</th>
-                                <th>Deposit (₹)</th>
-                                <th>Withdrawal (₹)</th>
-                                <th>Running Balance (₹)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbl-passbook-body">
-                            <tr><td colspan="5" style="text-align: center;">Loading passbook records...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- 3. ADMIN DASHBOARD -->
-            <div id="section-admin" class="shg-card" style="display: none; max-width: 1150px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                    <h3 style="color:#2b5b84;">Master Admin Ledger Portal</h3>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <button class="pdf-export-btn" onclick="downloadPassbookPDF()">📄 Export Member PDF</button>
-                        <button class="logout-btn" onclick="handleLogout()">Logout 🚪</button>
-                    </div>
-                </div>
-
-                <div class="admin-tab-btns">
-                    <button id="tab-btn-entry" class="admin-tab-btn active" onclick="switchAdminTab('entry')">Record Transaction & View Passbook</button>
-                    <button id="tab-btn-member" class="admin-tab-btn" onclick="switchAdminTab('member')">Register New Member</button>
-                </div>
-
-                <div id="admin-tab-entry">
-                    <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 25px;">
-                        
-                        <div style="background: #f8f4e9; padding: 20px; border-radius: 10px; border: 1px solid #e2dcd0;">
-                            <h4 style="margin-bottom: 15px; color: #2b5b84;">Add / Edit Member Entry</h4>
-                            
-                            <form onsubmit="handleAdminRecordTransaction(event)">
-                                <div class="form-group">
-                                    <label>Select Target Member</label>
-                                    <select id="adm-entry-mid" class="form-control" onchange="loadAdminMemberPassbookPreview(this.value)" required>
-                                        <option value="">-- Choose Member --</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Ledger Category</label>
-                                    <select id="adm-entry-category" class="form-control" onchange="updateAdminTypeOptions()" required>
-                                        <option value="savings">Savings Ledger</option>
-                                        <option value="loan">Loan Ledger</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Transaction Date</label>
-                                    <input type="date" id="adm-entry-date" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Transaction Type</label>
-                                    <select id="adm-entry-type" class="form-control" required>
-                                        <option value="deposit">Deposit (Savings Credit)</option>
-                                        <option value="withdrawal">Withdrawal (Savings Debit)</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Amount (₹)</label>
-                                    <input type="number" step="0.01" id="adm-entry-amount" class="form-control" placeholder="Enter amount" required>
-                                </div>
-                                <button type="submit" class="book-now-btn">Save Entry 💾</button>
-                            </form>
-                            <div id="adm-entry-status" style="margin-top: 15px; text-align: center; font-weight: 600;"></div>
-                        </div>
-
-                        <div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
-                                <h4 style="color: #2b5b84;">Live Member Passbook</h4>
-                                <span id="adm-passbook-target" style="font-size: 0.85rem; font-weight: 700; color: #64748b;">Select a member</span>
-                            </div>
-
-                            <div class="ledger-toggle-btns" style="margin-bottom: 12px;">
-                                <button id="btn-admin-preview-savings" class="ledger-toggle-btn" style="min-width: unset;" onclick="switchAdminPreviewView('savings')">Savings Ledger</button>
-                                <button id="btn-admin-preview-loan" class="ledger-toggle-btn" style="min-width: unset;" onclick="switchAdminPreviewView('loan')">Loan Ledger</button>
-                            </div>
-
-                            <div class="passbook-scroll" style="max-height: 400px; overflow-y: auto;">
-                                <table class="passbook-table">
-                                    <thead>
-                                        <tr id="tbl-admin-headers">
-                                            <th>Date</th>
-                                            <th>Particulars</th>
-                                            <th>Deposit</th>
-                                            <th>Withdrawal</th>
-                                            <th>Balance</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbl-admin-preview-body">
-                                        <tr><td colspan="5" style="text-align: center; color: #94a3b8;">Select a member to view their passbook.</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div id="admin-tab-member" style="display: none; max-width: 500px; margin: 0 auto;">
-                    <form onsubmit="handleAdminCreateMember(event)">
-                        <div class="form-group">
-                            <label>Member ID (Auto-Generated)</label>
-                            <input type="text" id="adm-new-mid" class="form-control" placeholder="Generating next ID..." required>
-                        </div>
-                        <div class="form-group">
-                            <label>Full Name</label>
-                            <input type="text" id="adm-new-name" class="form-control" placeholder="Enter member full name" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Mobile Number</label>
-                            <input type="text" id="adm-new-phone" class="form-control" placeholder="10-digit mobile number" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Security PIN</label>
-                            <input type="password" id="adm-new-pin" class="form-control" placeholder="Assign Security PIN" required>
-                        </div>
-                        <button type="submit" class="book-now-btn">Register Member 👤</button>
-                    </form>
-                    <div id="adm-member-status" style="margin-top: 15px; text-align: center; font-weight: 600;"></div>
-                </div>
-
-            </div>
-
-        </section>
-
-        <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Services,%20I%20have%20an%20SHG%20portal%20inquiry." class="float-wa" target="_blank">
-            💬 Chat on WhatsApp
+    <nav>
+        <a href="index.html" class="nav-logo">
+            <img src="logo.png" alt="Anandi Group Logo">
+            <span class="nav-logo-text">ANANDI</span>
         </a>
+        <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="stays.html">Stays</a></li>
+            <li><a href="travels.html">Travels</a></li>
+            <li><a href="services.html" class="active">Services</a></li>
+            <li><a href="https://wa.me/919561805990" class="nav-cta-btn" target="_blank">Contact Us</a></li>
+        </ul>
+    </nav>
 
-        <footer>
-            <p>&copy; 2026 Anandi. All rights reserved.</p>
-        </footer>
+    <section class="page-header">
+        <h1 id="header-title">SHG Member Portal</h1>
+        <p id="header-subtitle">Official Self Help Group digital passbook and ledger portal.</p>
+    </section>
 
-    </div>
+    <section class="content-container">
 
-    <script>
-        const SUPABASE_URL = "https://cmfqgudmhifddoutdgif.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtZnFndWRtaGlmZGRvdXRkZ2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1OTk5MDMsImV4cCI6MjEwOTE3NTkwM30.sq9rQYRox0Nz-PrRZC9C-8J2ldPXf8JsyJ2R05e95j0";
-        
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        <!-- 1. LOGIN -->
+        <div id="section-login" class="shg-card" style="max-width: 480px;">
+            <div class="shg-header">
+                <span class="shg-icon" title="SHG Portal" ondblclick="enableAdminMode()">🏛️</span>
+                <h2 id="shg-title">SHG Member Passbook</h2>
+                <p id="shg-subtitle">Enter Mobile Number / Member ID and Security PIN to view passbook.</p>
+            </div>
 
-        var currentUser = null;
-        var currentMemberLedgerType = 'savings';
-        var currentAdminPreviewLedgerType = 'savings';
-        var sessionTimer = null;
-        const SESSION_TIMEOUT_MS = 10 * 60 * 1000; // 10 Minutes
+            <form id="shg-auth-form" onsubmit="handleSHGLogin(event)">
+                <div class="form-group">
+                    <label id="lbl-identifier">Mobile Number / Member ID</label>
+                    <input type="text" id="shg-identifier" class="form-control" placeholder="Enter mobile number or ID (e.g. M001)" required>
+                </div>
 
-        window.addEventListener('DOMContentLoaded', function() {
-            var urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('admin') === 'true') {
-                enableAdminMode();
-            }
+                <div class="form-group">
+                    <label id="lbl-password">Security PIN / Password</label>
+                    <input type="password" id="shg-password" class="form-control" placeholder="Enter PIN" required>
+                </div>
 
-            document.getElementById("adm-entry-date").valueAsDate = new Date();
+                <button type="submit" id="shg-submit-btn" class="book-now-btn">Login 🔐</button>
+            </form>
 
-            var savedUser = sessionStorage.getItem('shg_user');
-            var sessionToken = sessionStorage.getItem('shg_session_token');
+            <div id="login-status" style="margin-top: 15px; text-align: center; font-size: 0.9rem; font-weight: 600;"></div>
+        </div>
 
-            if (savedUser && sessionToken) {
-                currentUser = JSON.parse(savedUser);
-                validateActiveSession(currentUser.member_id, sessionToken);
-            }
+        <!-- GROUP-WIDE SUMMARY DASHBOARD (SEPARATED ABOVE PASSBOOK) -->
+        <div id="section-group-dash" class="group-dashboard-container" style="display: none;">
+            <div class="group-dash-title">🏛️ Self Help Group Community Overview</div>
+            <div class="group-stats-grid">
+                <div class="stat-box">
+                    <h4>Total Group Funds Raised</h4>
+                    <p id="txt-group-funds">₹ 0.00</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Total Loans Distributed (Group)</h4>
+                    <p id="txt-group-loans">₹ 0.00</p>
+                </div>
+            </div>
+        </div>
 
-            ['mousemove', 'keydown', 'click', 'touchstart'].forEach(function(evt) {
-                window.addEventListener(evt, resetInactivityTimer);
-            });
+        <!-- 2. MEMBER PASSBOOK VIEW -->
+        <div id="section-passbook" class="passbook-container" style="display: none;">
+            <div class="passbook-header">
+                <div>
+                    <div class="passbook-title">📖 Member Passbook</div>
+                    <div class="passbook-meta" id="passbook-member-info">Loading account details...</div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <button class="pdf-export-btn" onclick="downloadPassbookPDF()">📄 Download PDF Statement</button>
+                    <button class="logout-btn" onclick="handleLogout()">Logout 🚪</button>
+                </div>
+            </div>
+
+            <!-- Loan Eligibility & Interest Notice Banner -->
+            <div id="loan-eligibility-banner" class="alert-box" style="display: none;"></div>
+
+            <!-- Personal Member Stats Grid (Savings, Loan Balance, Max Eligibility) -->
+            <div class="dash-stats">
+                <div class="stat-box">
+                    <h4>Your Current Savings</h4>
+                    <p id="txt-total-savings">₹ 0.00</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Your Total Loan Balance</h4>
+                    <p id="txt-loan-balance">₹ 0.00</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Max Loan Eligibility (4x Savings)</h4>
+                    <p id="txt-max-eligibility">₹ 0.00</p>
+                </div>
+            </div>
+
+            <!-- Ledger Selector Toggle -->
+            <div class="ledger-toggle-btns">
+                <button id="btn-toggle-savings" class="ledger-toggle-btn active" onclick="switchMemberLedgerView('savings')">Savings Passbook (1% Interest Earned)</button>
+                <button id="btn-toggle-loan" class="ledger-toggle-btn" onclick="switchMemberLedgerView('loan')">Loan Passbook (2% Interest Charged)</button>
+            </div>
+
+            <div class="passbook-scroll">
+                <table class="passbook-table">
+                    <thead>
+                        <tr id="tbl-passbook-headers">
+                            <th>Date</th>
+                            <th>Particulars / Type</th>
+                            <th>Deposit (₹)</th>
+                            <th>Withdrawal (₹)</th>
+                            <th>Running Balance (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-passbook-body">
+                        <tr><td colspan="5" style="text-align: center;">Loading passbook records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. ADMIN DASHBOARD -->
+        <div id="section-admin" class="shg-card" style="display: none; max-width: 1150px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h3 style="color:#2b5b84;">Master Admin Ledger Portal</h3>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button class="pdf-export-btn" onclick="downloadPassbookPDF()">📄 Export Member PDF</button>
+                    <button class="logout-btn" onclick="handleLogout()">Logout 🚪</button>
+                </div>
+            </div>
+
+            <div class="admin-tab-btns">
+                <button id="tab-btn-entry" class="admin-tab-btn active" onclick="switchAdminTab('entry')">Record Transaction & View Passbook</button>
+                <button id="tab-btn-member" class="admin-tab-btn" onclick="switchAdminTab('member')">Register New Member</button>
+            </div>
+
+            <div id="admin-tab-entry">
+                <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 25px;">
+                    
+                    <div style="background: #f8f4e9; padding: 20px; border-radius: 10px; border: 1px solid #e2dcd0;">
+                        <h4 style="margin-bottom: 15px; color: #2b5b84;">Add / Edit Member Entry</h4>
+                        
+                        <form onsubmit="handleAdminRecordTransaction(event)">
+                            <div class="form-group">
+                                <label>Select Target Member</label>
+                                <select id="adm-entry-mid" class="form-control" onchange="loadAdminMemberPassbookPreview(this.value)" required>
+                                    <option value="">-- Choose Member --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Ledger Category</label>
+                                <select id="adm-entry-category" class="form-control" onchange="updateAdminTypeOptions()" required>
+                                    <option value="savings">Savings Ledger</option>
+                                    <option value="loan">Loan Ledger</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Transaction Date</label>
+                                <input type="date" id="adm-entry-date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Transaction Type</label>
+                                <select id="adm-entry-type" class="form-control" required>
+                                    <option value="deposit">Deposit (Savings Credit)</option>
+                                    <option value="withdrawal">Withdrawal (Savings Debit)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Amount (₹)</label>
+                                <input type="number" step="0.01" id="adm-entry-amount" class="form-control" placeholder="Enter amount" required>
+                            </div>
+                            <button type="submit" class="book-now-btn">Save Entry 💾</button>
+                        </form>
+                        <div id="adm-entry-status" style="margin-top: 15px; text-align: center; font-weight: 600;"></div>
+                    </div>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
+                            <h4 style="color: #2b5b84;">Live Member Passbook</h4>
+                            <span id="adm-passbook-target" style="font-size: 0.85rem; font-weight: 700; color: #64748b;">Select a member</span>
+                        </div>
+
+                        <div class="ledger-toggle-btns" style="margin-bottom: 12px;">
+                            <button id="btn-admin-preview-savings" class="ledger-toggle-btn" style="min-width: unset;" onclick="switchAdminPreviewView('savings')">Savings Ledger</button>
+                            <button id="btn-admin-preview-loan" class="ledger-toggle-btn" style="min-width: unset;" onclick="switchAdminPreviewView('loan')">Loan Ledger</button>
+                        </div>
+
+                        <div class="passbook-scroll" style="max-height: 400px; overflow-y: auto;">
+                            <table class="passbook-table">
+                                <thead>
+                                    <tr id="tbl-admin-headers">
+                                        <th>Date</th>
+                                        <th>Particulars</th>
+                                        <th>Deposit</th>
+                                        <th>Withdrawal</th>
+                                        <th>Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbl-admin-preview-body">
+                                    <tr><td colspan="5" style="text-align: center; color: #94a3b8;">Select a member to view their passbook.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="admin-tab-member" style="display: none; max-width: 500px; margin: 0 auto;">
+                <form onsubmit="handleAdminCreateMember(event)">
+                    <div class="form-group">
+                        <label>Member ID (Auto-Generated)</label>
+                        <input type="text" id="adm-new-mid" class="form-control" placeholder="Generating next ID..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="adm-new-name" class="form-control" placeholder="Enter member full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="text" id="adm-new-phone" class="form-control" placeholder="10-digit mobile number" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Security PIN</label>
+                        <input type="password" id="adm-new-pin" class="form-control" placeholder="Assign Security PIN" required>
+                    </div>
+                    <button type="submit" class="book-now-btn">Register Member 👤</button>
+                </form>
+                <div id="adm-member-status" style="margin-top: 15px; text-align: center; font-weight: 600;"></div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <a href="https://wa.me/919561805990?text=Hi%20Anandi%20Services,%20I%20have%20an%20SHG%20portal%20inquiry." class="float-wa" target="_blank">
+        💬 Chat on WhatsApp
+    </a>
+
+    <footer>
+        <p>&copy; 2026 Anandi. All rights reserved.</p>
+    </footer>
+
+</div>
+
+<script>
+    const SUPABASE_URL = "https://cmfqgudmhifddoutdgif.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtZnFndWRtaGlmZGRvdXRkZ2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1OTk5MDMsImV4cCI6MjEwOTE3NTkwM30.sq9rQYRox0Nz-PrRZC9C-8J2ldPXf8JsyJ2R05e95j0";
+    
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    var currentUser = null;
+    var currentMemberLedgerType = 'savings';
+    var currentAdminPreviewLedgerType = 'savings';
+    var sessionTimer = null;
+    const SESSION_TIMEOUT_MS = 10 * 60 * 1000; // 10 Minutes
+
+    window.addEventListener('DOMContentLoaded', function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === 'true') {
+            enableAdminMode();
+        }
+
+        document.getElementById("adm-entry-date").valueAsDate = new Date();
+
+        var savedUser = sessionStorage.getItem('shg_user');
+        var sessionToken = sessionStorage.getItem('shg_session_token');
+
+        if (savedUser && sessionToken) {
+            currentUser = JSON.parse(savedUser);
+            validateActiveSession(currentUser.member_id, sessionToken);
+        }
+
+        ['mousemove', 'keydown', 'click', 'touchstart'].forEach(function(evt) {
+            window.addEventListener(evt, resetInactivityTimer);
         });
+    });
 
-        function toggleMenu() { document.getElementById("navLinks").classList.toggle("active"); }
+    function toggleMenu() { document.getElementById("navLinks").classList.toggle("active"); }
 
-        function enableAdminMode() {
-            document.getElementById("shg-title").innerText = "SHG Master Admin Portal";
-            document.getElementById("shg-subtitle").innerText = "Enter Admin credentials to manage ledger & record transactions.";
-            document.getElementById("lbl-identifier").innerText = "Admin Mobile / ID";
-            document.getElementById("shg-identifier").placeholder = "Enter admin mobile or ID";
-            document.getElementById("shg-submit-btn").innerText = "Access Master Ledger 🔑";
-            var status = document.getElementById("login-status");
-            status.style.color = "#0284c7";
-            status.innerText = "🔒 Admin mode activated.";
-        }
+    function enableAdminMode() {
+        document.getElementById("shg-title").innerText = "SHG Master Admin Portal";
+        document.getElementById("shg-subtitle").innerText = "Enter Admin credentials to manage ledger & record transactions.";
+        document.getElementById("lbl-identifier").innerText = "Admin Mobile / ID";
+        document.getElementById("shg-identifier").placeholder = "Enter admin mobile or ID";
+        document.getElementById("shg-submit-btn").innerText = "Access Master Ledger 🔑";
+        var status = document.getElementById("login-status");
+        status.style.color = "#0284c7";
+        status.innerText = "🔒 Admin mode activated.";
+    }
 
-        async function handleSHGLogin(event) {
-            event.preventDefault();
-            var identifier = document.getElementById("shg-identifier").value.trim();
-            var pin = document.getElementById("shg-password").value.trim();
-            var status = document.getElementById("login-status");
+    async function handleSHGLogin(event) {
+        event.preventDefault();
+        var identifier = document.getElementById("shg-identifier").value.trim();
+        var pin = document.getElementById("shg-password").value.trim();
+        var status = document.getElementById("login-status");
 
-            status.style.color = "#2b5b84";
-            status.innerText = "Verifying credentials with database...";
+        status.style.color = "#2b5b84";
+        status.innerText = "Verifying credentials with database...";
 
-            try {
-                const { data, error } = await _supabase
-                    .from('members')
-                    .select('*')
-                    .or(`member_id.ilike.${identifier},phone.eq.${identifier}`)
-                    .eq('pin', pin);
-
-                if (error || !data || data.length === 0) {
-                    status.style.color = "#ef4444";
-                    status.innerText = "❌ Invalid Member ID/Phone or PIN.";
-                    return;
-                }
-
-                currentUser = data[0];
-                var newSessionToken = 'sess_' + Math.random().toString(36).substring(2) + Date.now();
-                
-                await _supabase
-                    .from('members')
-                    .update({ active_session_token: newSessionToken })
-                    .eq('member_id', currentUser.member_id);
-
-                sessionStorage.setItem('shg_user', JSON.stringify(currentUser));
-                sessionStorage.setItem('shg_session_token', newSessionToken);
-
-                startInactivityTimer();
-
-                if (currentUser.role === 'admin') {
-                    showAdminSection();
-                } else {
-                    showPassbookSection(currentUser);
-                }
-
-            } catch (err) {
-                console.error(err);
-                status.style.color = "#ef4444";
-                status.innerText = "⚠️ Connection error.";
-            }
-        }
-
-        async function validateActiveSession(memberId, token) {
+        try {
             const { data, error } = await _supabase
                 .from('members')
-                .select('active_session_token, role, full_name, phone')
-                .eq('member_id', memberId)
-                .single();
+                .select('*')
+                .or(`member_id.ilike.${identifier},phone.eq.${identifier}`)
+                .eq('pin', pin);
 
-            if (error || !data || data.active_session_token !== token) {
-                alert("⚠️ Your account has been logged in from another device or your session has expired.");
-                handleLogout();
+            if (error || !data || data.length === 0) {
+                status.style.color = "#ef4444";
+                status.innerText = "❌ Invalid Member ID/Phone or PIN.";
                 return;
             }
 
-            currentUser.role = data.role;
-            currentUser.full_name = data.full_name;
-            currentUser.phone = data.phone;
+            currentUser = data[0];
+            var newSessionToken = 'sess_' + Math.random().toString(36).substring(2) + Date.now();
             
+            await _supabase
+                .from('members')
+                .update({ active_session_token: newSessionToken })
+                .eq('member_id', currentUser.member_id);
+
+            sessionStorage.setItem('shg_user', JSON.stringify(currentUser));
+            sessionStorage.setItem('shg_session_token', newSessionToken);
+
             startInactivityTimer();
 
             if (currentUser.role === 'admin') {
@@ -584,523 +591,558 @@
             } else {
                 showPassbookSection(currentUser);
             }
+
+        } catch (err) {
+            console.error(err);
+            status.style.color = "#ef4444";
+            status.innerText = "⚠️ Connection error.";
+        }
+    }
+
+    async function validateActiveSession(memberId, token) {
+        const { data, error } = await _supabase
+            .from('members')
+            .select('active_session_token, role, full_name, phone')
+            .eq('member_id', memberId)
+            .single();
+
+        if (error || !data || data.active_session_token !== token) {
+            alert("⚠️ Your account has been logged in from another device or your session has expired.");
+            handleLogout();
+            return;
         }
 
-        function startInactivityTimer() {
-            clearTimeout(sessionTimer);
-            sessionTimer = setTimeout(function() {
-                alert("⏰ Session timed out due to 10 minutes of inactivity for your security.");
-                handleLogout();
-            }, SESSION_TIMEOUT_MS);
+        currentUser.role = data.role;
+        currentUser.full_name = data.full_name;
+        currentUser.phone = data.phone;
+        
+        startInactivityTimer();
+
+        if (currentUser.role === 'admin') {
+            showAdminSection();
+        } else {
+            showPassbookSection(currentUser);
+        }
+    }
+
+    function startInactivityTimer() {
+        clearTimeout(sessionTimer);
+        sessionTimer = setTimeout(function() {
+            alert("⏰ Session timed out due to 10 minutes of inactivity for your security.");
+            handleLogout();
+        }, SESSION_TIMEOUT_MS);
+    }
+
+    function resetInactivityTimer() {
+        if (currentUser) {
+            startInactivityTimer();
+        }
+    }
+
+    async function showPassbookSection(user) {
+        document.getElementById("section-login").style.display = "none";
+        document.getElementById("section-admin").style.display = "none";
+        document.getElementById("section-group-dash").style.display = "block";
+        document.getElementById("section-passbook").style.display = "block";
+
+        document.getElementById("passbook-member-info").innerHTML = 
+            "Account Holder: <strong>" + user.full_name + "</strong> | Member ID: <strong>" + user.member_id + "</strong> | Phone: <strong>" + user.phone + "</strong>";
+
+        await loadGroupAndMemberStats(user.member_id);
+        renderPassbookTable(user.member_id, currentMemberLedgerType, "tbl-passbook-body");
+    }
+
+    async function loadGroupAndMemberStats(memberId) {
+        // 1. Calculate Total Group Funds Raised
+        const { data: allSavings } = await _supabase.from('savings_ledger').select('amount, type');
+        var groupFunds = 0;
+        if (allSavings) {
+            allSavings.forEach(r => {
+                if (r.type === 'deposit' || r.type === 'interest') groupFunds += parseFloat(r.amount);
+                if (r.type === 'withdrawal') groupFunds -= parseFloat(r.amount);
+            });
+        }
+        document.getElementById("txt-group-funds").innerText = "₹ " + groupFunds.toFixed(2);
+
+        // 2. Calculate Total Loans Distributed in Group
+        const { data: allLoans } = await _supabase.from('loan_transactions').select('amount, type');
+        var groupLoans = 0;
+        if (allLoans) {
+            allLoans.forEach(r => {
+                if (r.type === 'disbursement' || r.type === 'interest_charge') groupLoans += parseFloat(r.amount);
+                if (r.type === 'repayment') groupLoans -= parseFloat(r.amount);
+            });
+        }
+        document.getElementById("txt-group-loans").innerText = "₹ " + groupLoans.toFixed(2);
+
+        // 3. Calculate Member's Personal Savings Balance
+        const { data: memberSav } = await _supabase.from('savings_ledger').select('amount, type').eq('member_id', memberId);
+        var memberSavingsTot = 0;
+        if (memberSav) {
+            memberSav.forEach(r => {
+                if (r.type === 'deposit' || r.type === 'interest') memberSavingsTot += parseFloat(r.amount);
+                if (r.type === 'withdrawal') memberSavingsTot -= parseFloat(r.amount);
+            });
+        }
+        document.getElementById("txt-total-savings").innerText = "₹ " + memberSavingsTot.toFixed(2);
+
+        // 4. Calculate Member's Current Outstanding Loan Balance
+        const { data: memberLoan } = await _supabase.from('loan_transactions').select('amount, type').eq('member_id', memberId);
+        var memberLoanTot = 0;
+        if (memberLoan) {
+            memberLoan.forEach(r => {
+                if (r.type === 'disbursement' || r.type === 'interest_charge') memberLoanTot += parseFloat(r.amount);
+                if (r.type === 'repayment') memberLoanTot -= parseFloat(r.amount);
+            });
+        }
+        document.getElementById("txt-loan-balance").innerText = "₹ " + memberLoanTot.toFixed(2);
+
+        // 5. Calculate Max Loan Eligibility (4x of savings)
+        var maxEligibility = memberSavingsTot * 4;
+        document.getElementById("txt-max-eligibility").innerText = "₹ " + maxEligibility.toFixed(2);
+
+        // 6. Check eligibility vs loan taken & check for pending interest charges
+        var banner = document.getElementById("loan-eligibility-banner");
+        banner.style.display = "block";
+
+        var hasExcessLoan = memberLoanTot > maxEligibility;
+        var excessAmount = memberLoanTot - maxEligibility;
+
+        if (hasExcessLoan) {
+            banner.className = "alert-box danger";
+            banner.innerHTML = `<strong>⚠️ Excess Loan Warning:</strong> Your current outstanding loan (₹${memberLoanTot.toFixed(2)}) exceeds your 4x savings eligibility limit (₹${maxEligibility.toFixed(2)}) by ₹${excessAmount.toFixed(2)}. Please increase your savings or repay the pending amount immediately.<br>` +
+                `<a href="https://wa.me/919561805990?text=` + encodeURIComponent(`Hi Admin, I (${memberId} - ${currentUser.full_name}) want to inquire about clearing my excess loan balance.`) + `" class="wa-reminder-btn" target="_blank">💬 Contact Admin on WhatsApp</a>`;
+        } else {
+            banner.className = "alert-box";
+            banner.innerHTML = `<strong>💡 Loan & Interest Reminder:</strong> You are eligible for a maximum loan of up to 4x your savings (₹${maxEligibility.toFixed(2)}). Please ensure you regularly clear your monthly interest charges apart from your principal loan repayments.<br>` +
+                `<a href="https://wa.me/919561805990?text=` + encodeURIComponent(`Hi Admin, I (${memberId} - ${currentUser.full_name}) would like to clear my monthly interest / loan payment.`) + `" class="wa-reminder-btn" target="_blank">💬 Pay Interest via WhatsApp Reminder</a>`;
+        }
+    }
+
+    function switchMemberLedgerView(type) {
+        currentMemberLedgerType = type;
+        document.getElementById("btn-toggle-savings").classList.toggle("active", type === 'savings');
+        document.getElementById("btn-toggle-loan").classList.toggle("active", type === 'loan');
+
+        var headers = document.getElementById("tbl-passbook-headers");
+        if (type === 'savings') {
+            headers.innerHTML = "<th>Date</th><th>Particulars / Type</th><th>Deposit (₹)</th><th>Withdrawal (₹)</th><th>Running Balance (₹)</th>";
+        } else {
+            headers.innerHTML = "<th>Date</th><th>Particulars / Type</th><th>Disbursed / Charge (₹)</th><th>Repayment (₹)</th><th>Outstanding Balance (₹)</th>";
         }
 
-        function resetInactivityTimer() {
-            if (currentUser) {
-                startInactivityTimer();
-            }
-        }
+        renderPassbookTable(currentUser.member_id, type, "tbl-passbook-body");
+    }
 
-        async function showPassbookSection(user) {
-            document.getElementById("section-login").style.display = "none";
-            document.getElementById("section-admin").style.display = "none";
-            document.getElementById("section-passbook").style.display = "block";
+    async function renderPassbookTable(memberId, ledgerCategory, tbodyId) {
+        var tbody = document.getElementById(tbodyId);
+        tbody.innerHTML = "<tr><td colspan='5' style='text-align: center;'>Loading ledger...</td></tr>";
 
-            document.getElementById("passbook-member-info").innerHTML = 
-                "Account Holder: <strong>" + user.full_name + "</strong> | Member ID: <strong>" + user.member_id + "</strong> | Phone: <strong>" + user.phone + "</strong>";
+        var tableName = (ledgerCategory === 'savings') ? 'savings_ledger' : 'loan_transactions';
+        const { data: transactions } = await _supabase
+            .from(tableName)
+            .select('*')
+            .eq('member_id', memberId)
+            .order('transaction_date', { ascending: true })
+            .order('created_at', { ascending: true });
 
-            await loadGroupAndMemberStats(user.member_id);
-            renderPassbookTable(user.member_id, currentMemberLedgerType, "tbl-passbook-body");
-        }
+        var runningBalance = 0;
+        var processedRows = [];
+        tbody.innerHTML = "";
 
-        async function loadGroupAndMemberStats(memberId) {
-            // 1. Calculate Total Group Funds Raised (Sum of all savings deposits minus withdrawals across all members)
-            const { data: allSavings } = await _supabase.from('savings_ledger').select('amount, type');
-            var groupFunds = 0;
-            if (allSavings) {
-                allSavings.forEach(r => {
-                    if (r.type === 'deposit' || r.type === 'interest') groupFunds += parseFloat(r.amount);
-                    if (r.type === 'withdrawal') groupFunds -= parseFloat(r.amount);
-                });
-            }
-            document.getElementById("txt-group-funds").innerText = "₹ " + groupFunds.toFixed(2);
+        if (transactions && transactions.length > 0) {
+            transactions.forEach(function(row) {
+                var amt = parseFloat(row.amount);
+                var colPlus = "-";
+                var colMinus = "-";
 
-            // 2. Calculate Total Loans Distributed in Group (Sum of all loan disbursements across all members)
-            const { data: allLoans } = await _supabase.from('loan_transactions').select('amount, type');
-            var groupLoans = 0;
-            if (allLoans) {
-                allLoans.forEach(r => {
-                    if (r.type === 'disbursement' || r.type === 'interest_charge') groupLoans += parseFloat(r.amount);
-                    if (r.type === 'repayment') groupLoans -= parseFloat(r.amount);
-                });
-            }
-            document.getElementById("txt-group-loans").innerText = "₹ " + groupLoans.toFixed(2);
-
-            // 3. Calculate Member's Personal Savings Balance
-            const { data: memberSav } = await _supabase.from('savings_ledger').select('amount, type').eq('member_id', memberId);
-            var memberSavingsTot = 0;
-            if (memberSav) {
-                memberSav.forEach(r => {
-                    if (r.type === 'deposit' || r.type === 'interest') memberSavingsTot += parseFloat(r.amount);
-                    if (r.type === 'withdrawal') memberSavingsTot -= parseFloat(r.amount);
-                });
-            }
-            document.getElementById("txt-total-savings").innerText = "₹ " + memberSavingsTot.toFixed(2);
-
-            // 4. Calculate Max Loan Eligibility (4x of savings)
-            var maxEligibility = memberSavingsTot * 4;
-            document.getElementById("txt-max-eligibility").innerText = "₹ " + maxEligibility.toFixed(2);
-
-            // 5. Calculate Member's Current Outstanding Loan Balance
-            const { data: memberLoan } = await _supabase.from('loan_transactions').select('amount, type').eq('member_id', memberId);
-            var memberLoanTot = 0;
-            if (memberLoan) {
-                memberLoan.forEach(r => {
-                    if (r.type === 'disbursement' || r.type === 'interest_charge') memberLoanTot += parseFloat(r.amount);
-                    if (r.type === 'repayment') memberLoanTot -= parseFloat(r.amount);
-                });
-            }
-            document.getElementById("txt-loan-balance").innerText = "₹ " + memberLoanTot.toFixed(2);
-
-            // 6. Check eligibility vs loan taken & check for pending interest charges
-            var banner = document.getElementById("loan-eligibility-banner");
-            banner.style.display = "block";
-
-            var hasExcessLoan = memberLoanTot > maxEligibility;
-            var excessAmount = memberLoanTot - maxEligibility;
-
-            if (hasExcessLoan) {
-                banner.className = "alert-box danger";
-                banner.innerHTML = `<strong>⚠️ Excess Loan Warning:</strong> Your current outstanding loan (₹${memberLoanTot.toFixed(2)}) exceeds your 4x savings eligibility limit (₹${maxEligibility.toFixed(2)}) by ₹${excessAmount.toFixed(2)}. Please increase your savings or repay the pending amount immediately.<br>` +
-                    `<a href="https://wa.me/919561805990?text=` + encodeURIComponent(`Hi Admin, I (${memberId} - ${currentUser.full_name}) want to inquire about clearing my excess loan balance.`) + `" class="wa-reminder-btn" target="_blank">💬 Contact Admin on WhatsApp</a>`;
-            } else {
-                banner.className = "alert-box";
-                banner.innerHTML = `<strong>💡 Loan & Interest Reminder:</strong> You are eligible for a maximum loan of up to 4x your savings (₹${maxEligibility.toFixed(2)}). Please ensure you regularly clear your monthly interest charges apart from your principal loan repayments.<br>` +
-                    `<a href="https://wa.me/919561805990?text=` + encodeURIComponent(`Hi Admin, I (${memberId} - ${currentUser.full_name}) would like to clear my monthly interest / loan payment.`) + `" class="wa-reminder-btn" target="_blank">💬 Pay Interest via WhatsApp Reminder</a>`;
-            }
-        }
-
-        function switchMemberLedgerView(type) {
-            currentMemberLedgerType = type;
-            document.getElementById("btn-toggle-savings").classList.toggle("active", type === 'savings');
-            document.getElementById("btn-toggle-loan").classList.toggle("active", type === 'loan');
-
-            var headers = document.getElementById("tbl-passbook-headers");
-            if (type === 'savings') {
-                headers.innerHTML = "<th>Date</th><th>Particulars / Type</th><th>Deposit (₹)</th><th>Withdrawal (₹)</th><th>Running Balance (₹)</th>";
-            } else {
-                headers.innerHTML = "<th>Date</th><th>Particulars / Type</th><th>Disbursed / Charge (₹)</th><th>Repayment (₹)</th><th>Outstanding Balance (₹)</th>";
-            }
-
-            renderPassbookTable(currentUser.member_id, type, "tbl-passbook-body");
-        }
-
-        async function renderPassbookTable(memberId, ledgerCategory, tbodyId) {
-            var tbody = document.getElementById(tbodyId);
-            tbody.innerHTML = "<tr><td colspan='5' style='text-align: center;'>Loading ledger...</td></tr>";
-
-            var tableName = (ledgerCategory === 'savings') ? 'savings_ledger' : 'loan_transactions';
-            const { data: transactions } = await _supabase
-                .from(tableName)
-                .select('*')
-                .eq('member_id', memberId)
-                .order('transaction_date', { ascending: true })
-                .order('created_at', { ascending: true });
-
-            var runningBalance = 0;
-            var processedRows = [];
-            tbody.innerHTML = "";
-
-            if (transactions && transactions.length > 0) {
-                transactions.forEach(function(row) {
-                    var amt = parseFloat(row.amount);
-                    var colPlus = "-";
-                    var colMinus = "-";
-
-                    if (ledgerCategory === 'savings') {
-                        if (row.type === 'deposit' || row.type === 'interest') {
-                            runningBalance += amt;
-                            colPlus = "₹ " + amt.toFixed(2);
-                        } else if (row.type === 'withdrawal') {
-                            runningBalance -= amt;
-                            colMinus = "₹ " + amt.toFixed(2);
-                        }
-                    } else {
-                        if (row.type === 'disbursement' || row.type === 'interest_charge') {
-                            runningBalance += amt;
-                            colPlus = "₹ " + amt.toFixed(2);
-                        } else if (row.type === 'repayment') {
-                            runningBalance -= amt;
-                            colMinus = "₹ " + amt.toFixed(2);
-                        }
+                if (ledgerCategory === 'savings') {
+                    if (row.type === 'deposit' || row.type === 'interest') {
+                        runningBalance += amt;
+                        colPlus = "₹ " + amt.toFixed(2);
+                    } else if (row.type === 'withdrawal') {
+                        runningBalance -= amt;
+                        colMinus = "₹ " + amt.toFixed(2);
                     }
+                } else {
+                    if (row.type === 'disbursement' || row.type === 'interest_charge') {
+                        runningBalance += amt;
+                        colPlus = "₹ " + amt.toFixed(2);
+                    } else if (row.type === 'repayment') {
+                        runningBalance -= amt;
+                        colMinus = "₹ " + amt.toFixed(2);
+                    }
+                }
 
-                    processedRows.push({
-                        date: row.transaction_date,
-                        type: row.type,
-                        plus: colPlus,
-                        minus: colMinus,
-                        balance: "₹ " + runningBalance.toFixed(2),
-                        ref: row.payment_ref
-                    });
+                processedRows.push({
+                    date: row.transaction_date,
+                    type: row.type,
+                    plus: colPlus,
+                    minus: colMinus,
+                    balance: "₹ " + runningBalance.toFixed(2),
+                    ref: row.payment_ref
                 });
+            });
 
-                processedRows.reverse().forEach(function(row) {
-                    var tr = document.createElement("tr");
-                    var typeLabel = row.type.toUpperCase();
-                    var typeClass = "txt-" + row.type;
+            processedRows.reverse().forEach(function(row) {
+                var tr = document.createElement("tr");
+                var typeLabel = row.type.toUpperCase();
+                var typeClass = "txt-" + row.type;
 
-                    if (row.type === 'interest') typeLabel = "1% MONTHLY SAVINGS INTEREST";
-                    if (row.type === 'interest_charge') {
-                        typeLabel = "2% MONTHLY LOAN INTEREST CHARGE";
-                        typeClass = "txt-withdrawal";
-                    }
-                    if (row.type === 'disbursement') {
-                        typeLabel = "LOAN DISBURSED";
-                        typeClass = "txt-withdrawal";
-                    }
-                    if (row.type === 'repayment') {
-                        typeLabel = "LOAN REPAYMENT";
-                        typeClass = "txt-deposit";
-                    }
+                if (row.type === 'interest') typeLabel = "1% MONTHLY SAVINGS INTEREST";
+                if (row.type === 'interest_charge') {
+                    typeLabel = "2% MONTHLY LOAN INTEREST CHARGE";
+                    typeClass = "txt-withdrawal";
+                }
+                if (row.type === 'disbursement') {
+                    typeLabel = "LOAN DISBURSED";
+                    typeClass = "txt-withdrawal";
+                }
+                if (row.type === 'repayment') {
+                    typeLabel = "LOAN REPAYMENT";
+                    typeClass = "txt-deposit";
+                }
 
-                    if (row.ref) {
-                        typeLabel += " (UPI: " + row.ref + ")";
-                    }
+                if (row.ref) {
+                    typeLabel += " (UPI: " + row.ref + ")";
+                }
 
-                    tr.innerHTML = 
-                        "<td>" + row.date + "</td>" +
-                        "<td class='" + typeClass + "'>" + typeLabel + "</td>" +
-                        "<td class='txt-deposit'>" + row.plus + "</td>" +
-                        "<td class='txt-withdrawal'>" + row.minus + "</td>" +
-                        "<td class='txt-balance'>" + row.balance + "</td>";
-                    
-                    tbody.appendChild(tr);
-                });
+                tr.innerHTML = 
+                    "<td>" + row.date + "</td>" +
+                    "<td class='" + typeClass + "'>" + typeLabel + "</td>" +
+                    "<td class='txt-deposit'>" + row.plus + "</td>" +
+                    "<td class='txt-withdrawal'>" + row.minus + "</td>" +
+                    "<td class='txt-balance'>" + row.balance + "</td>";
+                
+                tbody.appendChild(tr);
+            });
 
-            } else {
-                tbody.innerHTML = "<tr><td colspan='5' style='text-align: center; padding: 20px;'>No transactions recorded yet.</td></tr>";
-            }
+        } else {
+            tbody.innerHTML = "<tr><td colspan='5' style='text-align: center; padding: 20px;'>No transactions recorded yet.</td></tr>";
+        }
+    }
+
+    async function showAdminSection() {
+        document.getElementById("section-login").style.display = "none";
+        document.getElementById("section-passbook").style.display = "none";
+        document.getElementById("section-group-dash").style.display = "none";
+        document.getElementById("section-admin").style.display = "block";
+
+        populateAdminMemberDropdown();
+        generateNextMemberId();
+    }
+
+    async function populateAdminMemberDropdown() {
+        const { data: members } = await _supabase
+            .from('members')
+            .select('member_id, full_name')
+            .eq('role', 'member')
+            .order('member_id', { ascending: true });
+
+        var select = document.getElementById("adm-entry-mid");
+        select.innerHTML = "<option value=''>-- Choose Member --</option>";
+
+        if (members) {
+            members.forEach(function(m) {
+                var opt = document.createElement("option");
+                opt.value = m.member_id;
+                opt.innerText = m.member_id + " - " + m.full_name;
+                select.appendChild(opt);
+            });
+        }
+    }
+
+    async function generateNextMemberId() {
+        const { data: members } = await _supabase
+            .from('members')
+            .select('member_id')
+            .eq('role', 'member');
+
+        var highestNum = 0;
+
+        if (members && members.length > 0) {
+            members.forEach(function(m) {
+                var num = parseInt(m.member_id.replace(/\D/g, ''), 10);
+                if (!isNaN(num) && num > highestNum) {
+                    highestNum = num;
+                }
+            });
         }
 
-        async function showAdminSection() {
-            document.getElementById("section-login").style.display = "none";
-            document.getElementById("section-passbook").style.display = "none";
-            document.getElementById("section-admin").style.display = "block";
+        var nextNum = highestNum + 1;
+        var formattedId = "M" + String(nextNum).padStart(3, '0');
+        
+        document.getElementById("adm-new-mid").value = formattedId;
+    }
 
+    function updateAdminTypeOptions() {
+        var cat = document.getElementById("adm-entry-category").value;
+        var typeSelect = document.getElementById("adm-entry-type");
+
+        if (cat === 'savings') {
+            typeSelect.innerHTML = 
+                "<option value='deposit'>Deposit (Savings Credit)</option>" +
+                "<option value='withdrawal'>Withdrawal (Savings Debit)</option>";
+        } else {
+            typeSelect.innerHTML = 
+                "<option value='disbursement'>Loan Disbursement (Issue Loan)</option>" +
+                "<option value='repayment'>Loan Repayment (Member Paid)</option>";
+        }
+
+        var selectedMember = document.getElementById("adm-entry-mid").value;
+        if (selectedMember) {
+            loadAdminMemberPassbookPreview(selectedMember);
+        }
+    }
+
+    function switchAdminPreviewView(type) {
+        currentAdminPreviewLedgerType = type;
+        document.getElementById("btn-admin-preview-savings").classList.toggle("active", type === 'savings');
+        document.getElementById("btn-admin-preview-loan").classList.toggle("active", type === 'loan');
+
+        var headers = document.getElementById("tbl-admin-headers");
+        if (type === 'savings') {
+            headers.innerHTML = "<th>Date</th><th>Particulars</th><th>Deposit</th><th>Withdrawal</th><th>Balance</th>";
+        } else {
+            headers.innerHTML = "<th>Date</th><th>Particulars</th><th>Disbursed/Charge</th><th>Repayment</th><th>Outstanding</th>";
+        }
+
+        var mid = document.getElementById("adm-entry-mid").value;
+        if (mid) {
+            renderPassbookTable(mid, type, "tbl-admin-preview-body");
+        }
+    }
+
+    function loadAdminMemberPassbookPreview(memberId) {
+        if (!memberId) {
+            document.getElementById("tbl-admin-preview-body").innerHTML = "<tr><td colspan='5' style='text-align: center; color: #94a3b8;'>Select a member to view their passbook.</td></tr>";
+            document.getElementById("adm-passbook-target").innerText = "Select a member";
+            return;
+        }
+
+        var select = document.getElementById("adm-entry-mid");
+        document.getElementById("adm-passbook-target").innerText = select.options[select.selectedIndex].text;
+
+        var cat = document.getElementById("adm-entry-category").value;
+        switchAdminPreviewView(cat);
+    }
+
+    async function handleAdminRecordTransaction(event) {
+        event.preventDefault();
+        var mid = document.getElementById("adm-entry-mid").value;
+        var cat = document.getElementById("adm-entry-category").value;
+        var date = document.getElementById("adm-entry-date").value;
+        var type = document.getElementById("adm-entry-type").value;
+        var amount = parseFloat(document.getElementById("adm-entry-amount").value);
+        var status = document.getElementById("adm-entry-status");
+
+        if (!mid) {
+            status.style.color = "#ef4444";
+            status.innerText = "❌ Please select a member first.";
+            return;
+        }
+
+        status.style.color = "#2b5b84";
+        status.innerText = "Recording & calculating interest...";
+
+        var tableName = (cat === 'savings') ? 'savings_ledger' : 'loan_transactions';
+
+        const { data, error } = await _supabase
+            .from(tableName)
+            .insert([{ member_id: mid, transaction_date: date, type: type, amount: amount }]);
+
+        if (error) {
+            status.style.color = "#ef4444";
+            status.innerText = "❌ Error: " + error.message;
+        } else {
+            await _supabase.rpc('trigger_recalculate_all');
+
+            status.style.color = "#10b981";
+            status.innerText = "✓ Entry saved & interest recalculated!";
+            document.getElementById("adm-entry-amount").value = "";
+            
+            loadAdminMemberPassbookPreview(mid);
+        }
+    }
+
+    async function handleAdminCreateMember(event) {
+        event.preventDefault();
+        var mid = document.getElementById("adm-new-mid").value.trim().toUpperCase();
+        var name = document.getElementById("adm-new-name").value.trim();
+        var phone = document.getElementById("adm-new-phone").value.trim();
+        var pin = document.getElementById("adm-new-pin").value.trim();
+        var status = document.getElementById("adm-member-status");
+
+        status.style.color = "#2b5b84";
+        status.innerText = "Registering member...";
+
+        const { data, error } = await _supabase
+            .from('members')
+            .insert([{ member_id: mid, full_name: name, phone: phone, pin: pin, role: 'member' }]);
+
+        if (error) {
+            status.style.color = "#ef4444";
+            status.innerText = "❌ Error: " + error.message;
+        } else {
+            status.style.color = "#10b981";
+            status.innerText = "✓ Member " + name + " (" + mid + ") registered!";
+            document.getElementById("adm-new-name").value = "";
+            document.getElementById("adm-new-phone").value = "";
+            document.getElementById("adm-new-pin").value = "";
+            
             populateAdminMemberDropdown();
             generateNextMemberId();
         }
+    }
 
-        async function populateAdminMemberDropdown() {
-            const { data: members } = await _supabase
-                .from('members')
-                .select('member_id, full_name')
-                .eq('role', 'member')
-                .order('member_id', { ascending: true });
+    function switchAdminTab(tab) {
+        document.getElementById("tab-btn-entry").classList.toggle("active", tab === 'entry');
+        document.getElementById("tab-btn-member").classList.toggle("active", tab === 'member');
+        document.getElementById("admin-tab-entry").style.display = (tab === 'entry') ? "block" : "none";
+        document.getElementById("admin-tab-member").style.display = (tab === 'member') ? "block" : "none";
 
-            var select = document.getElementById("adm-entry-mid");
-            select.innerHTML = "<option value=''>-- Choose Member --</option>";
+        if (tab === 'member') {
+            generateNextMemberId();
+        }
+    }
 
-            if (members) {
-                members.forEach(function(m) {
-                    var opt = document.createElement("option");
-                    opt.value = m.member_id;
-                    opt.innerText = m.member_id + " - " + m.full_name;
-                    select.appendChild(opt);
-                });
+    async function downloadPassbookPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        let targetMember = currentUser;
+        let ledgerType = currentMemberLedgerType;
+
+        if (currentUser.role === 'admin') {
+            const selectedMid = document.getElementById("adm-entry-mid").value;
+            if (!selectedMid) {
+                alert("Please select a member from the dropdown first to export their PDF statement.");
+                return;
             }
+            ledgerType = currentAdminPreviewLedgerType;
+            const { data: memData } = await _supabase.from('members').select('*').eq('member_id', selectedMid).single();
+            if (memData) targetMember = memData;
         }
 
-        async function generateNextMemberId() {
-            const { data: members } = await _supabase
-                .from('members')
-                .select('member_id')
-                .eq('role', 'member');
+        const tableName = (ledgerType === 'savings') ? 'savings_ledger' : 'loan_transactions';
+        const { data: transactions } = await _supabase
+            .from(tableName)
+            .select('*')
+            .eq('member_id', targetMember.member_id)
+            .order('transaction_date', { ascending: true })
+            .order('created_at', { ascending: true });
 
-            var highestNum = 0;
+        doc.setFillColor(43, 91, 132);
+        doc.rect(0, 0, 210, 30, 'F');
+        
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.text("ANANDI SELF HELP GROUP", 14, 15);
+        
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text(ledgerType === 'savings' ? "Official Savings Passbook Statement" : "Official Loan Passbook Statement", 14, 23);
 
-            if (members && members.length > 0) {
-                members.forEach(function(m) {
-                    var num = parseInt(m.member_id.replace(/\D/g, ''), 10);
-                    if (!isNaN(num) && num > highestNum) {
-                        highestNum = num;
+        doc.setTextColor(30, 41, 59);
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.text("Account Holder:", 14, 42);
+        doc.setFont("helvetica", "normal");
+        doc.text(targetMember.full_name, 50, 42);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Member ID:", 14, 49);
+        doc.setFont("helvetica", "normal");
+        doc.text(targetMember.member_id, 50, 49);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Phone Number:", 14, 56);
+        doc.setFont("helvetica", "normal");
+        doc.text(targetMember.phone || "N/A", 50, 56);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Generated On:", 130, 42);
+        doc.setFont("helvetica", "normal");
+        doc.text(new Date().toLocaleDateString(), 160, 42);
+
+        let startY = 68;
+        doc.setFillColor(241, 245, 249);
+        doc.rect(14, startY, 182, 8, 'F');
+        
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9);
+        doc.text("Date", 18, startY + 5.5);
+        doc.text("Particulars / Type", 45, startY + 5.5);
+        doc.text(ledgerType === 'savings' ? "Deposit (₹)" : "Disb/Charge (₹)", 125, startY + 5.5, { align: "right" });
+        doc.text(ledgerType === 'savings' ? "Withdraw (₹)" : "Repayment (₹)", 158, startY + 5.5, { align: "right" });
+        doc.text("Balance (₹)", 192, startY + 5.5, { align: "right" });
+
+        let y = startY + 12;
+        let runningBalance = 0;
+        doc.setFont("helvetica", "normal");
+
+        if (transactions && transactions.length > 0) {
+            transactions.forEach((row) => {
+                const amt = parseFloat(row.amount);
+                let plus = "-";
+                let minus = "-";
+
+                if (ledgerType === 'savings') {
+                    if (row.type === 'deposit' || row.type === 'interest') {
+                        runningBalance += amt;
+                        plus = amt.toFixed(2);
+                    } else if (row.type === 'withdrawal') {
+                        runningBalance -= amt;
+                        minus = amt.toFixed(2);
                     }
-                });
-            }
-
-            var nextNum = highestNum + 1;
-            var formattedId = "M" + String(nextNum).padStart(3, '0');
-            
-            document.getElementById("adm-new-mid").value = formattedId;
-        }
-
-        function updateAdminTypeOptions() {
-            var cat = document.getElementById("adm-entry-category").value;
-            var typeSelect = document.getElementById("adm-entry-type");
-
-            if (cat === 'savings') {
-                typeSelect.innerHTML = 
-                    "<option value='deposit'>Deposit (Savings Credit)</option>" +
-                    "<option value='withdrawal'>Withdrawal (Savings Debit)</option>";
-            } else {
-                typeSelect.innerHTML = 
-                    "<option value='disbursement'>Loan Disbursement (Issue Loan)</option>" +
-                    "<option value='repayment'>Loan Repayment (Member Paid)</option>";
-            }
-
-            var selectedMember = document.getElementById("adm-entry-mid").value;
-            if (selectedMember) {
-                loadAdminMemberPassbookPreview(selectedMember);
-            }
-        }
-
-        function switchAdminPreviewView(type) {
-            currentAdminPreviewLedgerType = type;
-            document.getElementById("btn-admin-preview-savings").classList.toggle("active", type === 'savings');
-            document.getElementById("btn-admin-preview-loan").classList.toggle("active", type === 'loan');
-
-            var headers = document.getElementById("tbl-admin-headers");
-            if (type === 'savings') {
-                headers.innerHTML = "<th>Date</th><th>Particulars</th><th>Deposit</th><th>Withdrawal</th><th>Balance</th>";
-            } else {
-                headers.innerHTML = "<th>Date</th><th>Particulars</th><th>Disbursed/Charge</th><th>Repayment</th><th>Outstanding</th>";
-            }
-
-            var mid = document.getElementById("adm-entry-mid").value;
-            if (mid) {
-                renderPassbookTable(mid, type, "tbl-admin-preview-body");
-            }
-        }
-
-        function loadAdminMemberPassbookPreview(memberId) {
-            if (!memberId) {
-                document.getElementById("tbl-admin-preview-body").innerHTML = "<tr><td colspan='5' style='text-align: center; color: #94a3b8;'>Select a member to view their passbook.</td></tr>";
-                document.getElementById("adm-passbook-target").innerText = "Select a member";
-                return;
-            }
-
-            var select = document.getElementById("adm-entry-mid");
-            document.getElementById("adm-passbook-target").innerText = select.options[select.selectedIndex].text;
-
-            var cat = document.getElementById("adm-entry-category").value;
-            switchAdminPreviewView(cat);
-        }
-
-        async function handleAdminRecordTransaction(event) {
-            event.preventDefault();
-            var mid = document.getElementById("adm-entry-mid").value;
-            var cat = document.getElementById("adm-entry-category").value;
-            var date = document.getElementById("adm-entry-date").value;
-            var type = document.getElementById("adm-entry-type").value;
-            var amount = parseFloat(document.getElementById("adm-entry-amount").value);
-            var status = document.getElementById("adm-entry-status");
-
-            if (!mid) {
-                status.style.color = "#ef4444";
-                status.innerText = "❌ Please select a member first.";
-                return;
-            }
-
-            status.style.color = "#2b5b84";
-            status.innerText = "Recording & calculating interest...";
-
-            var tableName = (cat === 'savings') ? 'savings_ledger' : 'loan_transactions';
-
-            const { data, error } = await _supabase
-                .from(tableName)
-                .insert([{ member_id: mid, transaction_date: date, type: type, amount: amount }]);
-
-            if (error) {
-                status.style.color = "#ef4444";
-                status.innerText = "❌ Error: " + error.message;
-            } else {
-                await _supabase.rpc('trigger_recalculate_all');
-
-                status.style.color = "#10b981";
-                status.innerText = "✓ Entry saved & interest recalculated!";
-                document.getElementById("adm-entry-amount").value = "";
-                
-                loadAdminMemberPassbookPreview(mid);
-            }
-        }
-
-        async function handleAdminCreateMember(event) {
-            event.preventDefault();
-            var mid = document.getElementById("adm-new-mid").value.trim().toUpperCase();
-            var name = document.getElementById("adm-new-name").value.trim();
-            var phone = document.getElementById("adm-new-phone").value.trim();
-            var pin = document.getElementById("adm-new-pin").value.trim();
-            var status = document.getElementById("adm-member-status");
-
-            status.style.color = "#2b5b84";
-            status.innerText = "Registering member...";
-
-            const { data, error } = await _supabase
-                .from('members')
-                .insert([{ member_id: mid, full_name: name, phone: phone, pin: pin, role: 'member' }]);
-
-            if (error) {
-                status.style.color = "#ef4444";
-                status.innerText = "❌ Error: " + error.message;
-            } else {
-                status.style.color = "#10b981";
-                status.innerText = "✓ Member " + name + " (" + mid + ") registered!";
-                document.getElementById("adm-new-name").value = "";
-                document.getElementById("adm-new-phone").value = "";
-                document.getElementById("adm-new-pin").value = "";
-                
-                populateAdminMemberDropdown();
-                generateNextMemberId();
-            }
-        }
-
-        function switchAdminTab(tab) {
-            document.getElementById("tab-btn-entry").classList.toggle("active", tab === 'entry');
-            document.getElementById("tab-btn-member").classList.toggle("active", tab === 'member');
-            document.getElementById("admin-tab-entry").style.display = (tab === 'entry') ? "block" : "none";
-            document.getElementById("admin-tab-member").style.display = (tab === 'member') ? "block" : "none";
-
-            if (tab === 'member') {
-                generateNextMemberId();
-            }
-        }
-
-        async function downloadPassbookPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            let targetMember = currentUser;
-            let ledgerType = currentMemberLedgerType;
-
-            if (currentUser.role === 'admin') {
-                const selectedMid = document.getElementById("adm-entry-mid").value;
-                if (!selectedMid) {
-                    alert("Please select a member from the dropdown first to export their PDF statement.");
-                    return;
+                } else {
+                    if (row.type === 'disbursement' || row.type === 'interest_charge') {
+                        runningBalance += amt;
+                        plus = amt.toFixed(2);
+                    } else if (row.type === 'repayment') {
+                        runningBalance -= amt;
+                        minus = amt.toFixed(2);
+                    }
                 }
-                ledgerType = currentAdminPreviewLedgerType;
-                const { data: memData } = await _supabase.from('members').select('*').eq('member_id', selectedMid).single();
-                if (memData) targetMember = memData;
-            }
 
-            const tableName = (ledgerType === 'savings') ? 'savings_ledger' : 'loan_transactions';
-            const { data: transactions } = await _supabase
-                .from(tableName)
-                .select('*')
-                .eq('member_id', targetMember.member_id)
-                .order('transaction_date', { ascending: true })
-                .order('created_at', { ascending: true });
+                let typeLabel = row.type.toUpperCase();
+                if (row.type === 'interest') typeLabel = "SAVINGS INTEREST (1%)";
+                if (row.type === 'interest_charge') typeLabel = "LOAN INTEREST (2%)";
+                if (row.ref) typeLabel += ` (UPI: ${row.ref})`;
 
-            doc.setFillColor(43, 91, 132);
-            doc.rect(0, 0, 210, 30, 'F');
-            
-            doc.setTextColor(255, 255, 255);
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(16);
-            doc.text("ANANDI SELF HELP GROUP", 14, 15);
-            
-            doc.setFontSize(10);
-            doc.setFont("helvetica", "normal");
-            doc.text(ledgerType === 'savings' ? "Official Savings Passbook Statement" : "Official Loan Passbook Statement", 14, 23);
+                if (y > 275) {
+                    doc.addPage();
+                    y = 20;
+                }
 
-            doc.setTextColor(30, 41, 59);
-            doc.setFontSize(11);
-            doc.setFont("helvetica", "bold");
-            doc.text("Account Holder:", 14, 42);
-            doc.setFont("helvetica", "normal");
-            doc.text(targetMember.full_name, 50, 42);
+                doc.text(row.transaction_date, 18, y);
+                doc.text(typeLabel.substring(0, 35), 45, y);
+                doc.text(plus, 125, y, { align: "right" });
+                doc.text(minus, 158, y, { align: "right" });
+                doc.text(runningBalance.toFixed(2), 192, y, { align: "right" });
 
-            doc.setFont("helvetica", "bold");
-            doc.text("Member ID:", 14, 49);
-            doc.setFont("helvetica", "normal");
-            doc.text(targetMember.member_id, 50, 49);
-
-            doc.setFont("helvetica", "bold");
-            doc.text("Phone Number:", 14, 56);
-            doc.setFont("helvetica", "normal");
-            doc.text(targetMember.phone || "N/A", 50, 56);
-
-            doc.setFont("helvetica", "bold");
-            doc.text("Generated On:", 130, 42);
-            doc.setFont("helvetica", "normal");
-            doc.text(new Date().toLocaleDateString(), 160, 42);
-
-            let startY = 68;
-            doc.setFillColor(241, 245, 249);
-            doc.rect(14, startY, 182, 8, 'F');
-            
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(9);
-            doc.text("Date", 18, startY + 5.5);
-            doc.text("Particulars / Type", 45, startY + 5.5);
-            doc.text(ledgerType === 'savings' ? "Deposit (₹)" : "Disb/Charge (₹)", 125, startY + 5.5, { align: "right" });
-            doc.text(ledgerType === 'savings' ? "Withdraw (₹)" : "Repayment (₹)", 158, startY + 5.5, { align: "right" });
-            doc.text("Balance (₹)", 192, startY + 5.5, { align: "right" });
-
-            let y = startY + 12;
-            let runningBalance = 0;
-            doc.setFont("helvetica", "normal");
-
-            if (transactions && transactions.length > 0) {
-                transactions.forEach((row) => {
-                    const amt = parseFloat(row.amount);
-                    let plus = "-";
-                    let minus = "-";
-
-                    if (ledgerType === 'savings') {
-                        if (row.type === 'deposit' || row.type === 'interest') {
-                            runningBalance += amt;
-                            plus = amt.toFixed(2);
-                        } else if (row.type === 'withdrawal') {
-                            runningBalance -= amt;
-                            minus = amt.toFixed(2);
-                        }
-                    } else {
-                        if (row.type === 'disbursement' || row.type === 'interest_charge') {
-                            runningBalance += amt;
-                            plus = amt.toFixed(2);
-                        } else if (row.type === 'repayment') {
-                            runningBalance -= amt;
-                            minus = amt.toFixed(2);
-                        }
-                    }
-
-                    let typeLabel = row.type.toUpperCase();
-                    if (row.type === 'interest') typeLabel = "SAVINGS INTEREST (1%)";
-                    if (row.type === 'interest_charge') typeLabel = "LOAN INTEREST (2%)";
-                    if (row.ref) typeLabel += ` (UPI: ${row.ref})`;
-
-                    if (y > 275) {
-                        doc.addPage();
-                        y = 20;
-                    }
-
-                    doc.text(row.transaction_date, 18, y);
-                    doc.text(typeLabel.substring(0, 35), 45, y);
-                    doc.text(plus, 125, y, { align: "right" });
-                    doc.text(minus, 158, y, { align: "right" });
-                    doc.text(runningBalance.toFixed(2), 192, y, { align: "right" });
-
-                    y += 7;
-                });
-            } else {
-                doc.text("No transaction records found.", 18, y + 5);
-            }
-
-            doc.setFontSize(8);
-            doc.setTextColor(148, 163, 184);
-            doc.text("Anandi Self Help Group - Official Digital Ledger Statement", 14, 285);
-
-            doc.save(`${targetMember.member_id}_${ledgerType}_statement.pdf`);
+                y += 7;
+            });
+        } else {
+            doc.text("No transaction records found.", 18, y + 5);
         }
 
-        function handleLogout() {
-            clearTimeout(sessionTimer);
-            sessionStorage.removeItem('shg_user');
-            sessionStorage.removeItem('shg_session_token');
-            window.location.reload();
-        }
-    </script>
+        doc.setFontSize(8);
+        doc.setTextColor(148, 163, 184);
+        doc.text("Anandi Self Help Group - Official Digital Ledger Statement", 14, 285);
+
+        doc.save(`${targetMember.member_id}_${ledgerType}_statement.pdf`);
+    }
+
+    function handleLogout() {
+        clearTimeout(sessionTimer);
+        sessionStorage.removeItem('shg_user');
+        sessionStorage.removeItem('shg_session_token');
+        window.location.reload();
+    }
+</script>
+
 
 </body>
 </html>
