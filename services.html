@@ -454,26 +454,26 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: ADMIN REMINDER DISPATCHER (BANK-STYLE SMS/WHATSAPP REMINDERS) -->
+                <!-- TAB 2: ADMIN SMART REMINDER DISPATCHER -->
                 <div id="admin-tab-reminder" style="display: none; max-width: 650px; margin: 0 auto;">
                     <div style="background: #f8f4e9; padding: 25px; border-radius: 12px; border: 1px solid #e2dcd0;">
-                        <h4 style="color: #2b5b84; margin-bottom: 8px;">📢 Send Bank-Style Payment Reminders</h4>
-                        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 20px;">Select a member to send automatic WhatsApp reminders for their monthly savings deposit or outstanding loan interest payment.</p>
+                        <h4 style="color: #2b5b84; margin-bottom: 8px;">📢 Smart Filtered Payment Reminders</h4>
+                        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 20px;">Only members with pending monthly savings or unpaid monthly interest for the current month are listed below.</p>
 
                         <div class="form-group">
-                            <label>Select Member</label>
+                            <label>Select Pending Member</label>
                             <select id="adm-reminder-mid" class="form-control" onchange="loadMemberReminderPreview()" required>
-                                <option value="">-- Choose Member --</option>
+                                <option value="">-- Choose Member with Pending Dues --</option>
                             </select>
                         </div>
 
                         <div id="reminder-preview-card" style="display: none; background: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; margin-bottom: 20px;">
-                            <h5 style="color: #2b5b84; margin-bottom: 10px; font-size: 0.95rem;">Generated Bank SMS Format:</h5>
+                            <h5 style="color: #2b5b84; margin-bottom: 10px; font-size: 0.95rem;">Calculated Reminder Statement:</h5>
                             <div id="reminder-sms-text" style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; color: #1e293b; white-space: pre-line; margin-bottom: 15px;"></div>
                             
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <a id="wa-send-saving-rem" href="#" class="wa-reminder-btn" target="_blank">📱 Send Savings Reminder via WA</a>
-                                <a id="wa-send-interest-rem" href="#" class="wa-reminder-btn" style="background-color: #2563eb;" target="_blank">📱 Send Interest Reminder via WA</a>
+                                <a id="wa-send-saving-rem" href="#" class="wa-reminder-btn" style="display: none;" target="_blank">📱 Send Savings Reminder via WA</a>
+                                <a id="wa-send-interest-rem" href="#" class="wa-reminder-btn" style="display: none; background-color: #2563eb;" target="_blank">📱 Send Interest Reminder via WA</a>
                             </div>
                         </div>
                     </div>
@@ -711,7 +711,8 @@
             var savingMsg = `Dear ${currentUser.full_name} (${currentUser.member_id}), Bank Alert: Your monthly savings deposit is due. Current Savings Balance: ₹${memberSavingsTot.toFixed(2)}. Please complete your deposit.`;
             document.getElementById("member-wa-saving-btn").href = `https://wa.me/91${currentUser.phone}?text=` + encodeURIComponent(savingMsg);
 
-            var interestMsg = `Dear ${currentUser.full_name} (${currentUser.member_id}), Bank EMI/Interest Notice: Your outstanding loan balance is ₹${memberLoanTot.toFixed(2)}. Please clear your monthly interest regularly.`;
+            var calculatedMonthlyInterest = memberLoanTot * 0.02; // 2% monthly interest
+            var interestMsg = `Dear ${currentUser.full_name} (${currentUser.member_id}), Bank EMI/Interest Notice: Your calculated monthly interest due is ₹${calculatedMonthlyInterest.toFixed(2)} (based on loan balance ₹${memberLoanTot.toFixed(2)}). Please clear your dues.`;
             document.getElementById("member-wa-interest-btn").href = `https://wa.me/91${currentUser.phone}?text=` + encodeURIComponent(interestMsg);
 
             var banner = document.getElementById("loan-eligibility-banner");
@@ -725,7 +726,7 @@
                 banner.innerHTML = `<strong>⚠️ Excess Loan Warning:</strong> Your current outstanding loan (₹${memberLoanTot.toFixed(2)}) exceeds your 4x savings eligibility limit (₹${maxEligibility.toFixed(2)}) by ₹${excessAmount.toFixed(2)}. Please increase your savings or repay the pending amount immediately.`;
             } else {
                 banner.className = "alert-box";
-                banner.innerHTML = `<strong>💡 Loan & Interest Reminder:</strong> You are eligible for a maximum loan of up to 4x your savings (₹${maxEligibility.toFixed(2)}). Please ensure you regularly clear your monthly interest charges apart from your principal loan repayments.`;
+                banner.innerHTML = `<strong>💡 Loan & Interest Reminder:</strong> You are eligible for a maximum loan of up to 4x savings (₹${maxEligibility.toFixed(2)}). Calculated monthly interest due: ₹${calculatedMonthlyInterest.toFixed(2)}. Please ensure regular payment.`;
             }
         }
 
@@ -838,6 +839,7 @@
             document.getElementById("section-admin").style.display = "block";
 
             populateAdminMemberDropdown();
+            populateFilteredReminderDropdown();
             generateNextMemberId();
         }
 
@@ -849,10 +851,7 @@
                 .order('member_id', { ascending: true });
 
             var selectEntry = document.getElementById("adm-entry-mid");
-            var selectReminder = document.getElementById("adm-reminder-mid");
-            
-            selectEntry.innerHTML = "<option value='-- Choose Member --'>-- Choose Member --</option>";
-            selectReminder.innerHTML = "<option value=''>-- Choose Member --</option>";
+            selectEntry.innerHTML = "<option value=''>-- Choose Member --</option>";
 
             if (members) {
                 members.forEach(function(m) {
@@ -860,14 +859,82 @@
                     opt1.value = m.member_id;
                     opt1.innerText = m.member_id + " - " + m.full_name;
                     selectEntry.appendChild(opt1);
-
-                    var opt2 = document.createElement("option");
-                    opt2.value = m.member_id;
-                    opt2.setAttribute("data-phone", m.phone || "");
-                    opt2.setAttribute("data-name", m.full_name);
-                    opt2.innerText = m.member_id + " - " + m.full_name;
-                    selectReminder.appendChild(opt2);
                 });
+            }
+        }
+
+        // SMART FILTER: Only list members whose monthly saving or monthly interest is PENDING for the current month
+        async function populateFilteredReminderDropdown() {
+            const { data: members } = await _supabase
+                .from('members')
+                .select('member_id, full_name, phone')
+                .eq('role', 'member')
+                .order('member_id', { ascending: true });
+
+            var selectReminder = document.getElementById("adm-reminder-mid");
+            selectReminder.innerHTML = "<option value=''>-- Choose Member with Pending Dues --</option>";
+
+            if (!members) return;
+
+            var currentYearMonth = new Date().toISOString().substring(0, 7); // e.g., "2026-11"
+
+            for (var i = 0; i < members.length; i++) {
+                var m = members[i];
+
+                // 1. Check if member made at least one deposit this month
+                const { data: savTx } = await _supabase
+                    .from('savings_ledger')
+                    .select('transaction_date, type')
+                    .eq('member_id', m.member_id);
+
+                var hasDepositedThisMonth = false;
+                if (savTx) {
+                    savTx.forEach(t => {
+                        if ((t.type === 'deposit' || t.type === 'interest') && t.transaction_date.startsWith(currentYearMonth)) {
+                            hasDepositedThisMonth = true;
+                        }
+                    });
+                }
+
+                // 2. Check loan balance & pending interest payment for this month
+                const { data: loanTx } = await _supabase
+                    .from('loan_transactions')
+                    .select('amount, type, transaction_date')
+                    .eq('member_id', m.member_id);
+
+                var loanTot = 0;
+                var hasPaidInterestThisMonth = false;
+                if (loanTx) {
+                    loanTx.forEach(r => {
+                        if (r.type === 'disbursement' || r.type === 'interest_charge') loanTot += parseFloat(r.amount);
+                        if (r.type === 'repayment') loanTot -= parseFloat(r.amount);
+                        if (r.type === 'interest_charge' && r.transaction_date.startsWith(currentYearMonth)) {
+                            hasPaidInterestThisMonth = true;
+                        }
+                    });
+                }
+
+                var hasActiveLoan = loanTot > 0;
+                var interestPending = hasActiveLoan && !hasPaidInterestThisMonth;
+                var savingPending = !hasDepositedThisMonth;
+
+                // Only add to dropdown if either monthly saving OR interest is pending!
+                if (savingPending || interestPending) {
+                    var opt = document.createElement("option");
+                    opt.value = m.member_id;
+                    opt.setAttribute("data-phone", m.phone || "");
+                    opt.setAttribute("data-name", m.full_name);
+                    opt.setAttribute("data-saving-pending", savingPending ? "true" : "false");
+                    opt.setAttribute("data-interest-pending", interestPending ? "true" : "false");
+                    opt.setAttribute("data-loan-balance", loanTot);
+                    
+                    var pendingTags = [];
+                    if (savingPending) pendingTags.push("Saving Due");
+                    if (interestPending) pendingTags.push("Interest Due");
+
+                    opt.innerText = m.member_id + " - " + m.full_name + " [" + pendingTags.join(" & ") + "]";
+                    selectReminder.appendChild(opt);
+                }
             }
         }
 
@@ -884,35 +951,43 @@
             var opt = select.options[select.selectedIndex];
             var memberName = opt.getAttribute("data-name");
             var memberPhone = opt.getAttribute("data-phone");
-
-            // Calculate member balances for the SMS text
-            const { data: memberSav } = await _supabase.from('savings_ledger').select('amount, type').eq('member_id', mid);
-            var savingsTot = 0;
-            if (memberSav) {
-                memberSav.forEach(r => {
-                    if (r.type === 'deposit' || r.type === 'interest') savingsTot += parseFloat(r.amount);
-                    if (r.type === 'withdrawal') savingsTot -= parseFloat(r.amount);
-                });
-            }
-
-            const { data: memberLoan } = await _supabase.from('loan_transactions').select('amount, type').eq('member_id', mid);
-            var loanTot = 0;
-            if (memberLoan) {
-                memberLoan.forEach(r => {
-                    if (r.type === 'disbursement' || r.type === 'interest_charge') loanTot += parseFloat(r.amount);
-                    if (r.type === 'repayment') loanTot -= parseFloat(r.amount);
-                });
-            }
+            var savingPending = opt.getAttribute("data-saving-pending") === "true";
+            var interestPending = opt.getAttribute("data-interest-pending") === "true";
+            var loanBal = parseFloat(opt.getAttribute("data-loan-balance") || 0);
 
             card.style.display = "block";
 
-            var smsSavingText = `[ANANDI SHG BANK ALERT]\nDear ${memberName} (${mid}), your monthly savings deposit is due. Current Savings: ₹${savingsTot.toFixed(2)}. Please complete payment.`;
-            var smsInterestText = `[ANANDI SHG EMI NOTICE]\nDear ${memberName} (${mid}), your monthly loan interest / dues reminder. Outstanding Loan Balance: ₹${loanTot.toFixed(2)}. Please clear dues.`;
+            var calculatedInterest = loanBal * 0.02; // 2% monthly interest on loan balance
 
-            document.getElementById("reminder-sms-text").innerText = smsSavingText + "\n\n-----------------------------------\n\n" + smsInterestText;
+            var smsText = `[ANANDI SHG PAYMENT REMINDER]\nDear ${memberName} (${mid}):\n`;
+            if (savingPending) {
+                smsText += `• Monthly Saving Deposit is pending for this month.\n`;
+            }
+            if (interestPending) {
+                smsText += `• Monthly Interest Due: ₹${calculatedInterest.toFixed(2)} (Based on loan balance ₹${loanBal.toFixed(2)}).\n`;
+            }
+            smsText += `Please clear your dues at the earliest.`;
 
-            document.getElementById("wa-send-saving-rem").href = `https://wa.me/91${memberPhone}?text=` + encodeURIComponent(smsSavingText);
-            document.getElementById("wa-send-interest-rem").href = `https://wa.me/91${memberPhone}?text=` + encodeURIComponent(smsInterestText);
+            document.getElementById("reminder-sms-text").innerText = smsText;
+
+            var waBtnSaving = document.getElementById("wa-send-saving-rem");
+            var waBtnInterest = document.getElementById("wa-send-interest-rem");
+
+            if (savingPending) {
+                waBtnSaving.style.display = "inline-flex";
+                var savingMsg = `Dear ${memberName} (${mid}), Bank Alert: Your monthly savings deposit is pending for this month. Please complete your deposit.`;
+                waBtnSaving.href = `https://wa.me/91${memberPhone}?text=` + encodeURIComponent(savingMsg);
+            } else {
+                waBtnSaving.style.display = "none";
+            }
+
+            if (interestPending) {
+                waBtnInterest.style.display = "inline-flex";
+                var interestMsg = `Dear ${memberName} (${mid}), Bank Interest Notice: Your monthly interest due is ₹${calculatedInterest.toFixed(2)} for this month. Please clear your dues.`;
+                waBtnInterest.href = `https://wa.me/91${memberPhone}?text=` + encodeURIComponent(interestMsg);
+            } else {
+                waBtnInterest.style.display = "none";
+            }
         }
 
         async function generateNextMemberId() {
@@ -1025,6 +1100,7 @@
                 document.getElementById("adm-entry-amount").value = "";
                 
                 loadAdminMemberPassbookPreview(mid);
+                populateFilteredReminderDropdown();
             }
         }
 
@@ -1054,6 +1130,7 @@
                 document.getElementById("adm-new-pin").value = "";
                 
                 populateAdminMemberDropdown();
+                populateFilteredReminderDropdown();
                 generateNextMemberId();
             }
         }
@@ -1067,6 +1144,9 @@
             document.getElementById("admin-tab-reminder").style.display = (tab === 'reminder') ? "block" : "none";
             document.getElementById("admin-tab-member").style.display = (tab === 'member') ? "block" : "none";
 
+            if (tab === 'reminder') {
+                populateFilteredReminderDropdown();
+            }
             if (tab === 'member') {
                 generateNextMemberId();
             }
@@ -1194,20 +1274,20 @@
                 doc.text("No transaction records found.", 18, y + 5);
             }
 
-            doc.setFontSize(8);
-            doc.setTextColor(148, 163, 184);
-            doc.text("Anandi Self Help Group - Official Digital Ledger Statement", 14, 285);
+    doc.setFontSize(8);
+    doc.setTextColor(148, 163, 184);
+    doc.text("Anandi Self Help Group - Official Digital Ledger Statement", 14, 285);
 
-            doc.save(`${targetMember.member_id}_${ledgerType}_statement.pdf`);
-        }
+    doc.save(`${targetMember.member_id}_${ledgerType}_statement.pdf`);
+}
 
-        function handleLogout() {
-            clearTimeout(sessionTimer);
-            sessionStorage.removeItem('shg_user');
-            sessionStorage.removeItem('shg_session_token');
-            window.location.reload();
-        }
-    </script>
+function handleLogout() {
+    clearTimeout(sessionTimer);
+    sessionStorage.removeItem('shg_user');
+    sessionStorage.removeItem('shg_session_token');
+    window.location.reload();
+}
+</script>
 
 </body>
 </html>
