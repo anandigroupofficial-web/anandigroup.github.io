@@ -449,6 +449,8 @@
         var currentUser = null;
         var currentMemberLedgerType = 'savings';
         var currentAdminPreviewLedgerType = 'savings';
+        var sessionTimer = null;
+        const SESSION_TIMEOUT_MS = 10 * 60 * 1000; // 10 Minutes
 
         window.addEventListener('DOMContentLoaded', function() {
             var urlParams = new URLSearchParams(window.location.search);
@@ -459,14 +461,18 @@
             document.getElementById("adm-entry-date").valueAsDate = new Date();
 
             var savedUser = sessionStorage.getItem('shg_user');
-            if (savedUser) {
+            var sessionToken = sessionStorage.getItem('shg_session_token');
+
+            if (savedUser && sessionToken) {
                 currentUser = JSON.parse(savedUser);
-                if (currentUser.role === 'admin') {
-                    showAdminSection();
-                } else {
-                    showPassbookSection(currentUser);
-                }
+                // Validate session with database single-device enforcement
+                validateActiveSession(currentUser.member_id, sessionToken);
             }
+
+            // Setup activity listeners for 10-min timeout reset
+            ['mousemove', 'keydown', 'click', 'touchstart'].forEach(function(evt) {
+                window.addEventListener(evt, resetInactivityTimer);
+            });
         });
 
         function toggleMenu() { document.getElementById("navLinks").classList.toggle("active"); }
@@ -505,7 +511,20 @@
                 }
 
                 currentUser = data[0];
+                
+                // Generate unique session token for single-device restriction
+                var newSessionToken = 'sess_' + Math.random().toString(36).substring(2) + Date.now();
+                
+                // Update session token in database
+                await _supabase
+                    .from('members')
+                    .update({ active_session_token: newSessionToken })
+                    .eq('member_id', currentUser.member_id);
+
                 sessionStorage.setItem('shg_user', JSON.stringify(currentUser));
+                sessionStorage.setItem('shg_session_token', newSessionToken);
+
+                startInactivityTimer();
 
                 if (currentUser.role === 'admin') {
                     showAdminSection();
@@ -517,6 +536,47 @@
                 console.error(err);
                 status.style.color = "#ef4444";
                 status.innerText = "⚠️ Connection error.";
+            }
+        }
+
+        // Validate that this browser session token matches the active database token (prevents concurrent multi-device logins)
+        async function validateActiveSession(memberId, token) {
+            const { data, error } = await _supabase
+                .from('members')
+                .select('active_session_token, role, full_name, phone')
+                .eq('member_id', memberId)
+                .single();
+
+            if (error || !data || data.active_session_token !== token) {
+                alert("⚠️ Your account has been logged in from another device or your session has expired.");
+                handleLogout();
+                return;
+            }
+
+            currentUser.role = data.role;
+            currentUser.full_name = data.full_name;
+            currentUser.phone = data.phone;
+            
+            startInactivityTimer();
+
+            if (currentUser.role === 'admin') {
+                showAdminSection();
+            } else {
+                showPassbookSection(currentUser);
+            }
+        }
+
+        function startInactivityTimer() {
+            clearTimeout(sessionTimer);
+            sessionTimer = setTimeout(function() {
+                alert("⏰ Session timed out due to 10 minutes of inactivity for your security.");
+                handleLogout();
+            }, SESSION_TIMEOUT_MS);
+        }
+
+        function resetInactivityTimer() {
+            if (currentUser) {
+                startInactivityTimer();
             }
         }
 
@@ -970,7 +1030,9 @@
         }
 
         function handleLogout() {
+            clearTimeout(sessionTimer);
             sessionStorage.removeItem('shg_user');
+            sessionStorage.removeItem('shg_session_token');
             window.location.reload();
         }
     </script>
