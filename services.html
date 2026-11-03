@@ -14,6 +14,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Dynamic QR Code Generator Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- jsPDF Library for PDF Passbook Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         * {
@@ -163,7 +165,7 @@
         .passbook-container {
             max-width: 1150px; background: #fffdf6; border: 2px solid #b8a686; border-radius: 12px; padding: 25px 30px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin: 0 auto;
         }
-        .passbook-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2b5b84; padding-bottom: 15px; margin-bottom: 20px; }
+        .passbook-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2b5b84; padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .passbook-title { color: #2b5b84; font-size: 1.4rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
         .passbook-meta { font-size: 0.9rem; color: #475569; line-height: 1.4; }
 
@@ -275,9 +277,9 @@
         .txt-interest { color: #2563eb; font-weight: 700; }
         .txt-balance { font-weight: 800; color: #1e293b; }
 
-        .ledger-toggle-btns { display: flex; gap: 10px; margin-bottom: 20px; }
+        .ledger-toggle-btns { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .ledger-toggle-btn {
-            flex: 1; padding: 10px; border: 1px solid #b8a686; background: #ffffff; color: #2b5b84; font-weight: 800; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem;
+            flex: 1; min-width: 200px; padding: 10px; border: 1px solid #b8a686; background: #ffffff; color: #2b5b84; font-weight: 800; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem;
         }
         .ledger-toggle-btn.active { background: #2b5b84; color: #ffffff; }
 
@@ -287,6 +289,9 @@
 
         .logout-btn { background: #ef4444; color: #fff; padding: 8px 16px; border-radius: 6px; border: none; font-weight: 700; cursor: pointer; font-size: 0.85rem; }
         .logout-btn:hover { background: #dc2626; }
+
+        .pdf-export-btn { background-color: #2b5b84; color: #ffffff; padding: 10px 18px; border-radius: 6px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: background 0.2s; }
+        .pdf-export-btn:hover { background-color: #1b9aaa; }
 
         .float-wa { position: fixed; bottom: 25px; right: 25px; background-color: #25d366; color: #ffffff; border-radius: 50px; padding: 12px 22px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); z-index: 1000; }
         footer { text-align: center; padding: 30px 20px; background: #f8f4e9; border-top: 1px solid #e2dcd0; margin-top: auto; font-size: 0.9rem; color: #94a3b8; }
@@ -360,7 +365,10 @@
                         <div class="passbook-title">📖 Member Passbook</div>
                         <div class="passbook-meta" id="passbook-member-info">Loading account details...</div>
                     </div>
-                    <button class="logout-btn" onclick="handleLogout()">Logout 🚪</button>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <button class="pdf-export-btn" onclick="downloadPassbookPDF()">📄 Download PDF Statement</button>
+                        <button class="logout-btn" onclick="handleLogout()">Logout 🚪</button>
+                    </div>
                 </div>
 
                 <div class="dash-stats">
@@ -385,7 +393,7 @@
                         <img src="paytm-qr.jpg" alt="Paytm Business Merchant QR Code" class="qr-merchant-img">
                     </div>
 
-                    <div style="background: #f1f5f9; padding: 12px 20px; border-radius: 8px; border: 1px solid #cbd5e1; display: flex; align-items: center; gap: 12px;">
+                    <div style="background: #f1f5f9; padding: 12px 20px; border-radius: 8px; border: 1px solid #cbd5e1; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
                         <span id="upi-id-display" style="font-weight: 800; color: #2b5b84; font-size: 1rem; font-family: monospace;">paytm.s4mijkf@pty</span>
                         <button class="upi-copy-btn" onclick="copyUpiId()">Copy UPI ID 📋</button>
                     </div>
@@ -432,9 +440,12 @@
 
             <!-- 3. ADMIN DASHBOARD -->
             <div id="section-admin" class="shg-card" style="display: none; max-width: 1150px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                     <h3 style="color:#2b5b84;">Master Admin Ledger Portal</h3>
-                    <button class="logout-btn" onclick="handleLogout()">Logout 🚪</button>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="pdf-export-btn" onclick="downloadPassbookPDF()">📄 Export Member PDF</button>
+                        <button class="logout-btn" onclick="handleLogout()">Logout 🚪</button>
+                    </div>
                 </div>
 
                 <div class="admin-tab-btns">
@@ -483,14 +494,14 @@
                         </div>
 
                         <div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
                                 <h4 style="color: #2b5b84;">Live Member Passbook</h4>
                                 <span id="adm-passbook-target" style="font-size: 0.85rem; font-weight: 700; color: #64748b;">Select a member</span>
                             </div>
 
                             <div class="ledger-toggle-btns" style="margin-bottom: 12px;">
-                                <button id="btn-admin-preview-savings" class="ledger-toggle-btn active" onclick="switchAdminPreviewView('savings')">Savings Ledger</button>
-                                <button id="btn-admin-preview-loan" class="ledger-toggle-btn" onclick="switchAdminPreviewView('loan')">Loan Ledger</button>
+                                <button id="btn-admin-preview-savings" class="ledger-toggle-btn" style="min-width: unset;" onclick="switchAdminPreviewView('savings')">Savings Ledger</button>
+                                <button id="btn-admin-preview-loan" class="ledger-toggle-btn" style="min-width: unset;" onclick="switchAdminPreviewView('loan')">Loan Ledger</button>
                             </div>
 
                             <div class="passbook-scroll" style="max-height: 400px; overflow-y: auto;">
@@ -665,7 +676,6 @@
                 window.location.href = upiUrl;
             }
 
-            // Fallback to standard UPI link if app scheme fails
             setTimeout(function() {
                 window.location.href = upiUrl;
             }, 1200);
@@ -984,6 +994,135 @@
             if (tab === 'member') {
                 generateNextMemberId();
             }
+        }
+
+        async function downloadPassbookPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            let targetMember = currentUser;
+            let ledgerType = currentMemberLedgerType;
+
+            if (currentUser.role === 'admin') {
+                const selectedMid = document.getElementById("adm-entry-mid").value;
+                if (!selectedMid) {
+                    alert("Please select a member from the dropdown first to export their PDF statement.");
+                    return;
+                }
+                ledgerType = currentAdminPreviewLedgerType;
+                const { data: memData } = await _supabase.from('members').select('*').eq('member_id', selectedMid).single();
+                if (memData) targetMember = memData;
+            }
+
+            const tableName = (ledgerType === 'savings') ? 'savings_ledger' : 'loan_transactions';
+            const { data: transactions } = await _supabase
+                .from(tableName)
+                .select('*')
+                .eq('member_id', targetMember.member_id)
+                .order('transaction_date', { ascending: true })
+                .order('created_at', { ascending: true });
+
+            doc.setFillColor(43, 91, 132);
+            doc.rect(0, 0, 210, 30, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.text("ANANDI SELF HELP GROUP", 14, 15);
+            
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.text(ledgerType === 'savings' ? "Official Savings Passbook Statement" : "Official Loan Passbook Statement", 14, 23);
+
+            doc.setTextColor(30, 41, 59);
+            doc.setFontSize(11);
+            doc.setFont("helvetica", "bold");
+            doc.text("Account Holder:", 14, 42);
+            doc.setFont("helvetica", "normal");
+            doc.text(targetMember.full_name, 50, 42);
+
+            doc.setFont("helvetica", "bold");
+            doc.text("Member ID:", 14, 49);
+            doc.setFont("helvetica", "normal");
+            doc.text(targetMember.member_id, 50, 49);
+
+            doc.setFont("helvetica", "bold");
+            doc.text("Phone Number:", 14, 56);
+            doc.setFont("helvetica", "normal");
+            doc.text(targetMember.phone || "N/A", 50, 56);
+
+            doc.setFont("helvetica", "bold");
+            doc.text("Generated On:", 130, 42);
+            doc.setFont("helvetica", "normal");
+            doc.text(new Date().toLocaleDateString(), 160, 42);
+
+            let startY = 68;
+            doc.setFillColor(241, 245, 249);
+            doc.rect(14, startY, 182, 8, 'F');
+            
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(9);
+            doc.text("Date", 18, startY + 5.5);
+            doc.text("Particulars / Type", 45, startY + 5.5);
+            doc.text(ledgerType === 'savings' ? "Deposit (₹)" : "Disb/Charge (₹)", 125, startY + 5.5, { align: "right" });
+            doc.text(ledgerType === 'savings' ? "Withdraw (₹)" : "Repayment (₹)", 158, startY + 5.5, { align: "right" });
+            doc.text("Balance (₹)", 192, startY + 5.5, { align: "right" });
+
+            let y = startY + 12;
+            let runningBalance = 0;
+            doc.setFont("helvetica", "normal");
+
+            if (transactions && transactions.length > 0) {
+                transactions.forEach((row) => {
+                    const amt = parseFloat(row.amount);
+                    let plus = "-";
+                    let minus = "-";
+
+                    if (ledgerType === 'savings') {
+                        if (row.type === 'deposit' || row.type === 'interest') {
+                            runningBalance += amt;
+                            plus = amt.toFixed(2);
+                        } else if (row.type === 'withdrawal') {
+                            runningBalance -= amt;
+                            minus = amt.toFixed(2);
+                        }
+                    } else {
+                        if (row.type === 'disbursement' || row.type === 'interest_charge') {
+                            runningBalance += amt;
+                            plus = amt.toFixed(2);
+                        } else if (row.type === 'repayment') {
+                            runningBalance -= amt;
+                            minus = amt.toFixed(2);
+                        }
+                    }
+
+                    let typeLabel = row.type.toUpperCase();
+                    if (row.type === 'interest') typeLabel = "SAVINGS INTEREST (1%)";
+                    if (row.type === 'interest_charge') typeLabel = "LOAN INTEREST (2%)";
+                    if (row.ref) typeLabel += ` (UPI: ${row.ref})`;
+
+                    if (y > 275) {
+                        doc.addPage();
+                        y = 20;
+                    }
+
+                    doc.text(row.transaction_date, 18, y);
+                    doc.text(typeLabel.substring(0, 35), 45, y);
+                    doc.text(plus, 125, y, { align: "right" });
+                    doc.text(minus, 158, y, { align: "right" });
+                    doc.text(runningBalance.toFixed(2), 192, y, { align: "right" });
+
+                    y += 7;
+                });
+            } else {
+                doc.text("No transaction records found.", 18, y + 5);
+            }
+
+            doc.setFontSize(8);
+            doc.setTextColor(148, 163, 184);
+            doc.text("Anandi Self Help Group - Official Digital Ledger Statement", 14, 285);
+
+            doc.save(`${targetMember.member_id}_${ledgerType}_statement.pdf`);
         }
 
         function handleLogout() {
