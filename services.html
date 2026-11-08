@@ -708,11 +708,11 @@
             document.getElementById("txt-loan-balance").innerText = "₹ " + memberLoanTot.toFixed(2);
 
             // Bind quick WhatsApp reminder buttons for member
-            var savingMsg = `Dear ${currentUser.full_name} (${currentUser.member_id}), Bank Alert: Your monthly savings deposit is due. Current Savings Balance: ₹${memberSavingsTot.toFixed(2)}. Please complete your deposit.`;
+            var savingMsg = `Dear ${currentUser.full_name} (${currentUser.member_id}), Your monthly savings deposit is due. Current Savings Balance: ₹${memberSavingsTot.toFixed(2)}. Please complete your deposit.`;
             document.getElementById("member-wa-saving-btn").href = `https://wa.me/91${currentUser.phone}?text=` + encodeURIComponent(savingMsg);
 
             var calculatedMonthlyInterest = memberLoanTot * 0.02; // 2% monthly interest
-            var interestMsg = `Dear ${currentUser.full_name} (${currentUser.member_id}), Bank EMI/Interest Notice: Your calculated monthly interest due is ₹${calculatedMonthlyInterest.toFixed(2)} (based on loan balance ₹${memberLoanTot.toFixed(2)}). Please clear your dues.`;
+            var interestMsg = `Dear ${currentUser.full_name} (${currentUser.member_id}), Bank EMI/Interest Notice: Your loan interest due is ₹${calculatedMonthlyInterest.toFixed(2)} (based on loan balance ₹${memberLoanTot.toFixed(2)}). Please clear your dues.`;
             document.getElementById("member-wa-interest-btn").href = `https://wa.me/91${currentUser.phone}?text=` + encodeURIComponent(interestMsg);
 
             var banner = document.getElementById("loan-eligibility-banner");
